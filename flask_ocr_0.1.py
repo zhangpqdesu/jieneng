@@ -10,7 +10,7 @@ from cnocr import CnOcr
 from cnocr.utils import set_logger
 from sqlalchemy import text
 import math
-
+import pymysql
 logger = set_logger(log_level='DEBUG')
 
 OCR_MODEL = CnOcr()
@@ -47,6 +47,34 @@ class PumpCalculation(db.Model):
     能效 = db.Column(db.Float)
     detal = db.Column(db.Float)
 
+class FanComparisonParameters(db.Model):
+    __tablename__ = '风机对比参数表'
+    fan_model = db.Column(db.String(50), nullable=False)#风机型号
+    correction_factor = db.Column(db.Float, nullable=False)#修正系数
+    outlet_stagnation_pressure = db.Column(db.Float, nullable=False)#出口滞止压力
+    inlet_stagnation_pressure = db.Column(db.Float, nullable=False)#进口滞止压力
+    inlet_stagnation_density = db.Column(db.Float, nullable=False)#进口滞止密度
+    cascade_outer_circumferential_speed = db.Column(db.Float, nullable=False)#叶轮叶片外缘的圆周速度
+    main_shaft_rotation_speed = db.Column(db.Integer, nullable=False)#主轴的转速
+    fan_size = db.Column(db.String(50), nullable=False)# 机号
+    impeller_hub_ratio = db.Column(db.Float, nullable=False)#轮毂比
+    fan_level = db.Column(db.String(20), nullable=False)# 风机能级
+
+    def __init__(self, fan_model, correction_factor, outlet_stagnation_pressure, inlet_stagnation_pressure, inlet_stagnation_density, cascade_outer_circumferential_speed, main_shaft_rotation_speed, fan_size, impeller_hub_ratio, fan_level):
+        self.fan_model = fan_model
+        self.correction_factor = correction_factor
+        self.outlet_stagnation_pressure = outlet_stagnation_pressure
+        self.inlet_stagnation_pressure = inlet_stagnation_pressure
+        self.inlet_stagnation_density = inlet_stagnation_density
+        self.cascade_outer_circumferential_speed = cascade_outer_circumferential_speed
+        self.main_shaft_rotation_speed = main_shaft_rotation_speed
+        self.fan_size = fan_size
+        self.impeller_hub_ratio = impeller_hub_ratio
+        self.fan_level = fan_level
+
+    def __repr__(self):
+        return f"<FanComparisonParameters {self.fan_model}>"
+
 # ocr返回类
 class OcrResponse:
     def __init__(self, results: List[Dict[str, Any]]) -> None:
@@ -71,6 +99,133 @@ def get_motor_params():
 
     except Exception as e:
         return f'Database connection error: {str(e)}'
+
+@app.route("/calculate_motor_energy_consumption", methods=['GET'])
+def calculate_motor_energy_consumption():
+    try:
+        # From the request, get JSON data
+        data = request.get_json()
+        print(f'Received JSON data: {data}')
+
+        speed_of_rotation = data['speedOfRotation']
+        power = data['power']
+        efficiency = data['efficiency']
+        print(speed_of_rotation, power, efficiency)
+
+        # Use the text function to declare the SQL expression
+        sql_query = text(f"SELECT 电机能级 FROM 电机对比参数表 WHERE 转速 = {speed_of_rotation} AND 额定功率 = {power} AND 效率 <= {efficiency}")
+        print(sql_query)
+
+        # Execute the raw SQL query
+        result = db.session.execute(sql_query).fetchone()
+        print(result)
+
+        if result:
+            motor_energy_level = result[0]
+            return jsonify({'motor_energy_level': motor_energy_level})
+
+        # Handle the case when no matching record is found
+        return jsonify({'error': '未找到匹配的电机参数'})
+
+    except Exception as e:
+        # Print detailed error information
+        print(f'Exception type: {type(e).__name__}')
+        print(f'Exception details: {str(e)}')
+        return jsonify({'error': f'calculate motor energy consumption error: {str(e)}'})
+#通风机效率计算
+def ventilation_efficiency(inlet_volume_flow, outlet_pressure, inlet_pressure, compressibility_correction_factor, impeller_power):
+    """
+    计算通风机效率的函数
+
+    参数：
+    inlet_volume_flow (float): 通风机进口滞止容积流量，单位：立方米/秒
+    outlet_pressure (float): 通风机出口滞止压力，单位：帕斯卡
+    inlet_pressure (float): 通风机进口滞止压力，单位：帕斯卡
+    compressibility_correction_factor (float): 压缩性修正系数
+    impeller_power (float): 叶轮功率，单位：千瓦
+
+    返回：
+    float: 通风机效率，单位：百分比
+    """
+    efficiency = inlet_volume_flow * (outlet_pressure - inlet_pressure) * compressibility_correction_factor / (1000 * impeller_power) * 100
+    return efficiency
+
+def pressure_coefficient(outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density, cascade_outer_circumferential_speed):
+    """
+    计算压力系数的函数
+
+    参数：
+    outlet_pressure (float): 通风机出口滞止压力，单位：帕斯卡
+    inlet_pressure (float): 通风机进口滞止压力，单位：帕斯卡
+    compressibility_correction_factor (float): 压缩性修正系数
+    inlet_density (float): 通风机进口滞止密度，单位：千克/立方米
+    cascade_outer_circumferential_speed (float): 叶轮叶片外缘的圆周速度，单位：米/秒
+
+    返回：
+    float: 压力系数
+    """
+    coefficient = (outlet_pressure - inlet_pressure) * compressibility_correction_factor / (inlet_density * cascade_outer_circumferential_speed * cascade_outer_circumferential_speed)
+    return coefficient
+
+def calculate_n_s(n, Q, outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density):
+    """
+    计算单级单吸入式离心通风机的比转速
+
+    参数：
+    n (float): 通风机主轴的转速，单位为转每分钟（r/min）
+    Q (float): 通风机进口滞止容积流量
+    outlet_pressure (float): 通风机出口滞止压力，单位：帕斯卡
+    inlet_pressure (float): 通风机进口滞止压力，单位：帕斯卡
+    compressibility_correction_factor (float): 压缩性修正系数
+    inlet_density (float): 通风机进口滞止密度，单位：千克/立方米
+
+    返回：
+    float: 单级单吸入式离心通风机的比转速
+    """
+    return 5.54 * n * (Q ** 0.5) / (1.2 * (outlet_pressure - inlet_pressure) * compressibility_correction_factor / inlet_density) ** 0.75
+
+def calculate_n_s_double_inlet(n, Q, outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density):
+    """
+    计算单级双吸入式离心通风机的比转速
+
+    参数：
+    n (float): 通风机主轴的转速，单位为转每分钟（r/min）
+    Q (float): 通风机进口滞止容积流量
+    outlet_pressure (float): 通风机出口滞止压力，单位：帕斯卡
+    inlet_pressure (float): 通风机进口滞止压力，单位：帕斯卡
+    compressibility_correction_factor (float): 压缩性修正系数
+    inlet_density (float): 通风机进口滞止密度，单位：千克/立方米
+
+    返回：
+    float: 单级双吸入式离心通风机的比转速
+    """
+    return 5.54 * n * (Q / 2) ** 0.5 / (1.2 * (outlet_pressure - inlet_pressure) * compressibility_correction_factor / inlet_density) ** 0.75
+
+@app.route('/ventilation_energy)consumption', methods=['POST'])
+def ventilation_efficiency():
+    data = request.get_json()
+    inlet_volume_flow = data['inlet_volume_flow']
+    outlet_pressure = data['outlet_pressure']
+    inlet_pressure = data['inlet_pressure']
+    compressibility_correction_factor = data['compressibility_correction_factor']
+    impeller_power = data['impeller_power']
+    inlet_density=data['inlet_density']
+    cascade_outer_circumferential_speed=data['cascade_outer_circumferential_speed']
+    efficiency = ventilation_efficiency(inlet_volume_flow, outlet_pressure, inlet_pressure, compressibility_correction_factor, impeller_power)
+    coefficient = pressure_coefficient(outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density, cascade_outer_circumferential_speed)
+    n_s = calculate_n_s(n, Q, outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density)
+
+    conn = pymysql.connect(host='localhost', user='root', password='password', db='ventilation_db')
+    cursor = conn.cursor()
+    sql = "SELECT * FROM ventilation_records WHERE n_s=%s AND coefficient=%s AND efficiency=%s"
+    cursor.execute(sql, (n_s, coefficient, efficiency))
+    result = cursor.fetchone()
+
+    if result:
+        energy_grade = 'A' if result[3] > 90 else 'B'
+        return {'energy_grade': energy_grade}
+    else:
+        return {'error': 'No matching record found'}
 
 # 获取泵效率对应的能效等级      delta 的值查表得到，目前先暂定一个值（假设为2
 def get_energy_efficiency_rating(pump_efficiency, flowrate, speed,delta=2):
