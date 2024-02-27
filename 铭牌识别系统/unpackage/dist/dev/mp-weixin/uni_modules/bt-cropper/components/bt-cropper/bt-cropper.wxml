@@ -1,0 +1,322 @@
+<wxs module="wxsModule">
+var startTouchs = [];
+var startDistance = 0;
+var touchCenter = [];
+var ratio = 0;
+var imageInstance = null;
+var cropperInstance = null;
+var touchType = "";
+var touchInstance = null;
+var cropperRect = null;
+var imageRect = null;
+// 旋转角度
+var rotateAngle = 0;
+// 操作时改变的对象
+var changes = {
+	imageRect: null,
+	cropperRect: null
+}
+
+function updateImageStyle() {
+	var imageRect = changes.imageRect
+	imageInstance.setStyle({
+		left: imageRect.left + 'px',
+		top: imageRect.top + 'px',
+		width: imageRect.width + 'px',
+		height: imageRect.height + 'px',
+		transform: 'rotate(' + rotateAngle + 'deg)'
+	})
+}
+
+function updateCopperStyle() {
+	var cropperRect = changes.cropperRect
+	cropperInstance.setStyle({
+		left: cropperRect.left + "px",
+		top: cropperRect.top + "px",
+		width: cropperRect.width + "px",
+		height: cropperRect.height + "px"
+	})
+}
+
+function imageScale(scaleRate) {
+	var cw = imageRect.width * (scaleRate - 1)
+	var ch = imageRect.height * (scaleRate - 1)
+	changes.imageRect = {
+		width: imageRect.width + cw,
+		height: imageRect.height + ch,
+		left: imageRect.left - cw * (touchCenter[0]),
+		top: imageRect.top - ch * (touchCenter[1])
+	}
+}
+function getImageRotateSizeChange(w,h){
+	var cw = h*Math.sin(rotateAngle/180 * Math.PI)
+	var ch = w*Math.sin(rotateAngle/180 * Math.PI)
+	return {cw,ch}
+}
+// 角度转弧度
+function ang2deg(ang){
+	return ang/180*Math.PI
+}
+// 计算旋转后真实的图片大小
+function getRealSize(){
+	var w = changes.imageRect.width
+	var h = changes.imageRect.height
+	var l =  changes.imageRect.left
+	var t =  changes.imageRect.top
+	// 内斜边
+	var R = Math.sqrt(w*w+h*h)
+	var angle = Math.atan(h/w) / Math.PI * 180
+	var rorate = rotateAngle%90
+	var direct = Math.floor(rotateAngle/90)
+	var width = R*Math.cos(ang2deg(angle-rorate))
+	var height = R*Math.sin(ang2deg(angle+rorate))
+	if(direct % 2 === 1){
+		var temp = width
+		width = height
+		height = temp
+	}
+	return {
+		width: width,
+		height: height,
+		left: l - (width - w)/2,
+		top: t - (height - h)/2,
+		dw: width - w,
+		dh: height - h
+	}
+}
+module.exports = {
+	touchStart: function (ev, oi) {
+
+
+
+
+		touchInstance = ev.instance;
+		var dataSet = ev.instance.getDataset()
+		touchType = dataSet.type;
+		startTouchs = ev.touches;
+		oi.callMethod('onTouchStart')
+		if (startTouchs.length == 2) {
+			touchType = "image"
+			var x1 = startTouchs[0].clientX
+			var y1 = startTouchs[0].clientY
+			var x2 = startTouchs[1].clientX
+			var y2 = startTouchs[1].clientY
+			var distance = Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)
+			startDistance = Math.sqrt(distance)
+			var leftPercent = ((x1 + x2) / 2 - imageRect.left) / imageRect.width
+			var topPercent = ((y1 + y2) / 2 - imageRect.top) / imageRect.height
+			touchCenter = [leftPercent, topPercent]
+		}
+		return false;
+	},
+	touchMove: function (ev, io) {
+		if (touchType == "") return false
+
+
+
+
+		var touches = ev.touches;
+		var changeX1 = touches[0].clientX - startTouchs[0].clientX;
+		var changeY1 = touches[0].clientY - startTouchs[0].clientY;
+		if (startTouchs.length == 1) {
+			if (touchType === 'image') {
+				changes.imageRect.left = imageRect.left + changeX1;
+				changes.imageRect.top = imageRect.top + changeY1;
+				updateImageStyle()
+			} else if (touchType === 'controller') {
+				var directionX = 0;
+				if (touchInstance.hasClass('left')) {
+					directionX = -1;
+				}
+				if (touchInstance.hasClass('right')) {
+					directionX = 1;
+				}
+				var directionY = 0;
+				if (touchInstance.hasClass('top')) {
+					directionY = -1
+				}
+				if (touchInstance.hasClass('bottom')) {
+					directionY = 1
+				}
+				var changeX = changeX1 * directionX;
+				var changeY = changeY1 * directionY;
+				// 比例缩放控制
+				if (ratio !== 0) {
+					if (directionX * directionY !== 0) {
+						if (changeX / ratio > changeY) {
+							changeY = changeX / ratio
+							changeX = changeY * ratio
+						} else {
+							changeX = changeY * ratio
+							changeY = changeX / ratio
+						}
+					} else {
+						if (directionX == 0) {
+							changeX = changeY * ratio
+						} else {
+							changeY = changeX / ratio
+						}
+					}
+				}
+				var realSize = getRealSize()
+				var width = cropperRect.width + changeX
+				var height = cropperRect.height + changeY
+				// var imageRight = imageRect.left + imageRect.width
+				// var imageBottom = imageRect.top + imageRect.height
+				var imageRight = realSize.left+realSize.width
+				var imageBottom = realSize.top+realSize.height
+				if (directionX != -1) {
+					if (cropperRect.left + width > imageRight) {
+						width = imageRight - cropperRect.left
+						if (ratio !== 0) {
+							height = width / ratio
+						}
+					}
+				} else {
+					var cLeft = cropperRect.left - changeX
+					if (cLeft < realSize.left) {
+						width = cropperRect.left + cropperRect.width - realSize.left
+						if (ratio !== 0) {
+							height = width / ratio
+						}
+					}
+				}
+				// 判断是否触底
+				if (directionY != -1) {
+					if (cropperRect.top + height > imageBottom) {
+						height = imageBottom - cropperRect.top
+						if (ratio !== 0) {
+							width = height * ratio
+						}
+					}
+				} else {
+					var cTop = cropperRect.top - changeY
+					if (cTop < realSize.top) {
+						height = cropperRect.top + cropperRect.height - realSize.top
+						if (ratio !== 0) {
+							width = height * ratio
+						}
+					}
+				}
+				if (directionX == -1) {
+					changes.cropperRect.left = cropperRect.left + cropperRect.width - width
+				}
+				if (directionY == -1) {
+					changes.cropperRect.top = cropperRect.top + cropperRect.height - height
+				}
+				// 边界控制
+				changes.cropperRect.width = width
+				changes.cropperRect.height = height
+				updateCopperStyle()
+			}
+		} else if (touches.length == 2 && startTouchs.length == 2) {
+			var changeX2 = touches[0].clientX - touches[1].clientX;
+			var changeY2 = touches[0].clientY - touches[1].clientY;
+			var distance = Math.pow(changeX2, 2) + Math.pow(changeY2, 2)
+			distance = Math.sqrt(distance)
+			// 放大比例
+			var scaleRate = distance / startDistance
+			imageScale(scaleRate)
+			updateImageStyle()
+		}
+		return false;
+	},
+	touchEnd: function (ev, oi) {
+		if (touchType === "image") {
+			var cropperLeft = cropperRect.left
+			var cropperRight = cropperRect.left + cropperRect.width
+			var cropperTop = cropperRect.top
+			var cropperBottom = cropperTop + cropperRect.height
+			var cropperRate = cropperRect.width / cropperRect.height
+			var realSize = getRealSize()
+			var rate = realSize.width / realSize.height
+			if (realSize.width < cropperRect.width || realSize.height < cropperRect.height) {
+				var scale = 1
+				if (rate < cropperRate) {
+					scale = cropperRect.width / realSize.width
+				} else {
+					scale = cropperRect.height / realSize.height
+				}
+				imageRect.width = changes.imageRect.width
+				imageRect.height = changes.imageRect.height
+				imageScale(scale)
+			}
+			// 边界控制start
+			if (cropperLeft < realSize.left) {
+				changes.imageRect.left = cropperLeft + realSize.dw/2
+			}
+			if (cropperRight > realSize.left + realSize.width) {
+				changes.imageRect.left = cropperRight - realSize.width + realSize.dw/2
+			}
+			if (cropperTop < realSize.top) {
+				changes.imageRect.top = cropperTop + realSize.dh/2
+			}
+			if (cropperBottom > realSize.top + realSize.height) {
+				changes.imageRect.top = cropperBottom - realSize.height + realSize.dh/2
+			}
+			// 边界控制end
+			updateImageStyle()
+		}
+		oi.callMethod('updateData', {
+			cropperRect: changes.cropperRect,
+			imageRect: changes.imageRect,
+		})
+		touchType = ""
+		startTouchs = []
+		return false;
+	},
+	// 将逻辑层的图像变换同步过来
+	// 裁剪比例变化
+	changeRatio: function (value) {
+		ratio = value
+	},
+	changeRotateAngle:function (value){
+		rotateAngle = value;
+		if(imageInstance){
+			updateImageStyle()
+		}
+		var realSize = getRealSize()
+	},
+	changeImageRect: function (value, oldValue, oi) {
+		if (value) {
+			imageRect = value;
+			changes.imageRect = {
+				left: value.left,
+				top: value.top,
+				width: value.width,
+				height: value.height
+			};
+
+
+
+
+
+
+
+			imageInstance = oi.selectComponent('.mainContent > .image')
+			updateImageStyle();
+
+		}
+	},
+	changeCropper: function (value, oldValue, oi) {
+		if (value) {
+			cropperRect = value
+			changes.cropperRect = {
+				left: value.left,
+				top: value.top,
+				width: value.width,
+				height: value.height
+			}
+
+
+
+				cropperInstance = oi.selectComponent('.mainContent > .cropper')
+				updateCopperStyle()
+
+
+
+		}
+	}
+}
+</wxs>
+<view class="bt-container data-v-db75b244" style="{{$root.s0}}"><view class="mainContent data-v-db75b244" data-type="image" bindtouchstart="{{wxsModule.touchStart}}" bindtouchmove="{{wxsModule.touchMove}}" bindtouchend="{{wxsModule.touchEnd}}"><block wx:if="{{imageRect&&cropperRect}}"><image class="{{['image','data-v-db75b244',(anim)?'anim':'']}}" mode="aspectFit" src="{{imageSrc}}" rotateAngle="{{rotateAngle}}" change:rotateAngle="{{wxsModule.changeRotateAngle}}" change:imageRect="{{wxsModule.changeImageRect}}" imageRect="{{imageRect}}"></image><view class="{{['cropper','data-v-db75b244',(anim)?'anim':'']}}" change:cropperRect="{{wxsModule.changeCropper}}" cropperRect="{{cropperRect}}" change:ratio="{{wxsModule.changeRatio}}" ratio="{{ratio}}"><image class="mask data-v-db75b244" src="{{mask}}"></image><block wx:if="{{showGrid}}"><view class="line row row1 data-v-db75b244"></view><view class="line row row2 data-v-db75b244"></view><view class="line col col1 data-v-db75b244"></view><view class="line col col2 data-v-db75b244"></view></block><view class="controller vertical left data-v-db75b244" data-type="controller" bindtouchstart="{{wxsModule.touchStart}}"></view><view class="controller vertical right data-v-db75b244" data-type="controller" bindtouchstart="{{wxsModule.touchStart}}"></view><view class="controller horizon top data-v-db75b244" data-type="controller" bindtouchstart="{{wxsModule.touchStart}}"></view><view class="controller horizon bottom data-v-db75b244" data-type="controller" bindtouchstart="{{wxsModule.touchStart}}"></view><view class="controller left top data-v-db75b244" data-type="controller" bindtouchstart="{{wxsModule.touchStart}}"></view><view class="controller left bottom data-v-db75b244" data-type="controller" bindtouchstart="{{wxsModule.touchStart}}"></view><view class="controller right top data-v-db75b244" data-type="controller" bindtouchstart="{{wxsModule.touchStart}}"></view><view class="controller right bottom data-v-db75b244" data-type="controller" bindtouchstart="{{wxsModule.touchStart}}"></view></view></block></view><block wx:if="{{type2d}}"><canvas class="bt-canvas data-v-db75b244" type="2d" width="{{target.width}}" height="{{target.height}}"></canvas></block><block wx:else><canvas class="bt-canvas data-v-db75b244" style="{{'width:'+(target.width+'px')+';'+('height:'+(target.height+'px')+';')}}" canvas-id="{{canvasId}}" width="{{target.width*pixel}}" height="{{target.height*pixel}}"></canvas></block></view>

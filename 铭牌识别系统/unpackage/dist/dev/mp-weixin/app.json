@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/result/result",
+    "pages/camera/camera",
+    "pages/home/home",
+    "pages/register/register",
+    "pages/company/company"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#fdfce2"
+  },
+  "tabBar": {
+    "borderStyle": "black",
+    "selectedColor": "#FF8D1A",
+    "color": "#808080",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "iconPath": "static/home.png",
+        "selectedIconPath": "static/home1.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/camera/camera",
+        "iconPath": "static/scan.png",
+        "selectedIconPath": "static/scan1.png",
+        "text": "扫描"
+      },
+      {
+        "pagePath": "pages/result/result",
+        "iconPath": "static/person.png",
+        "selectedIconPath": "static/person1.png",
+        "text": "个人中心"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

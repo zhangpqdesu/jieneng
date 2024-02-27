@@ -4,17 +4,21 @@ from typing import List, Dict, Any
 import re
 from pydantic import BaseModel
 from PIL import Image
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request,send_file
 from flask_sqlalchemy import SQLAlchemy
 from cnocr import CnOcr
 from cnocr.utils import set_logger
 from sqlalchemy import text
 import math
 import pymysql
+import pandas as pd
+import asyncio
+from flask_cors import CORS
 logger = set_logger(log_level='DEBUG')
 
 OCR_MODEL = CnOcr()
 app = Flask(__name__)
+CORS(app, origins="http://localhost:8080")
 #持久层框架，配置数据库连接信息
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
 
@@ -23,57 +27,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# 电机对照表
-class Motor(db.Model):
-    __tablename__ = '电机对比参数表'
-    电机型号 = db.Column(db.String(50), primary_key=True)
-    效率 = db.Column(db.Float)
-    额定功率 = db.Column(db.Float)
-    转速 = db.Column(db.Integer)
-    电机能级 = db.Column(db.String(20))
-
-
-class PumpCalculation(db.Model):
-    __tablename__ = '离心泵计算参数表'
-    泵型号 = db.Column(db.String(50), primary_key=True)
-    密度 = db.Column(db.Float)
-    流量 = db.Column(db.Float)
-    扬程 = db.Column(db.Float)
-    输入功率 = db.Column(db.Float)
-    泵效率 = db.Column(db.Float)
-    流量 = db.Column(db.Float)
-    扬程 = db.Column(db.Float)
-    转速 = db.Column(db.Integer)
-    能效 = db.Column(db.Float)
-    detal = db.Column(db.Float)
-
-class FanComparisonParameters(db.Model):
-    __tablename__ = '风机对比参数表'
-    fan_model = db.Column(db.String(50), nullable=False)#风机型号
-    correction_factor = db.Column(db.Float, nullable=False)#修正系数
-    outlet_stagnation_pressure = db.Column(db.Float, nullable=False)#出口滞止压力
-    inlet_stagnation_pressure = db.Column(db.Float, nullable=False)#进口滞止压力
-    inlet_stagnation_density = db.Column(db.Float, nullable=False)#进口滞止密度
-    cascade_outer_circumferential_speed = db.Column(db.Float, nullable=False)#叶轮叶片外缘的圆周速度
-    main_shaft_rotation_speed = db.Column(db.Integer, nullable=False)#主轴的转速
-    fan_size = db.Column(db.String(50), nullable=False)# 机号
-    impeller_hub_ratio = db.Column(db.Float, nullable=False)#轮毂比
-    fan_level = db.Column(db.String(20), nullable=False)# 风机能级
-
-    def __init__(self, fan_model, correction_factor, outlet_stagnation_pressure, inlet_stagnation_pressure, inlet_stagnation_density, cascade_outer_circumferential_speed, main_shaft_rotation_speed, fan_size, impeller_hub_ratio, fan_level):
-        self.fan_model = fan_model
-        self.correction_factor = correction_factor
-        self.outlet_stagnation_pressure = outlet_stagnation_pressure
-        self.inlet_stagnation_pressure = inlet_stagnation_pressure
-        self.inlet_stagnation_density = inlet_stagnation_density
-        self.cascade_outer_circumferential_speed = cascade_outer_circumferential_speed
-        self.main_shaft_rotation_speed = main_shaft_rotation_speed
-        self.fan_size = fan_size
-        self.impeller_hub_ratio = impeller_hub_ratio
-        self.fan_level = fan_level
-
-    def __repr__(self):
-        return f"<FanComparisonParameters {self.fan_model}>"
 
 # ocr返回类
 class OcrResponse:
@@ -83,251 +36,6 @@ class OcrResponse:
     def dict(self) -> Dict[str, Any]:
         return {'results': self.results}
 
-
-# 获得电机对照表的参数
-@app.route('/get_motor_params')
-def get_motor_params():
-    try:
-        # 查询数据库中所有电机参数记录
-        motor_records = Motor.query.all()
-
-        # 将记录转换为字典形式
-        motor_params = [{'电机型号': motor.电机型号, '效率': motor.效率, '额定功率': motor.额定功率, '转速': motor.转速, '电机能级': motor.电机能级} for motor in motor_records]
-
-        # 返回 JSON 格式的参数
-        return jsonify(motor_params)
-
-    except Exception as e:
-        return f'Database connection error: {str(e)}'
-
-@app.route("/calculate_motor_energy_consumption", methods=['GET'])
-def calculate_motor_energy_consumption():
-    try:
-        # From the request, get JSON data
-        data = request.get_json()
-        print(f'Received JSON data: {data}')
-
-        speed_of_rotation = data['speedOfRotation']
-        power = data['power']
-        efficiency = data['efficiency']
-        print(speed_of_rotation, power, efficiency)
-
-        # Use the text function to declare the SQL expression
-        sql_query = text(f"SELECT 电机能级 FROM 电机对比参数表 WHERE 转速 = {speed_of_rotation} AND 额定功率 = {power} AND 效率 <= {efficiency}")
-        print(sql_query)
-
-        # Execute the raw SQL query
-        result = db.session.execute(sql_query).fetchone()
-        print(result)
-
-        if result:
-            motor_energy_level = result[0]
-            return jsonify({'motor_energy_level': motor_energy_level})
-
-        # Handle the case when no matching record is found
-        return jsonify({'error': '未找到匹配的电机参数'})
-
-    except Exception as e:
-        # Print detailed error information
-        print(f'Exception type: {type(e).__name__}')
-        print(f'Exception details: {str(e)}')
-        return jsonify({'error': f'calculate motor energy consumption error: {str(e)}'})
-#通风机效率计算
-def ventilation_efficiency(inlet_volume_flow, outlet_pressure, inlet_pressure, compressibility_correction_factor, impeller_power):
-    """
-    计算通风机效率的函数
-
-    参数：
-    inlet_volume_flow (float): 通风机进口滞止容积流量，单位：立方米/秒
-    outlet_pressure (float): 通风机出口滞止压力，单位：帕斯卡
-    inlet_pressure (float): 通风机进口滞止压力，单位：帕斯卡
-    compressibility_correction_factor (float): 压缩性修正系数
-    impeller_power (float): 叶轮功率，单位：千瓦
-
-    返回：
-    float: 通风机效率，单位：百分比
-    """
-    efficiency = inlet_volume_flow * (outlet_pressure - inlet_pressure) * compressibility_correction_factor / (1000 * impeller_power) * 100
-    return efficiency
-
-def pressure_coefficient(outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density, cascade_outer_circumferential_speed):
-    """
-    计算压力系数的函数
-
-    参数：
-    outlet_pressure (float): 通风机出口滞止压力，单位：帕斯卡
-    inlet_pressure (float): 通风机进口滞止压力，单位：帕斯卡
-    compressibility_correction_factor (float): 压缩性修正系数
-    inlet_density (float): 通风机进口滞止密度，单位：千克/立方米
-    cascade_outer_circumferential_speed (float): 叶轮叶片外缘的圆周速度，单位：米/秒
-
-    返回：
-    float: 压力系数
-    """
-    coefficient = (outlet_pressure - inlet_pressure) * compressibility_correction_factor / (inlet_density * cascade_outer_circumferential_speed * cascade_outer_circumferential_speed)
-    return coefficient
-
-def calculate_n_s(n, Q, outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density):
-    """
-    计算单级单吸入式离心通风机的比转速
-
-    参数：
-    n (float): 通风机主轴的转速，单位为转每分钟（r/min）
-    Q (float): 通风机进口滞止容积流量
-    outlet_pressure (float): 通风机出口滞止压力，单位：帕斯卡
-    inlet_pressure (float): 通风机进口滞止压力，单位：帕斯卡
-    compressibility_correction_factor (float): 压缩性修正系数
-    inlet_density (float): 通风机进口滞止密度，单位：千克/立方米
-
-    返回：
-    float: 单级单吸入式离心通风机的比转速
-    """
-    return 5.54 * n * (Q ** 0.5) / (1.2 * (outlet_pressure - inlet_pressure) * compressibility_correction_factor / inlet_density) ** 0.75
-
-def calculate_n_s_double_inlet(n, Q, outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density):
-    """
-    计算单级双吸入式离心通风机的比转速
-
-    参数：
-    n (float): 通风机主轴的转速，单位为转每分钟（r/min）
-    Q (float): 通风机进口滞止容积流量
-    outlet_pressure (float): 通风机出口滞止压力，单位：帕斯卡
-    inlet_pressure (float): 通风机进口滞止压力，单位：帕斯卡
-    compressibility_correction_factor (float): 压缩性修正系数
-    inlet_density (float): 通风机进口滞止密度，单位：千克/立方米
-
-    返回：
-    float: 单级双吸入式离心通风机的比转速
-    """
-    return 5.54 * n * (Q / 2) ** 0.5 / (1.2 * (outlet_pressure - inlet_pressure) * compressibility_correction_factor / inlet_density) ** 0.75
-
-@app.route('/ventilation_energy)consumption', methods=['POST'])
-def ventilation_efficiency():
-    data = request.get_json()
-    inlet_volume_flow = data['inlet_volume_flow']
-    outlet_pressure = data['outlet_pressure']
-    inlet_pressure = data['inlet_pressure']
-    compressibility_correction_factor = data['compressibility_correction_factor']
-    impeller_power = data['impeller_power']
-    inlet_density=data['inlet_density']
-    cascade_outer_circumferential_speed=data['cascade_outer_circumferential_speed']
-    efficiency = ventilation_efficiency(inlet_volume_flow, outlet_pressure, inlet_pressure, compressibility_correction_factor, impeller_power)
-    coefficient = pressure_coefficient(outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density, cascade_outer_circumferential_speed)
-    n_s = calculate_n_s(n, Q, outlet_pressure, inlet_pressure, compressibility_correction_factor, inlet_density)
-
-    conn = pymysql.connect(host='localhost', user='root', password='password', db='ventilation_db')
-    cursor = conn.cursor()
-    sql = "SELECT * FROM ventilation_records WHERE n_s=%s AND coefficient=%s AND efficiency=%s"
-    cursor.execute(sql, (n_s, coefficient, efficiency))
-    result = cursor.fetchone()
-
-    if result:
-        energy_grade = 'A' if result[3] > 90 else 'B'
-        return {'energy_grade': energy_grade}
-    else:
-        return {'error': 'No matching record found'}
-
-# 获取泵效率对应的能效等级      delta 的值查表得到，目前先暂定一个值（假设为2
-def get_energy_efficiency_rating(pump_efficiency, flowrate, speed,delta=2):
-    # 根据实际需求定义能效等级划分的逻辑
-    if 5<=flowrate<=300:
-        if 20<=speed<60:
-            if delta>=10:
-                return 'IE1'
-            elif delta>=5:
-                return 'IE2'
-            elif delta>=-5:
-                return 'IE3'
-            else:return '输入参数错误或者未达到IE3'
-        if 60<=speed<120:
-            if delta >= 4:
-                return 'IE1'
-            elif delta >= 1:
-                return 'IE2'
-            elif delta >= -8:
-                return 'IE3'
-            else:
-                return '输入参数错误或者未达到IE3'
-        if 120<=speed<210:
-            return 'IE3'
-        if 210<=speed<300:
-            if delta >= 3:
-                return 'IE1'
-            elif delta >= 1:
-                return 'IE2'
-            elif delta >= -9:
-                return 'IE3'
-            else:
-                return '输入参数错误或者未达到IE3'
-    elif flowrate>300:
-        if 20<=speed<60:
-            if delta>=11:
-                return 'IE1'
-            elif delta>=5:
-                return 'IE2'
-            elif delta>=-5:
-                return 'IE3'
-            else:return '输入参数错误或者未达到IE3'
-        if 60<=speed<120:
-            if delta >= 5:
-                return 'IE1'
-            elif delta >= 1:
-                return 'IE2'
-            elif delta >= -8:
-                return 'IE3'
-            else:
-                return '输入参数错误或者未达到IE3'
-        if 120<=speed<210:
-            return 'IE3'
-        if 210<=speed<300:
-            if delta >= 3:
-                return 'IE1'
-            elif delta >= 2:
-                return 'IE2'
-            elif delta >= -7:
-                return 'IE3'
-            else:
-                return '输入参数错误或者未达到IE3'
-
-# 获得离心泵计算参数表的参数
-@app.route('/get_pump_calculation', methods=['POST'])
-def get_pump_calculation():
-    try:
-        # 从请求中获取参数
-        data = request.get_json()
-        print(f'Received JSON data: {data}')
-
-        pump_type = data['type']
-        density = data['density']
-        flowrate = data['flowrate']
-        waterlift = data['waterlift']
-        powerin=data['powerin']
-        speedn=data['speedn']
-
-
-        # 计算泵效率
-        pump_efficiency = (density * 9.8 * flowrate * waterlift * 1e-3) / powerin
-        # 计算比转速
-        specific_speed=(speedn * 3.65 * math.sqrt(flowrate)) / (waterlift ** 0.75)
-
-        # 判断能效等级
-        energy_efficiency_rating = get_energy_efficiency_rating(pump_efficiency, flowrate, specific_speed,delta=2)
-
-        # 返回 JSON 格式的结果
-        result = {
-            'pump_type': pump_type,
-            'density': density,
-            'flowrate': flowrate,
-            'waterlift': waterlift,
-            'powerin': powerin,
-            'pump_efficiency': pump_efficiency,
-            'energy_efficiency_rating':energy_efficiency_rating
-        }
-
-        return jsonify(result)
-
-    except Exception as e:
-        return f'Database connection error: {str(e)}'
 
 
 
@@ -445,7 +153,78 @@ def handin_energy_consumption():
         print(f"An error occurred: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
 
+async def process_file(file):
+    df = pd.read_excel(file)
+    
+    required_columns = ['转速', '效率', '额定功率']
+    missing_columns = set(required_columns) - set(df.columns)
+    if missing_columns:
+        raise ValueError(f"Missing required columns: {missing_columns}")
+    
+    df['processed_data'] = df['转速'] + df['效率'] + df['额定功率']
+    df['能效结果'] = ['合格' if value > 100 else '不合格' for value in df['processed_data']]
+    
+    return df
 
+
+async def process_files(files):
+    processed_files = []
+    for file in files:
+        processed_df = await process_file(file)
+        processed_files.append(processed_df)
+    return processed_files
+
+@app.route('/upload', methods=['POST'])
+def upload_files():
+    uploaded_files = request.files.getlist('files[]')
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        processed_files = loop.run_until_complete(process_files(uploaded_files))
+    except Exception as e:
+        return {'error': str(e)}, 500  # 返回包含错误信息的响应，状态码为500表示服务器内部错误
+    finally:
+        loop.close()
+    
+    processed_filenames = []
+    for idx, processed_df in enumerate(processed_files):
+        processed_filename = f"processed_{idx + 1}.xlsx"
+        processed_df.to_excel(processed_filename, index=False)
+        processed_filenames.append(processed_filename)
+    
+    # 返回处理后文件的下载链接
+    download_links = [f"/download/{filename}" for filename in processed_filenames]
+    return {'download_links': download_links}
+
+@app.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    # 提供文件下载
+    return send_file(filename, as_attachment=True)
+
+class LiSi(db.Model):
+    __tablename__ = '李四'
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(255))
+    type = db.Column(db.String(255))
+    energy_consumption = db.Column(db.String(255))
+    record_place = db.Column(db.String(255))
+    record_time = db.Column(db.DateTime)
+
+
+@app.route('/lisidata', methods=['GET'])
+def get_lisi_data():
+    lisi_data = LiSi.query.all()
+    lisi_json = []
+    for data in lisi_data:
+        lisi_json.append({
+            'id': data.id,
+            'url': data.url,
+            'type': data.type,
+            'energy_consumption': data.energy_consumption,
+            'record_place': data.record_place,
+            'record_time': data.record_time.strftime('%Y-%m-%d %H:%M:%S') if data.record_time else None
+        })
+    return jsonify(lisi_json)
 
 if __name__ == '__main__':
     app.run(debug=True)
