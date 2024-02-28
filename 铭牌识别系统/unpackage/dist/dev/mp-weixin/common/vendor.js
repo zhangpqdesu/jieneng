@@ -1557,7 +1557,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -8934,7 +8934,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8955,14 +8955,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -9058,7 +9058,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9477,9 +9477,9 @@ internalMixin(Vue);
 
 /***/ }),
 /* 26 */
-/*!****************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/pages.json ***!
-  \****************************************/
+/*!*******************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/pages.json ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -9625,9 +9625,9 @@ function normalizeComponent (
 
 /***/ }),
 /* 35 */
-/*!******************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uni.promisify.adaptor.js ***!
-  \******************************************************/
+/*!*********************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uni.promisify.adaptor.js ***!
+  \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9648,9 +9648,9 @@ uni.addInterceptor({
 
 /***/ }),
 /* 36 */
-/*!***********************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/index.js ***!
-  \***********************************************/
+/*!**************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/index.js ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9737,9 +9737,9 @@ exports.default = _default;
 
 /***/ }),
 /* 37 */
-/*!**********************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/mixin/mixin.js ***!
-  \**********************************************************/
+/*!*************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/mixin/mixin.js ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9905,9 +9905,9 @@ exports.default = _default;
 
 /***/ }),
 /* 38 */
-/*!************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/mixin/mpMixin.js ***!
-  \************************************************************/
+/*!***************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/mixin/mpMixin.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9928,9 +9928,9 @@ exports.default = _default;
 
 /***/ }),
 /* 39 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/index.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/index.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9948,9 +9948,9 @@ exports.default = _default;
 
 /***/ }),
 /* 40 */
-/*!************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/core/Request.js ***!
-  \************************************************************************/
+/*!***************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/core/Request.js ***!
+  \***************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10154,9 +10154,9 @@ exports.default = Request;
 
 /***/ }),
 /* 41 */
-/*!********************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
-  \********************************************************************************/
+/*!***********************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10176,9 +10176,9 @@ exports.default = _default;
 
 /***/ }),
 /* 42 */
-/*!**************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/adapters/index.js ***!
-  \**************************************************************************/
+/*!*****************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/adapters/index.js ***!
+  \*****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10257,9 +10257,9 @@ exports.default = _default;
 
 /***/ }),
 /* 43 */
-/*!****************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/helpers/buildURL.js ***!
-  \****************************************************************************/
+/*!*******************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/helpers/buildURL.js ***!
+  \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10327,9 +10327,9 @@ function buildURL(url, params) {
 
 /***/ }),
 /* 44 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/utils.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/utils.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10480,9 +10480,9 @@ function isUndefined(val) {
 
 /***/ }),
 /* 45 */
-/*!******************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/core/buildFullPath.js ***!
-  \******************************************************************************/
+/*!*********************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/core/buildFullPath.js ***!
+  \*********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10514,9 +10514,9 @@ function buildFullPath(baseURL, requestedURL) {
 
 /***/ }),
 /* 46 */
-/*!*********************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
-  \*********************************************************************************/
+/*!************************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
+  \************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10542,9 +10542,9 @@ function isAbsoluteURL(url) {
 
 /***/ }),
 /* 47 */
-/*!*******************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
-  \*******************************************************************************/
+/*!**********************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
+  \**********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10568,9 +10568,9 @@ function combineURLs(baseURL, relativeURL) {
 
 /***/ }),
 /* 48 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/core/settle.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/core/settle.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10600,9 +10600,9 @@ function settle(resolve, reject, response) {
 
 /***/ }),
 /* 49 */
-/*!***********************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
-  \***********************************************************************************/
+/*!**************************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
+  \**************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10664,9 +10664,9 @@ exports.default = _default;
 
 /***/ }),
 /* 50 */
-/*!****************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/core/mergeConfig.js ***!
-  \****************************************************************************/
+/*!*******************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/core/mergeConfig.js ***!
+  \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10740,9 +10740,9 @@ exports.default = _default;
 
 /***/ }),
 /* 51 */
-/*!*************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/core/defaults.js ***!
-  \*************************************************************************/
+/*!****************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/core/defaults.js ***!
+  \****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10772,9 +10772,9 @@ exports.default = _default;
 
 /***/ }),
 /* 52 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/luch-request/utils/clone.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/luch-request/utils/clone.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11020,7 +11020,7 @@ var clone = function () {
 }();
 var _default = clone;
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../download/HBuilderX.3.99.2023122611/HBuilderX/plugins/uniapp-cli/node_modules/buffer/index.js */ 53).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../download/HBuilderX.3.99.2023122611/HBuilderX/plugins/uniapp-cli/node_modules/buffer/index.js */ 53).Buffer))
 
 /***/ }),
 /* 53 */
@@ -13096,9 +13096,9 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 /* 57 */
-/*!*********************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/util/route.js ***!
-  \*********************************************************/
+/*!************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/util/route.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13658,9 +13658,9 @@ module.exports = _asyncToGenerator, module.exports.__esModule = true, module.exp
 
 /***/ }),
 /* 61 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/function/colorGradient.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/function/colorGradient.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13813,9 +13813,9 @@ exports.default = _default;
 
 /***/ }),
 /* 62 */
-/*!************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/function/test.js ***!
-  \************************************************************/
+/*!***************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/function/test.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14118,9 +14118,9 @@ exports.default = _default;
 
 /***/ }),
 /* 63 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/function/debounce.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/function/debounce.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14165,9 +14165,9 @@ exports.default = _default;
 
 /***/ }),
 /* 64 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/function/throttle.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/function/throttle.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14214,9 +14214,9 @@ exports.default = _default;
 
 /***/ }),
 /* 65 */
-/*!*************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/function/index.js ***!
-  \*************************************************************/
+/*!****************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/function/index.js ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15015,9 +15015,9 @@ exports.default = _default;
 
 /***/ }),
 /* 66 */
-/*!*************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/function/digit.js ***!
-  \*************************************************************/
+/*!****************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/function/digit.js ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15234,9 +15234,9 @@ module.exports = _toArray, module.exports.__esModule = true, module.exports["def
 
 /***/ }),
 /* 68 */
-/*!************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/config.js ***!
-  \************************************************************/
+/*!***************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/config.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15278,9 +15278,9 @@ exports.default = _default;
 
 /***/ }),
 /* 69 */
-/*!***********************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props.js ***!
-  \***********************************************************/
+/*!**************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15390,9 +15390,9 @@ exports.default = _default;
 
 /***/ }),
 /* 70 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/actionSheet.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/actionSheet.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15434,9 +15434,9 @@ exports.default = _default;
 
 /***/ }),
 /* 71 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/album.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/album.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15478,9 +15478,9 @@ exports.default = _default;
 
 /***/ }),
 /* 72 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/alert.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/alert.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15517,9 +15517,9 @@ exports.default = _default;
 
 /***/ }),
 /* 73 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/avatar.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/avatar.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15562,9 +15562,9 @@ exports.default = _default;
 
 /***/ }),
 /* 74 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/avatarGroup.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/avatarGroup.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15604,9 +15604,9 @@ exports.default = _default;
 
 /***/ }),
 /* 75 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/backtop.js ***!
-  \*******************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/backtop.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15650,9 +15650,9 @@ exports.default = _default;
 
 /***/ }),
 /* 76 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/badge.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/badge.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15696,9 +15696,9 @@ exports.default = _default;
 
 /***/ }),
 /* 77 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/button.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/button.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15755,9 +15755,9 @@ exports.default = _default;
 
 /***/ }),
 /* 78 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/calendar.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/calendar.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15818,9 +15818,9 @@ exports.default = _default;
 
 /***/ }),
 /* 79 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/carKeyboard.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/carKeyboard.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15850,9 +15850,9 @@ exports.default = _default;
 
 /***/ }),
 /* 80 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/cell.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/cell.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15902,9 +15902,9 @@ exports.default = _default;
 
 /***/ }),
 /* 81 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/cellGroup.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/cellGroup.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15936,9 +15936,9 @@ exports.default = _default;
 
 /***/ }),
 /* 82 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/checkbox.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/checkbox.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15980,9 +15980,9 @@ exports.default = _default;
 
 /***/ }),
 /* 83 */
-/*!*************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/checkboxGroup.js ***!
-  \*************************************************************************/
+/*!****************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/checkboxGroup.js ***!
+  \****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16028,9 +16028,9 @@ exports.default = _default;
 
 /***/ }),
 /* 84 */
-/*!**************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/circleProgress.js ***!
-  \**************************************************************************/
+/*!*****************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/circleProgress.js ***!
+  \*****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16060,9 +16060,9 @@ exports.default = _default;
 
 /***/ }),
 /* 85 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/code.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/code.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16097,9 +16097,9 @@ exports.default = _default;
 
 /***/ }),
 /* 86 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/codeInput.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/codeInput.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16143,9 +16143,9 @@ exports.default = _default;
 
 /***/ }),
 /* 87 */
-/*!***************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/col.js ***!
-  \***************************************************************/
+/*!******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/col.js ***!
+  \******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16179,9 +16179,9 @@ exports.default = _default;
 
 /***/ }),
 /* 88 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/collapse.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/collapse.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16213,9 +16213,9 @@ exports.default = _default;
 
 /***/ }),
 /* 89 */
-/*!************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/collapseItem.js ***!
-  \************************************************************************/
+/*!***************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/collapseItem.js ***!
+  \***************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16255,9 +16255,9 @@ exports.default = _default;
 
 /***/ }),
 /* 90 */
-/*!************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/columnNotice.js ***!
-  \************************************************************************/
+/*!***************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/columnNotice.js ***!
+  \***************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16296,9 +16296,9 @@ exports.default = _default;
 
 /***/ }),
 /* 91 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/countDown.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/countDown.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16331,9 +16331,9 @@ exports.default = _default;
 
 /***/ }),
 /* 92 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/countTo.js ***!
-  \*******************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/countTo.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16373,9 +16373,9 @@ exports.default = _default;
 
 /***/ }),
 /* 93 */
-/*!**************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/datetimePicker.js ***!
-  \**************************************************************************/
+/*!*****************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/datetimePicker.js ***!
+  \*****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16428,9 +16428,9 @@ exports.default = _default;
 
 /***/ }),
 /* 94 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/divider.js ***!
-  \*******************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/divider.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16467,9 +16467,9 @@ exports.default = _default;
 
 /***/ }),
 /* 95 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/empty.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/empty.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16509,9 +16509,9 @@ exports.default = _default;
 
 /***/ }),
 /* 96 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/form.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/form.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16554,9 +16554,9 @@ exports.default = _default;
 
 /***/ }),
 /* 97 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/formItem.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/formItem.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16594,9 +16594,9 @@ exports.default = _default;
 
 /***/ }),
 /* 98 */
-/*!***************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/gap.js ***!
-  \***************************************************************/
+/*!******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/gap.js ***!
+  \******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16630,9 +16630,9 @@ exports.default = _default;
 
 /***/ }),
 /* 99 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/grid.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/grid.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16664,9 +16664,9 @@ exports.default = _default;
 
 /***/ }),
 /* 100 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/gridItem.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/gridItem.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16697,9 +16697,9 @@ exports.default = _default;
 
 /***/ }),
 /* 101 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/icon.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/icon.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16749,9 +16749,9 @@ exports.default = _default;
 
 /***/ }),
 /* 102 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/image.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/image.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16796,9 +16796,9 @@ exports.default = _default;
 
 /***/ }),
 /* 103 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/indexAnchor.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/indexAnchor.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16832,9 +16832,9 @@ exports.default = _default;
 
 /***/ }),
 /* 104 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/indexList.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/indexList.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16870,9 +16870,9 @@ exports.default = _default;
 
 /***/ }),
 /* 105 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/input.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/input.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16935,9 +16935,9 @@ exports.default = _default;
 
 /***/ }),
 /* 106 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/keyboard.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/keyboard.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16982,9 +16982,9 @@ exports.default = _default;
 
 /***/ }),
 /* 107 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/line.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/line.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17019,9 +17019,9 @@ exports.default = _default;
 
 /***/ }),
 /* 108 */
-/*!************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/lineProgress.js ***!
-  \************************************************************************/
+/*!***************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/lineProgress.js ***!
+  \***************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17055,9 +17055,9 @@ exports.default = _default;
 
 /***/ }),
 /* 109 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/link.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/link.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17097,9 +17097,9 @@ exports.default = _default;
 
 /***/ }),
 /* 110 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/list.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/list.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17142,9 +17142,9 @@ exports.default = _default;
 
 /***/ }),
 /* 111 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/listItem.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/listItem.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17174,9 +17174,9 @@ exports.default = _default;
 
 /***/ }),
 /* 112 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/loadingIcon.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/loadingIcon.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17220,9 +17220,9 @@ exports.default = _default;
 
 /***/ }),
 /* 113 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/loadingPage.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/loadingPage.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17260,9 +17260,9 @@ exports.default = _default;
 
 /***/ }),
 /* 114 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/loadmore.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/loadmore.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17309,9 +17309,9 @@ exports.default = _default;
 
 /***/ }),
 /* 115 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/modal.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/modal.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17356,9 +17356,9 @@ exports.default = _default;
 
 /***/ }),
 /* 116 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/navbar.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/navbar.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17405,9 +17405,9 @@ exports.default = _default;
 
 /***/ }),
 /* 117 */
-/*!***********************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/color.js ***!
-  \***********************************************************/
+/*!**************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/color.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17438,9 +17438,9 @@ exports.default = _default;
 
 /***/ }),
 /* 118 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/noNetwork.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/noNetwork.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17472,9 +17472,9 @@ exports.default = _default;
 
 /***/ }),
 /* 119 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/noticeBar.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/noticeBar.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17518,9 +17518,9 @@ exports.default = _default;
 
 /***/ }),
 /* 120 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/notify.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/notify.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17557,9 +17557,9 @@ exports.default = _default;
 
 /***/ }),
 /* 121 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/numberBox.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/numberBox.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17609,9 +17609,9 @@ exports.default = _default;
 
 /***/ }),
 /* 122 */
-/*!**************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/numberKeyboard.js ***!
-  \**************************************************************************/
+/*!*****************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/numberKeyboard.js ***!
+  \*****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17643,9 +17643,9 @@ exports.default = _default;
 
 /***/ }),
 /* 123 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/overlay.js ***!
-  \*******************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/overlay.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17678,9 +17678,9 @@ exports.default = _default;
 
 /***/ }),
 /* 124 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/parse.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/parse.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17717,9 +17717,9 @@ exports.default = _default;
 
 /***/ }),
 /* 125 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/picker.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/picker.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17767,9 +17767,9 @@ exports.default = _default;
 
 /***/ }),
 /* 126 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/popup.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/popup.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17813,9 +17813,9 @@ exports.default = _default;
 
 /***/ }),
 /* 127 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/radio.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/radio.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17857,9 +17857,9 @@ exports.default = _default;
 
 /***/ }),
 /* 128 */
-/*!**********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/radioGroup.js ***!
-  \**********************************************************************/
+/*!*************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/radioGroup.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17904,9 +17904,9 @@ exports.default = _default;
 
 /***/ }),
 /* 129 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/rate.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/rate.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17947,9 +17947,9 @@ exports.default = _default;
 
 /***/ }),
 /* 130 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/readMore.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/readMore.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17986,9 +17986,9 @@ exports.default = _default;
 
 /***/ }),
 /* 131 */
-/*!***************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/row.js ***!
-  \***************************************************************/
+/*!******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/row.js ***!
+  \******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18020,9 +18020,9 @@ exports.default = _default;
 
 /***/ }),
 /* 132 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/rowNotice.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/rowNotice.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18058,9 +18058,9 @@ exports.default = _default;
 
 /***/ }),
 /* 133 */
-/*!**********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/scrollList.js ***!
-  \**********************************************************************/
+/*!*************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/scrollList.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18095,9 +18095,9 @@ exports.default = _default;
 
 /***/ }),
 /* 134 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/search.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/search.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18153,9 +18153,9 @@ exports.default = _default;
 
 /***/ }),
 /* 135 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/section.js ***!
-  \*******************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/section.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18194,9 +18194,9 @@ exports.default = _default;
 
 /***/ }),
 /* 136 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/skeleton.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/skeleton.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18236,9 +18236,9 @@ exports.default = _default;
 
 /***/ }),
 /* 137 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/slider.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/slider.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18278,9 +18278,9 @@ exports.default = _default;
 
 /***/ }),
 /* 138 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/statusBar.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/statusBar.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18310,9 +18310,9 @@ exports.default = _default;
 
 /***/ }),
 /* 139 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/steps.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/steps.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18348,9 +18348,9 @@ exports.default = _default;
 
 /***/ }),
 /* 140 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/stepsItem.js ***!
-  \*********************************************************************/
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/stepsItem.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18383,9 +18383,9 @@ exports.default = _default;
 
 /***/ }),
 /* 141 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/sticky.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/sticky.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18420,9 +18420,9 @@ exports.default = _default;
 
 /***/ }),
 /* 142 */
-/*!**********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/subsection.js ***!
-  \**********************************************************************/
+/*!*************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/subsection.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18460,9 +18460,9 @@ exports.default = _default;
 
 /***/ }),
 /* 143 */
-/*!***********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/swipeAction.js ***!
-  \***********************************************************************/
+/*!**************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/swipeAction.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18492,9 +18492,9 @@ exports.default = _default;
 
 /***/ }),
 /* 144 */
-/*!***************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/swipeActionItem.js ***!
-  \***************************************************************************/
+/*!******************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/swipeActionItem.js ***!
+  \******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18530,9 +18530,9 @@ exports.default = _default;
 
 /***/ }),
 /* 145 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/swiper.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/swiper.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18587,9 +18587,9 @@ exports.default = _default;
 
 /***/ }),
 /* 146 */
-/*!****************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/swipterIndicator.js ***!
-  \****************************************************************************/
+/*!*******************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/swipterIndicator.js ***!
+  \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18623,9 +18623,9 @@ exports.default = _default;
 
 /***/ }),
 /* 147 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/switch.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/switch.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18664,9 +18664,9 @@ exports.default = _default;
 
 /***/ }),
 /* 148 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/tabbar.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/tabbar.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18703,9 +18703,9 @@ exports.default = _default;
 
 /***/ }),
 /* 149 */
-/*!**********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/tabbarItem.js ***!
-  \**********************************************************************/
+/*!*************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/tabbarItem.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18740,9 +18740,9 @@ exports.default = _default;
 
 /***/ }),
 /* 150 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/tabs.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/tabs.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18797,9 +18797,9 @@ exports.default = _default;
 
 /***/ }),
 /* 151 */
-/*!***************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/tag.js ***!
-  \***************************************************************/
+/*!******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/tag.js ***!
+  \******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18843,9 +18843,9 @@ exports.default = _default;
 
 /***/ }),
 /* 152 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/text.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/text.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18899,9 +18899,9 @@ exports.default = _default;
 
 /***/ }),
 /* 153 */
-/*!********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/textarea.js ***!
-  \********************************************************************/
+/*!***********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/textarea.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18952,9 +18952,9 @@ exports.default = _default;
 
 /***/ }),
 /* 154 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/toast.js ***!
-  \*****************************************************************/
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/toast.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18998,9 +18998,9 @@ exports.default = _default;
 
 /***/ }),
 /* 155 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/toolbar.js ***!
-  \*******************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/toolbar.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19035,9 +19035,9 @@ exports.default = _default;
 
 /***/ }),
 /* 156 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/tooltip.js ***!
-  \*******************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/tooltip.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19079,9 +19079,9 @@ exports.default = _default;
 
 /***/ }),
 /* 157 */
-/*!**********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/transition.js ***!
-  \**********************************************************************/
+/*!*************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/transition.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19114,9 +19114,9 @@ exports.default = _default;
 
 /***/ }),
 /* 158 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/props/upload.js ***!
-  \******************************************************************/
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/props/upload.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19173,9 +19173,9 @@ exports.default = _default;
 
 /***/ }),
 /* 159 */
-/*!************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/config/zIndex.js ***!
-  \************************************************************/
+/*!***************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/config/zIndex.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19209,9 +19209,9 @@ exports.default = _default;
 
 /***/ }),
 /* 160 */
-/*!****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/function/platform.js ***!
-  \****************************************************************/
+/*!*******************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/function/platform.js ***!
+  \*******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19283,10 +19283,248 @@ exports.default = _default;
 /* 203 */,
 /* 204 */,
 /* 205 */,
-/* 206 */
-/*!*****************************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uni_modules/bt-cropper/components/bt-cropper/utils/tools.js ***!
-  \*****************************************************************************************/
+/* 206 */,
+/* 207 */,
+/* 208 */,
+/* 209 */,
+/* 210 */,
+/* 211 */,
+/* 212 */,
+/* 213 */,
+/* 214 */,
+/* 215 */,
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */,
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */,
+/* 237 */,
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */,
+/* 243 */,
+/* 244 */,
+/* 245 */,
+/* 246 */
+/*!******************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-checkbox-group/props.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    // 标识符
+    name: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.name
+    },
+    // 绑定的值
+    value: {
+      type: Array,
+      default: uni.$u.props.checkboxGroup.value
+    },
+    // 形状，circle-圆形，square-方形
+    shape: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.shape
+    },
+    // 是否禁用全部checkbox
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.disabled
+    },
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.activeColor
+    },
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.inactiveColor
+    },
+    // 整个组件的尺寸，默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.size
+    },
+    // 布局方式，row-横向，column-纵向
+    placement: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.placement
+    },
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.labelSize
+    },
+    // label的字体颜色
+    labelColor: {
+      type: [String],
+      default: uni.$u.props.checkboxGroup.labelColor
+    },
+    // 是否禁止点击文本操作
+    labelDisabled: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.labelDisabled
+    },
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.iconColor
+    },
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.iconSize
+    },
+    // 勾选图标的对齐方式，left-左边，right-右边
+    iconPlacement: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.iconPlacement
+    },
+    // 竖向配列时，是否显示下划线
+    borderBottom: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.borderBottom
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 247 */,
+/* 248 */,
+/* 249 */,
+/* 250 */,
+/* 251 */,
+/* 252 */,
+/* 253 */,
+/* 254 */
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-checkbox/props.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    // checkbox的名称
+    name: {
+      type: [String, Number, Boolean],
+      default: uni.$u.props.checkbox.name
+    },
+    // 形状，square为方形，circle为圆型
+    shape: {
+      type: String,
+      default: uni.$u.props.checkbox.shape
+    },
+    // 整体的大小
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.size
+    },
+    // 是否默认选中
+    checked: {
+      type: Boolean,
+      default: uni.$u.props.checkbox.checked
+    },
+    // 是否禁用
+    disabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.checkbox.disabled
+    },
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.checkbox.activeColor
+    },
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.checkbox.inactiveColor
+    },
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.iconSize
+    },
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.checkbox.iconColor
+    },
+    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
+    label: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.label
+    },
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.labelSize
+    },
+    // label的颜色
+    labelColor: {
+      type: String,
+      default: uni.$u.props.checkbox.labelColor
+    },
+    // 是否禁止点击提示语选中复选框
+    labelDisabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.checkbox.labelDisabled
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 255 */,
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */
+/*!********************************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uni_modules/bt-cropper/components/bt-cropper/utils/tools.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19347,19 +19585,19 @@ function parseUnit(size) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 207 */,
-/* 208 */,
-/* 209 */,
-/* 210 */,
-/* 211 */,
-/* 212 */,
-/* 213 */,
-/* 214 */,
-/* 215 */,
-/* 216 */
-/*!***********************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/mixin/button.js ***!
-  \***********************************************************/
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */
+/*!**************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/mixin/button.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19386,10 +19624,10 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 217 */
-/*!*************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/mixin/openType.js ***!
-  \*************************************************************/
+/* 273 */
+/*!****************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/mixin/openType.js ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19428,10 +19666,10 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 218 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-button/props.js ***!
-  \*******************************************************************/
+/* 274 */
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-button/props.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19607,215 +19845,17 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 219 */,
-/* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */
-/*!***************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-checkbox-group/props.js ***!
-  \***************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    // 标识符
-    name: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.name
-    },
-    // 绑定的值
-    value: {
-      type: Array,
-      default: uni.$u.props.checkboxGroup.value
-    },
-    // 形状，circle-圆形，square-方形
-    shape: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.shape
-    },
-    // 是否禁用全部checkbox
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.disabled
-    },
-    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
-    activeColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.activeColor
-    },
-    // 未选中的颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.inactiveColor
-    },
-    // 整个组件的尺寸，默认px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.size
-    },
-    // 布局方式，row-横向，column-纵向
-    placement: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.placement
-    },
-    // label的字体大小，px单位
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.labelSize
-    },
-    // label的字体颜色
-    labelColor: {
-      type: [String],
-      default: uni.$u.props.checkboxGroup.labelColor
-    },
-    // 是否禁止点击文本操作
-    labelDisabled: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.labelDisabled
-    },
-    // 图标颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.iconColor
-    },
-    // 图标的大小，单位px
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.iconSize
-    },
-    // 勾选图标的对齐方式，left-左边，right-右边
-    iconPlacement: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.iconPlacement
-    },
-    // 竖向配列时，是否显示下划线
-    borderBottom: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.borderBottom
-    }
-  }
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 227 */,
-/* 228 */,
-/* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */
-/*!*********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-checkbox/props.js ***!
-  \*********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    // checkbox的名称
-    name: {
-      type: [String, Number, Boolean],
-      default: uni.$u.props.checkbox.name
-    },
-    // 形状，square为方形，circle为圆型
-    shape: {
-      type: String,
-      default: uni.$u.props.checkbox.shape
-    },
-    // 整体的大小
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.size
-    },
-    // 是否默认选中
-    checked: {
-      type: Boolean,
-      default: uni.$u.props.checkbox.checked
-    },
-    // 是否禁用
-    disabled: {
-      type: [String, Boolean],
-      default: uni.$u.props.checkbox.disabled
-    },
-    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
-    activeColor: {
-      type: String,
-      default: uni.$u.props.checkbox.activeColor
-    },
-    // 未选中的颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.checkbox.inactiveColor
-    },
-    // 图标的大小，单位px
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.iconSize
-    },
-    // 图标颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.checkbox.iconColor
-    },
-    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
-    label: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.label
-    },
-    // label的字体大小，px单位
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.labelSize
-    },
-    // label的颜色
-    labelColor: {
-      type: String,
-      default: uni.$u.props.checkbox.labelColor
-    },
-    // 是否禁止点击提示语选中复选框
-    labelDisabled: {
-      type: [String, Boolean],
-      default: uni.$u.props.checkbox.labelDisabled
-    }
-  }
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-form/props.js ***!
-  \*****************************************************************/
+/* 275 */,
+/* 276 */,
+/* 277 */,
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-form/props.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19875,10 +19915,10 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 243 */
-/*!*******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/util/async-validator.js ***!
-  \*******************************************************************/
+/* 283 */
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/util/async-validator.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19913,7 +19953,7 @@ function _extends() {
 var formatRegExp = /%[sdj%]/g;
 var warning = function warning() {}; // don't print warning message when in production env or node runtime
 
-if (typeof process !== 'undefined' && Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}) && "development" !== 'production' && typeof window !== 'undefined' && typeof document !== 'undefined') {
+if (typeof process !== 'undefined' && Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"铭牌识别系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}) && "development" !== 'production' && typeof window !== 'undefined' && typeof document !== 'undefined') {
   warning = function warning(type, errors) {
     if (typeof console !== 'undefined' && console.warn) {
       if (errors.every(function (e) {
@@ -21056,10 +21096,10 @@ Schema.warning = warning;
 Schema.messages = messages;
 var _default = Schema; // # sourceMappingURL=index.js.map
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../download/HBuilderX.3.99.2023122611/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 244)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../download/HBuilderX.3.99.2023122611/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 284)))
 
 /***/ }),
-/* 244 */
+/* 284 */
 /*!********************************************************!*\
   !*** ./node_modules/node-libs-browser/mock/process.js ***!
   \********************************************************/
@@ -21090,7 +21130,7 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 245);
+        if (!path) path = __webpack_require__(/*! path */ 285);
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -21103,7 +21143,7 @@ exports.features = {};
 
 
 /***/ }),
-/* 245 */
+/* 285 */
 /*!***********************************************!*\
   !*** ./node_modules/path-browserify/index.js ***!
   \***********************************************/
@@ -21413,18 +21453,18 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 244)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 284)))
 
 /***/ }),
-/* 246 */,
-/* 247 */,
-/* 248 */,
-/* 249 */,
-/* 250 */,
-/* 251 */
-/*!**********************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-form-item/props.js ***!
-  \**********************************************************************/
+/* 286 */,
+/* 287 */,
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */
+/*!*************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-form-item/props.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21487,17 +21527,17 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */
-/*!******************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-input/props.js ***!
-  \******************************************************************/
+/* 292 */,
+/* 293 */,
+/* 294 */,
+/* 295 */,
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-input/props.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21699,101 +21739,17 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 260 */,
-/* 261 */,
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */
-/*!*************************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-loading-icon/props.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    // 是否显示组件
-    show: {
-      type: Boolean,
-      default: uni.$u.props.loadingIcon.show
-    },
-    // 颜色
-    color: {
-      type: String,
-      default: uni.$u.props.loadingIcon.color
-    },
-    // 提示文字颜色
-    textColor: {
-      type: String,
-      default: uni.$u.props.loadingIcon.textColor
-    },
-    // 文字和图标是否垂直排列
-    vertical: {
-      type: Boolean,
-      default: uni.$u.props.loadingIcon.vertical
-    },
-    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
-    mode: {
-      type: String,
-      default: uni.$u.props.loadingIcon.mode
-    },
-    // 图标大小，单位默认px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.size
-    },
-    // 文字大小
-    textSize: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.textSize
-    },
-    // 文字内容
-    text: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.text
-    },
-    // 动画模式
-    timingFunction: {
-      type: String,
-      default: uni.$u.props.loadingIcon.timingFunction
-    },
-    // 动画执行周期时间
-    duration: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.duration
-    },
-    // mode=circle时的暗边颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.loadingIcon.inactiveColor
-    }
-  }
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 268 */,
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */,
-/* 273 */,
-/* 274 */,
-/* 275 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-icon/icons.js ***!
-  \*****************************************************************/
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */,
+/* 306 */,
+/* 307 */
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-icon/icons.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22021,10 +21977,10 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 276 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-icon/props.js ***!
-  \*****************************************************************/
+/* 308 */
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-icon/props.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22128,17 +22084,101 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 277 */,
-/* 278 */,
-/* 279 */,
-/* 280 */,
-/* 281 */,
-/* 282 */,
-/* 283 */,
-/* 284 */
-/*!*****************************************************************!*\
-  !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-line/props.js ***!
-  \*****************************************************************/
+/* 309 */,
+/* 310 */,
+/* 311 */,
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */
+/*!****************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-loading-icon/props.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    // 是否显示组件
+    show: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.show
+    },
+    // 颜色
+    color: {
+      type: String,
+      default: uni.$u.props.loadingIcon.color
+    },
+    // 提示文字颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.textColor
+    },
+    // 文字和图标是否垂直排列
+    vertical: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.vertical
+    },
+    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
+    mode: {
+      type: String,
+      default: uni.$u.props.loadingIcon.mode
+    },
+    // 图标大小，单位默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.size
+    },
+    // 文字大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.textSize
+    },
+    // 文字内容
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.text
+    },
+    // 动画模式
+    timingFunction: {
+      type: String,
+      default: uni.$u.props.loadingIcon.timingFunction
+    },
+    // 动画执行周期时间
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.duration
+    },
+    // mode=circle时的暗边颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.inactiveColor
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 317 */,
+/* 318 */,
+/* 319 */,
+/* 320 */,
+/* 321 */,
+/* 322 */,
+/* 323 */,
+/* 324 */
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-line/props.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

@@ -1,6 +1,7 @@
 {
-  "navigationBarTitleText": "",
+  "navigationBarTitleText": "结果",
   "enablePullDownRefresh": false,
   "navigationBarBackgroundColor": "#fff",
+  "navigationStyle": "default",
   "usingComponents": {}
 }

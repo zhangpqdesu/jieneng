@@ -13,21 +13,21 @@
 		
 		<view class="selectAll">
 			<!-- 扫描 -->
-			<view class="select">
+			<view class="select" @click="clickScan">
 				<view class="block" style="background-color: #DEEEFF;">
 					<image src="/static/scan-select.png" mode="aspectFit" class="scanSelect"></image>
 				</view>
 				<text class="text">扫描</text>
 			</view>
 			<!-- 照片 -->
-			<view class="select">
+			<view class="select" @click="clickPhoto">
 				<view class="block" style="background-color: #FFECE8;">
 					<image src="/static/photo.png" mode="aspectFit" class="scanSelect"></image>
 				</view>
 				<text class="text">照片</text>
 			</view>
 			<!-- 文件 -->
-			<view class="select">
+			<view class="select" @click="clickFile">
 				<view class="block" style="background-color: #FFF5D7;">
 					<image src="/static/file.png" mode="aspectFit" class="scanSelect"></image>
 				</view>
@@ -54,13 +54,69 @@
 	export default {
 		data() {
 			return {
-				searchContent: ""
+				searchContent: "",
+				imageList: [],  // 用于存储已选择的图片信息
 			};
 		},
 		methods:{
 			modify(){
 				uni.navigateTo({
 					url:'/pages/company/company'
+				})
+			},
+			clickScan(){
+				uni.navigateTo({
+					url:'/pages/result/result'
+				})
+			},
+			clickPhoto() {
+			    uni.chooseImage({
+			        count: 9,  // 最多选择9张图片
+			        sizeType: ['compressed'],
+			        sourceType: ['album', 'camera'],
+			        success: (res) => {
+						console.log('选择成功')
+						// 将选择的图片信息添加到imageList中
+						this.imageList = this.imageList.concat(res.tempFilePaths.map(path => ({
+							url: path,
+							file: { path },  // 创建一个包含 path 的对象
+						})));
+						// 上传图片
+						this.imageList.forEach((image, index) => {
+							uni.uploadFile({
+								url: 'http://127.0.0.1:5000',  // 后端接口地址
+								filePath: image.file.path,  // 使用 path 属性
+								name: 'file',
+								formData: {
+						            // 可以添加其他参数
+								},
+								success: (res) => {
+						            // 上传成功后的处理
+						            console.log(`第${index + 1}张图片上传成功`, res);
+						            // 这里可以根据后端返回的数据进行相应的处理
+									uni.navigateTo({
+										url:'/pages/result/result'
+									})
+								},
+								fail: (err) => {
+						            console.error(`第${index + 1}张图片上传失败`, err);
+								},
+							});
+						});
+			        },
+			        fail: (err) => {
+			           console.error('选择图片失败', err);
+			        },
+			    });
+			},
+			clickFile(){
+				uni.navigateTo({
+					url:'/pages/handleFile/handleFile'
+				})
+			},
+			clickHistory(){
+				uni.navigateTo({
+					url:'/pages/checkHistoryRecords/checkHistoryRecords'
 				})
 			}
 		}

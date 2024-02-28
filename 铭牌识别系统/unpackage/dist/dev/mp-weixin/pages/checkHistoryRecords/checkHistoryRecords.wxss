@@ -1,0 +1,53 @@
+
+.user-info.data-v-190d55f4 {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+}
+.user-avatar.data-v-190d55f4 {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+}
+.user-name.data-v-190d55f4 {
+  font-size: 32rpx;
+  color: #333;
+  margin-left: 20rpx;
+}
+.file-info.data-v-190d55f4 {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.btn.data-v-190d55f4 {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.item.data-v-190d55f4 {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.item-image.data-v-190d55f4 {
+  width: 100px;
+  height: 100px;
+  margin-right: 10px;
+}
+.item-details.data-v-190d55f4 {
+  display: flex;
+  flex-direction: column;
+}
+.record-place.data-v-190d55f4,
+.type.data-v-190d55f4,
+.energy-consumption.data-v-190d55f4,
+.record-time.data-v-190d55f4 {
+  margin-bottom: 5px;
+}
+
+

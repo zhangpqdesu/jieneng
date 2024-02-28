@@ -1,0 +1,17 @@
+
+.user-info.data-v-c8e6bfb4 {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+}
+.user-avatar.data-v-c8e6bfb4 {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+}
+.user-name.data-v-c8e6bfb4 {
+  font-size: 32rpx;
+  color: #333;
+  margin-left: 20rpx;
+}
+

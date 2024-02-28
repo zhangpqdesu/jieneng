@@ -5,7 +5,11 @@
     "pages/camera/camera",
     "pages/home/home",
     "pages/register/register",
-    "pages/company/company"
+    "pages/company/company",
+    "pages/handleFile/handleFile",
+    "pages/checkHistoryRecords/checkHistoryRecords",
+    "pages/personalCenter/personalCenter",
+    "pages/conTactUs/conTactUs"
   ],
   "subPackages": [],
   "window": {
@@ -32,7 +36,7 @@
         "text": "扫描"
       },
       {
-        "pagePath": "pages/result/result",
+        "pagePath": "pages/personalCenter/personalCenter",
         "iconPath": "static/person.png",
         "selectedIconPath": "static/person1.png",
         "text": "个人中心"
