@@ -218,11 +218,11 @@ var _default = {
         name: "",
         phone: "",
         workplace: "",
-        authority: "",
         password: ""
       },
       options: ["普通用户", "管理员"],
-      selectValue: 0
+      selectValue: 0,
+      checked: false
     };
   },
   methods: {
@@ -231,9 +231,53 @@ var _default = {
         url: '/pages/index/index'
       });
     },
+    clickChecked: function clickChecked() {
+      this.checked = !this.checked;
+    },
     onSubmit: function onSubmit() {
-      uni.navigateTo({
-        url: '/pages/index/index'
+      console.log("check", this.checked);
+      // 检查是否同意用户协议
+      if (!this.checked) {
+        uni.showToast({
+          title: '请同意用户协议',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
+      ;
+      console.log("注册请求数据", this.form);
+      // 构造请求函数
+      var requestData = {
+        name: this.form.name,
+        phone: this.form.phone,
+        workplace: this.form.workplace,
+        identity: this.options[this.selectValue],
+        password: this.form.password
+      };
+
+      // 发送POST请求
+      uni.request({
+        url: 'http://127.0.0.1:5000/register',
+        method: 'POST',
+        data: requestData,
+        success: function success(res) {
+          console.log(res.data);
+          uni.showToast({
+            title: '注册成功',
+            icon: 'success'
+          });
+          uni.navigateTo({
+            url: '/pages/index/index'
+          });
+        },
+        fail: function fail(err) {
+          console.error(err);
+          uni.showToast({
+            title: '注册失败',
+            icon: 'error'
+          });
+        }
       });
     },
     pickerChange: function pickerChange(e) {

@@ -34,7 +34,7 @@
 				<text class="text">文件</text>
 			</view>
 			<!-- 历史列表 -->
-			<view class="select">
+			<view class="select" @click="clickHistory">
 				<view class="block" style="background-color: #E7F6EC;">
 					<image src="/static/history.png" mode="aspectFit" class="scanSelect"></image>
 				</view>
@@ -65,8 +65,8 @@
 				})
 			},
 			clickScan(){
-				uni.navigateTo({
-					url:'/pages/result/result'
+				uni.switchTab({
+					url:'/pages/camera/camera'
 				})
 			},
 			clickPhoto() {
@@ -84,7 +84,7 @@
 						// 上传图片
 						this.imageList.forEach((image, index) => {
 							uni.uploadFile({
-								url: 'http://127.0.0.1:5000',  // 后端接口地址
+								url: 'http://127.0.0.1:5000/upload',  // 后端接口地址
 								filePath: image.file.path,  // 使用 path 属性
 								name: 'file',
 								formData: {

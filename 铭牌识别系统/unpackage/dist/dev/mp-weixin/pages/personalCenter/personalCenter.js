@@ -237,6 +237,11 @@ var _default = {
       uni.navigateTo({
         url: '/pages/conTactUs/conTactUs' // 假设联系我们页面的路径为 '/pages/contactUs/contactUs'
       });
+    },
+    returnIndex: function returnIndex() {
+      uni.navigateTo({
+        url: '/pages/index/index'
+      });
     }
   }
 };

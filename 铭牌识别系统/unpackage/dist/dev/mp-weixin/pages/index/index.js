@@ -163,10 +163,12 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
 //
 //
 //
@@ -224,7 +226,7 @@ exports.default = void 0;
 //
 var _default = {
   data: function data() {
-    return {
+    return (0, _defineProperty2.default)({
       selectArr: [{
         id: 1,
         select: "账号登录"
@@ -241,7 +243,7 @@ var _default = {
       },
       checked: false,
       state: true
-    };
+    }, "checked", false);
   },
   onLoad: function onLoad() {},
   methods: {
@@ -255,10 +257,53 @@ var _default = {
       this.selectIndex = e;
       this.state = !this.state;
     },
+    clickChecked: function clickChecked() {
+      this.checked = !this.checked;
+    },
     onSubmit: function onSubmit() {
+      if (!this.checked) {
+        uni.showToast({
+          title: '请同意用户协议',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
+      ;
       console.log(this.message);
-      uni.switchTab({
-        url: '/pages/home/home'
+      uni.request({
+        url: 'http://127.0.0.1:5000/login',
+        method: 'POST',
+        data: {
+          name: this.message.username,
+          password: this.message.password
+        },
+        success: function success(res) {
+          console.log('连接成功', res);
+          // 如果登录成功，再进行页面跳转
+          if (res.data.message === '登录成功') {
+            console.log(res.data.message);
+            uni.showToast({
+              title: res.data.message,
+              icon: 'success',
+              duration: 5000,
+              success: function success() {
+                uni.switchTab({
+                  url: '/pages/home/home'
+                });
+              }
+            });
+          } else {
+            uni.showToast({
+              title: res.data.error,
+              icon: 'error',
+              duration: 2000
+            });
+          }
+        },
+        fail: function fail(err) {
+          console.error('错误', err);
+        }
       });
     },
     selected: function selected() {

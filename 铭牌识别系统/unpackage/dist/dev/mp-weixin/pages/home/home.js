@@ -208,8 +208,8 @@ var _default = {
       });
     },
     clickScan: function clickScan() {
-      uni.navigateTo({
-        url: '/pages/result/result'
+      uni.switchTab({
+        url: '/pages/camera/camera'
       });
     },
     clickPhoto: function clickPhoto() {
@@ -233,7 +233,7 @@ var _default = {
           // 上传图片
           _this.imageList.forEach(function (image, index) {
             uni.uploadFile({
-              url: 'http://127.0.0.1:5000',
+              url: 'http://127.0.0.1:5000/upload',
               // 后端接口地址
               filePath: image.file.path,
               // 使用 path 属性
