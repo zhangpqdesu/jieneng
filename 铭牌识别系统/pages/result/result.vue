@@ -13,15 +13,14 @@
 				<view class="content">主轴流量:<input class="input" v-model="list.flow" /></view>
 				<view class="content">滞止压力:<input class="input" v-model="list.press" />V</view>
 				<view class="content">修正系数:<input class="input" v-model="list.correction" /></view>
-				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>
-				<view class="content">效率:<input class="input" v-model="list.efficiency" /></view>
+				<view class="content">额定功率:<input class="input" v-model="list.feng_power" />kW</view>
+				<view class="content">效率:<input class="input" v-model="list.feng_efficiency" /></view>
 			</view>
 			<view class="box2" v-else-if="typeIndex==1">
-				<view class="content">主轴转速:<input class="input" v-model="list.rpm" />r/s</view>
-				<view class="content">主轴流量:<input class="input" v-model="list.flow" /></view>
-				<view class="content">滞止压力:<input class="input" v-model="list.press" />V</view>
-				<view class="content">修正系数:<input class="input" v-model="list.correction" /></view>
-				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>
+				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
+				<view class="content">效率（%）:<input class="input" v-model="list.efficiency" /></view>
+				<view class="content">额定功率:<input class="input" v-model="list.power" />V</view>
+				
 			</view>
 			<view class="box2" v-else>
 				<view class="content">主轴转速:<input class="input" v-model="list.rpm" />r/s</view>
@@ -54,6 +53,28 @@
 
 <script>
 	export default {
+		mounted() {
+		    // 在 mounted 钩子中获取 OCR 结果参数并展示
+		    var ocrResult = uni.getStorageSync('ocrResult');
+		    if (ocrResult) {
+		        // 展示 OCR 结果中的参数
+		        console.log('efficiency:', ocrResult.efficiency);
+		        console.log('power:', ocrResult.power);
+		        console.log('rotated_speed:', ocrResult.rotated_speed);
+		        this.list.efficiency = ocrResult.efficiency;
+		        this.list.power = ocrResult.power;
+		        this.list.rotated_speed = ocrResult.rotated_speed;
+				// 成功获取并展示 OCR 结果后删除缓存数据
+				uni.removeStorageSync('ocrResult');
+				console.log('缓存数据已删除');
+
+		    } else {
+		        console.error('未获取到 OCR 结果');
+		    }
+		},
+		onShow() {
+			uni.startPullDownRefresh();
+		},
 		data() {
 			return {
 				typeArr:[
@@ -63,17 +84,20 @@
 				],
 				typeIndex:0,
 				list:{
+					efficiency:"",
+					power:"",
+					rotated_speed:"",
 					rpm:"",
 					flow:"",
 					press:"",
 					correction:"",
 					power:"",
-					efficiency:"",
-					batch:"123",
-					grade:"123"
+					batch:"无",
+					grade:"三级"
 				}
 			};
 		},
+		
 		methods:{
 			clickType(e){
 				this.typeIndex=e

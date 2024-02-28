@@ -69,25 +69,59 @@ def ocr() -> Dict[str, Any]:
     file = request.files['image']
     img_bytes = file.read()
     image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
+    
     res = OCR_MODEL.ocr(image)
-
-    # 筛选包含 "功率" 或 "型号" 的结果
-    filtered_results = [
-        item for item in res if re.search(r"YE|ZT250|kw|KW|kW|Kw|SCB|250|型号|功率|TVF|TYPE", item.get("text", ""))
-    ]
-
-    # 修改结果格式，并处理文本内容
-    for _one in filtered_results:
+    for _one in res:
         _one['position'] = _one['position'].tolist()
         if 'cropped_img' in _one:
             _one.pop('cropped_img')
-        # 处理文本内容，去掉中文字符
-        _one['processed_text'] = process_text(_one['text'])
 
-    # 返回给前端的数据
-    print("Modified Results:", filtered_results)
-    return jsonify(OcrResponse(results=filtered_results).dict())
+    text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]
+    
+    # 提取包含 'kW' 或 'KW' 的文本框，并用正则表达式提取数字
+    extracted_power = []
+    extracted_efficiency = []
+    extracted_rotated_speed = []
+    for text in text_array:
+        # 提取功率
+        match_power = re.search(r'(\d+)\s*[kK][Ww]', text, re.IGNORECASE)
+        if match_power:
+            extracted_power.append(int(match_power.group(1)))
+        elif 'kW' in text or 'KW' in text:
+            index = text_array.index(text)
+            if index > 0:
+                extracted_power.append(int(text_array[index - 1]))
 
+        # 提取效率
+        match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
+        if match_efficiency:
+            extracted_efficiency.append(float(match_efficiency.group(1)))
+        elif '%' in text:
+            index = text_array.index(text)
+            if index > 0:
+                extracted_efficiency.append(float(text_array[index - 1]))
+
+        match_speed = re.search(r'(\d+(?:\.\d+)?)\s*[rR]/?\s*m\s*i\s*n', text)
+        if match_speed:
+            extracted_rotated_speed.append(float(match_speed.group(1)))
+        elif 'rmin' in text.lower() or 'r/min' in text.lower():
+            index = text_array.index(text)
+            if index > 0:
+                extracted_rotated_speed.append(float(text_array[index - 1]))
+
+    print("功率：", extracted_power)
+    print("效率：", extracted_efficiency)
+    print("转速：", extracted_rotated_speed)
+    
+    # 构建返回给前端的字典
+    response_data = {
+        "power": extracted_power,
+        "efficiency": extracted_efficiency,
+        "rotated_speed": extracted_rotated_speed
+    }
+    
+    # 返回 JSON 响应
+    return jsonify(response_data)
 @app.route('/energy_consumption', methods=['POST'])
 def energy_consumption():
     try:
