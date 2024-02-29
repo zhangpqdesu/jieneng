@@ -77,20 +77,24 @@ def ocr() -> Dict[str, Any]:
             _one.pop('cropped_img')
 
     text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]
-    
+    print(text_array)
     # 提取包含 'kW' 或 'KW' 的文本框，并用正则表达式提取数字
     extracted_power = []
     extracted_efficiency = []
     extracted_rotated_speed = []
     for text in text_array:
         # 提取功率
-        match_power = re.search(r'(\d+)\s*[kK][Ww]', text, re.IGNORECASE)
+        match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)
+
         if match_power:
             extracted_power.append(int(match_power.group(1)))
         elif 'kW' in text or 'KW' in text:
+            # 尝试从前一个文本框中提取数字
             index = text_array.index(text)
             if index > 0:
-                extracted_power.append(int(text_array[index - 1]))
+                previous_text = text_array[index - 1]
+                if previous_text.isdigit():
+                    extracted_power.append(int(previous_text))
 
         # 提取效率
         match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
@@ -99,12 +103,13 @@ def ocr() -> Dict[str, Any]:
         elif '%' in text:
             index = text_array.index(text)
             if index > 0:
-                extracted_efficiency.append(float(text_array[index - 1]))
+                if 60<float(text_array[index - 1])<100:
+                    extracted_efficiency.append(float(text_array[index - 1]))
 
         match_speed = re.search(r'(\d+(?:\.\d+)?)\s*[rR]/?\s*m\s*i\s*n', text)
         if match_speed:
             extracted_rotated_speed.append(float(match_speed.group(1)))
-        elif 'rmin' in text.lower() or 'r/min' in text.lower():
+        elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rmir' in text.lower():
             index = text_array.index(text)
             if index > 0:
                 extracted_rotated_speed.append(float(text_array[index - 1]))
@@ -122,70 +127,8 @@ def ocr() -> Dict[str, Any]:
     
     # 返回 JSON 响应
     return jsonify(response_data)
-@app.route('/energy_consumption', methods=['POST'])
-def energy_consumption():
-    try:
-        # 获取OCR处理后的结果
-        ocr_results = request.get_json().get('results', [])
-        is_backward = True
-    
-        # 在这里使用OCR结果进行处理
-        for result in ocr_results.get('results', []):
-            if not isinstance(result, dict):
-                print(f"Received unexpected result: {result}")
-                continue
 
-            processed_text = result.get('processed_text', '')
-            
-            # 在这里判断型号并设置能效
-            if "YE3-160M1-2" in processed_text:
-                energy_consumption = "IE3"
-                is_backward = False
-                return jsonify({"energy_consumption": energy_consumption, "is_backward": is_backward})
-            elif "YE2-355M-8" in processed_text:
-                energy_consumption = "IE2"
-                is_backward = False
-                return jsonify({"energy_consumption": energy_consumption, "is_backward": is_backward})
-            elif "SCB10-1250" in processed_text:
-                energy_consumption="落后产品，不计算能效"
-                is_backward=True
-                return jsonify({"energy_consumption": energy_consumption, "is_backward": is_backward})
-            elif "ZT250VSD-10.4GHN 380/50" in processed_text:
-                energy_consumption="X级"
-                is_backward=False
-                return jsonify({"energy_consumption": energy_consumption, "is_backward": is_backward})
-            elif "YE3-315M-2" in processed_text:
-                energy_consumption="IE3"
-                is_backward=False
-                return jsonify({"energy_consumption": energy_consumption, "is_backward": is_backward})
-            elif "YE3-355L-6" in processed_text:
-                energy_consumption="IE3"
-                is_backward=False
-                return jsonify({"energy_consumption": energy_consumption, "is_backward": is_backward})
-            
-        # 如果未找到匹配的结果，返回默认值
-        return jsonify({"energy_consumption": "未知", "is_backward": "未知"})
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return jsonify({"error": "An error occurred"}), 500
 
-# 手动输入的能效计算
-@app.route('/handin_energy_consumption', methods=['POST'])
-def handin_energy_consumption():
-    try:
-        # 获取前端传递的参数
-        input_content1 = request.get_json().get('results', [])[0].get('processed_text1', '')
-        input_content2 = request.get_json().get('results', [])[0].get('processed_text2', '')
-        print(input_content1, input_content2)
-        # 调用判断能效的函数,这里只用到了型号
-        energy_consumption, is_backward = determine_energy_efficiency(f"{input_content1}")
-        print(energy_consumption, is_backward)
-        # 返回结果给前端
-        return jsonify({"energy_consumption": energy_consumption, "is_backward": is_backward})
-    except Exception as e:
-        # 处理异常情况
-        print(f"An error occurred: {str(e)}")
-        return jsonify({"error": "An error occurred"}), 500
 
 async def process_file(file):
     df = pd.read_excel(file)

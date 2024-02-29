@@ -16,14 +16,14 @@
 						</view>
 					</picker>
 				</u-form-item>
-				<u-form-item label="账号密码" label-position="top" border-bottom="true"><u-input v-model="form.password" placeholder="请输入密码" /></u-form-item>
+				<u-form-item label="账号密码" label-position="top" border-bottom="true"><u-input v-model="form.password" placeholder="请输入姓密码" /></u-form-item>
 			</u-form>
 			
 			<button class="button" hover-class="button2" @click="onSubmit">立即注册</button>
 			
 			<view class="agree">
 			    <u-checkbox-group>
-					<u-checkbox @change="clickChecked" v-model="checked" shape="circle" active-color="#FFC300" size="28rpx" />
+					<u-checkbox v-model="checked" shape="circle" active-color="#FFC300" size="28rpx" />
 						已经阅读并同意<span class="highlight">用户协议、隐私政策</span>
 					</u-checkbox>
 			    </u-checkbox-group>
@@ -41,11 +41,11 @@
 					name:"",
 					phone:"",
 					workplace:"",
+					authority:"",
 					password:""
 				},
 				options:["普通用户","管理员"],
-				selectValue:0,
-				checked: false
+				selectValue:0
 			};
 		},
 		methods: {
@@ -54,52 +54,9 @@
 					url:'/pages/index/index'
 				})
 			},
-			clickChecked(){
-				this.checked=!this.checked;
-			},
 			onSubmit(){
-				console.log("check",this.checked);
-				// 检查是否同意用户协议
-				if(!this.checked){
-					uni.showToast({
-						title: '请同意用户协议',
-						icon: 'none',
-						duration: 2000
-					});
-					return;
-				};
-				console.log("注册请求数据", this.form);
-				// 构造请求函数
-				const requestData = {
-					name: this.form.name,
-					phone: this.form.phone,
-					workplace: this.form.workplace,
-					identity: this.options[this.selectValue],
-					password: this.form.password,
-				};
-				
-				// 发送POST请求
-				uni.request({
-					url:'http://127.0.0.1:5000/register',
-					method: 'POST',
-					data: requestData,
-					success: (res) =>{
-						console.log(res.data);
-						uni.showToast({
-							title: '注册成功',
-							icon: 'success'
-						});
-						uni.navigateTo({
-							url: '/pages/index/index'
-						});
-					},
-					fail:(err)=>{
-						console.error(err);
-						uni.showToast({
-							title:'注册失败',
-							icon:'error'
-						})
-					}
+				uni.navigateTo({
+					url: '/pages/index/index'
 				});
 			},
 			pickerChange(e){

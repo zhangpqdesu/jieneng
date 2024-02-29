@@ -1,6 +1,6 @@
 <template>
 	<view class="out">
-		<image src="/static/test.jpg" mode="aspectFit"></image>
+		<image :src="list.imgUrl" mode="aspectFit"></image>
 		<view class="box1">
 			<view class="slide"></view>
 			
@@ -19,7 +19,7 @@
 			<view class="box2" v-else-if="typeIndex==1">
 				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
 				<view class="content">效率（%）:<input class="input" v-model="list.efficiency" /></view>
-				<view class="content">额定功率:<input class="input" v-model="list.power" />V</view>
+				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>
 				
 			</view>
 			<view class="box2" v-else>
@@ -56,16 +56,20 @@
 		mounted() {
 		    // 在 mounted 钩子中获取 OCR 结果参数并展示
 		    var ocrResult = uni.getStorageSync('ocrResult');
-		    if (ocrResult) {
+			var imgUrl = uni.getStorageSync('imgUrl');
+		    if (ocrResult && imgUrl) {
 		        // 展示 OCR 结果中的参数
 		        console.log('efficiency:', ocrResult.efficiency);
 		        console.log('power:', ocrResult.power);
 		        console.log('rotated_speed:', ocrResult.rotated_speed);
-		        this.list.efficiency = ocrResult.efficiency;
+		        console.log('imgUrl:',imgUrl);
+				this.list.efficiency = ocrResult.efficiency;
 		        this.list.power = ocrResult.power;
 		        this.list.rotated_speed = ocrResult.rotated_speed;
+				this.list.imgUrl=imgUrl;
 				// 成功获取并展示 OCR 结果后删除缓存数据
 				uni.removeStorageSync('ocrResult');
+				uni.removeStorageSync('imgUrl');
 				console.log('缓存数据已删除');
 
 		    } else {
@@ -82,6 +86,7 @@
 					{id:2,title:"电机"},
 					{id:3,title:"水泵"}
 				],
+				
 				typeIndex:0,
 				list:{
 					efficiency:"",
@@ -93,7 +98,8 @@
 					correction:"",
 					power:"",
 					batch:"无",
-					grade:"三级"
+					grade:"三级",
+					imgUrl:"",
 				}
 			};
 		},

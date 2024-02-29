@@ -25,12 +25,12 @@
 			</view>
 		</view>
 		<view class="col-md-4" style="display:flex">
-			<view style="display: flex; flex-direction: column; align-items: center;" @click="goToContactUs">
-			    <img src="/static/电话.png" style="width: 40px; height: auto; max-height: 40px;">
+			<view style="display: flex; flex-direction: column; align-items: center;">
+			    <img src="/static/电话.png" @click="goToContactUs" style="width: 40px; height: auto; max-height: 40px;">
 			    <text style="margin:10px;text-align:center" >联系我们</text>
 			</view>
 			<view class="col-md-4" style="display:flex">
-				<view style="display: flex; flex-direction: column; align-items: center;" @click="returnIndex">
+				<view style="display: flex; flex-direction: column; align-items: center;">
 				    <img src="/static/设置.png" style="width: 40px; height: auto; max-height: 40px;">
 				    <text style="margin:10px;text-align:center">退出登录</text>
 				</view>
@@ -95,12 +95,7 @@ export default {
       uni.navigateTo({
         url: '/pages/conTactUs/conTactUs' // 假设联系我们页面的路径为 '/pages/contactUs/contactUs'
       });
-    },
-	returnIndex(){
-		uni.navigateTo({
-			url:'/pages/index/index'
-		})
-	}
+    }
   }
 }
 </script>

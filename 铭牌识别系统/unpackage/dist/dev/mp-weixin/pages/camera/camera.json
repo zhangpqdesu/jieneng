@@ -1,5 +1,8 @@
 {
   "navigationBarTitleText": "",
   "enablePullDownRefresh": false,
-  "usingComponents": {}
+  "usingComponents": {
+    "bt-cropper": "/uni_modules/bt-cropper/components/bt-cropper/bt-cropper",
+    "u-button": "/uview-ui/components/u-button/u-button"
+  }
 }

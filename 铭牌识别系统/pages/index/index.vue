@@ -37,7 +37,7 @@
 			
 			<view class="agree">
 			    <u-checkbox-group>
-					<u-checkbox @change="clickChecked" v-model="checked" shape="circle" active-color="#FFC300" size="28rpx" />
+					<u-checkbox v-model="checked" shape="circle" active-color="#FFC300" size="28rpx" />
 						已经阅读并同意<span class="highlight">用户协议、隐私政策</span>
 					</u-checkbox>
 			    </u-checkbox-group>
@@ -70,7 +70,6 @@
 				},
 				checked:false,
 				state: true,
-				checked: false
 			}
 		},
 		onLoad() {
@@ -87,54 +86,11 @@
 				this.selectIndex=e
 				this.state=!this.state
 			},
-			clickChecked(){
-				this.checked=!this.checked;
-			},
 			onSubmit(){
-				if(!this.checked){
-					uni.showToast({
-						title: '请同意用户协议',
-						icon: 'none',
-						duration: 2000
-					});
-					return;
-				};
 				console.log(this.message)
-				uni.request({
-					url:'http://127.0.0.1:5000/login',
-					method: 'POST',
-					data:{
-						name: this.message.username,
-						password: this.message.password
-					},
-					success:(res)=>{
-						console.log('连接成功',res);
-						// 如果登录成功，再进行页面跳转
-						if (res.data.message === '登录成功') {
-							console.log(res.data.message)
-							uni.showToast({
-								title: res.data.message,
-								icon: 'success',
-								duration: 5000,
-								success: () => {
-									uni.switchTab({
-										url: '/pages/home/home'
-									});
-								}
-							});
-						}
-						else{
-							uni.showToast({
-								title: res.data.error,
-								icon: 'error',
-								duration: 2000
-							});
-						}
-					},
-					fail:(err)=>{
-						console.error('错误', err);
-					}
-				});
+				uni.switchTab({
+					url:'/pages/home/home'
+				})
 			},
 			selected(){
 				console.log(this.checkedValue)

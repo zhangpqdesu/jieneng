@@ -1,6 +1,13 @@
 <template>
   <view>
     <!-- 选择图片按钮 -->
+	<view class="user-info" style="border: 1px solid black; display: flex; align-items: center;">
+	      <image class="user-avatar" src="/static/user.jpg"></image>
+	      <view style="display: flex; flex-direction: column;">
+	        <text class="user-name" style="font-size: 22px; margin-bottom: 10px;">李四</text>
+	        <text class="user-role" style="font-size: 16px;">管理员</text>
+	      </view>
+	    </view>
     <button @click="chooseImage">选择图片</button>
 
     <!-- 展示选择的图片 -->
@@ -45,7 +52,7 @@ export default {
                 that.ocrResult = ocrResult;
 				// 在发送请求并获取到参数后
 				uni.setStorageSync('ocrResult', ocrResult);
-				
+				uni.setStorageSync('imgUrl',that.imgUrl);
 				uni.reLaunch({
 			  url: '/pages/result/result'
 				});
@@ -66,3 +73,22 @@ export default {
   }
 }
 </script>
+<style scoped>
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+}
+
+.user-avatar {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+}
+
+.user-name {
+  font-size: 32rpx;
+  color: #333;
+  margin-left: 20rpx;
+}
+</style>

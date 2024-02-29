@@ -15,10 +15,9 @@
 			"path" : "pages/result/result",
 			"style" : 
 			{
-				"navigationBarTitleText" : "结果",
+				"navigationBarTitleText" : "",
 				"enablePullDownRefresh" : false,
-				"navigationBarBackgroundColor": "#fff",
-				"navigationStyle": "default"
+				"navigationBarBackgroundColor": "#fff"
 			}
 		},
 		
@@ -79,8 +78,7 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false,
-				"navigationBarBackgroundColor": "#fff"
+				"enablePullDownRefresh" : false
 			}
 		},
 		{
@@ -118,7 +116,7 @@
 			},
 			
 			{
-				"pagePath": "pages/personalCenter/personalCenter",
+				"pagePath": "pages/result/result",
 				"iconPath": "static/person.png",
 				"selectedIconPath": "static/person1.png",
 				"text": "个人中心"
