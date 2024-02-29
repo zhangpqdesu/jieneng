@@ -82,6 +82,7 @@ def ocr() -> Dict[str, Any]:
     extracted_power = []
     extracted_efficiency = []
     extracted_rotated_speed = []
+    extracted_motor_type = []
     for text in text_array:
         # 提取功率
         match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)
@@ -113,21 +114,58 @@ def ocr() -> Dict[str, Any]:
             index = text_array.index(text)
             if index > 0:
                 extracted_rotated_speed.append(float(text_array[index - 1]))
-
+        
+        match_motor_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)
+        if match_motor_type:
+            extracted_motor_type = match_motor_type.group(1)
+        elif '型号' in text or 'type' in text:
+            index = text_array.index(text)
+            if 0 <= index <len(text_array)-1:
+                extracted_motor_type=text_array[index + 1]
     print("功率：", extracted_power)
     print("效率：", extracted_efficiency)
     print("转速：", extracted_rotated_speed)
-    
+    print("型号：",extracted_motor_type)
     # 构建返回给前端的字典
     response_data = {
         "power": extracted_power,
         "efficiency": extracted_efficiency,
-        "rotated_speed": extracted_rotated_speed
+        "rotated_speed": extracted_rotated_speed,
+        "motor_type":extracted_motor_type
     }
     
     # 返回 JSON 响应
     return jsonify(response_data)
 
+class backward_devices(db.Model):
+    __tablename__ = '落后设备'
+
+    name = db.Column(db.String(50), primary_key=True)
+    batch = db.Column(db.String(50))
+
+from flask import jsonify
+
+@app.route('/is_backward', methods=['POST'])
+def is_backward():
+    data = request.json
+    print('Received data:', data)
+    # 查询数据库中所有的落后设备记录
+    backward_devices_list = backward_devices.query.all()
+
+    # 初始化结果列表
+    results = []
+    is_backward = "不是落后设备"
+    batch = "无"
+    for device in backward_devices_list:
+        # 如果设备名在data['motor_type']中（无视大小写）
+        if device.name.lower() in data['motor_type'].lower():
+            # 将is_backward设为"是落后设备"
+            is_backward = "是落后设备"
+            # 返回设备名和对应的batch属性
+            batch = device.batch
+
+    print(is_backward, batch)
+    return jsonify({'is_backward': is_backward, 'batch': batch})
 
 
 async def process_file(file):

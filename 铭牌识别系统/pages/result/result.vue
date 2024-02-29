@@ -19,6 +19,7 @@
 			<view class="box2" v-else-if="typeIndex==1">
 				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
 				<view class="content">效率（%）:<input class="input" v-model="list.efficiency" /></view>
+				<view class="content">型号:<input class="input" v-model="list.motor_type" /></view>
 				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>
 				
 			</view>
@@ -30,14 +31,17 @@
 			</view>
 			
 			<view class="line"></view>
-			
-			<view class="result" v-model="list.batch">
-				<view>淘汰型号及批次：</view>
-				<view style="font-weight: bold;">{{list.batch}}</view>
-			</view>
 			<view class="result" v-model="list.batch">
 				<view>能效等级：</view>
 				<view style="font-weight: bold;">{{list.grade}}</view>
+			</view>
+			<view class="result" v-model="list.batch">
+				<view>是否淘汰：</view>
+				<view style="font-weight: bold;">{{list.is_backward}}</view>
+			</view>
+			<view class="result" v-model="list.batch">
+				<view>来源：</view>
+				<view style="font-weight: bold;">{{list.batch}}</view>
 			</view>
 			
 			<view class="flip">
@@ -61,12 +65,15 @@
 		        // 展示 OCR 结果中的参数
 		        console.log('efficiency:', ocrResult.efficiency);
 		        console.log('power:', ocrResult.power);
-		        console.log('rotated_speed:', ocrResult.rotated_speed);
+				console.log('rotated_speed:', ocrResult.rotated_speed);
+				console.log('motor_type:',ocrResult.motor_type);
 		        console.log('imgUrl:',imgUrl);
 				this.list.efficiency = ocrResult.efficiency;
 		        this.list.power = ocrResult.power;
 		        this.list.rotated_speed = ocrResult.rotated_speed;
+				this.list.motor_type=ocrResult.motor_type;
 				this.list.imgUrl=imgUrl;
+				this.sendData();
 				// 成功获取并展示 OCR 结果后删除缓存数据
 				uni.removeStorageSync('ocrResult');
 				uni.removeStorageSync('imgUrl');
@@ -92,13 +99,15 @@
 					efficiency:"",
 					power:"",
 					rotated_speed:"",
+					motor_type:"",
 					rpm:"",
 					flow:"",
 					press:"",
 					correction:"",
 					power:"",
-					batch:"无",
-					grade:"三级",
+					batch:"",
+					grade:"",
+					is_backward:"",
 					imgUrl:"",
 				}
 			};
@@ -112,7 +121,34 @@
 				uni.switchTab({
 					url:'/pages/home/home'
 				})
+			},
+			async sendData() {
+			    try {
+			        const response = await fetch('http://127.0.0.1:5000/is_backward', {
+			            method: 'POST',
+			            headers: {
+			                'Content-Type': 'application/json'
+			            },
+			            body: JSON.stringify(this.list)
+			        });
+			
+			        if (!response.ok) {
+			            throw new Error('Network response was not ok');
+			        }
+			
+			        // 处理后端返回的数据
+			        const responseData = await response.json();
+			        console.log(responseData);
+			
+			        // 更新页面上的 is_backward 和 batch
+			        this.list.is_backward = responseData.is_backward;
+			        this.list.batch = responseData.batch;
+			
+			    } catch (error) {
+			        console.error('Error:', error);
+			    }
 			}
+
 		}
 	}
 </script>
@@ -205,6 +241,7 @@
 				font-weight: bold;
 				text-align: left;
 			}
+			
 			.content input{
 				margin-left: 20rpx;
 				margin-right: 20rpx;
