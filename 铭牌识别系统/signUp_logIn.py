@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 import hashlib
 
 app = Flask(__name__)
-engine = create_engine('mysql+pymysql://root:Zhang0080@localhost/MingPai', echo=True)
+engine = create_engine('mysql+mysqlconnector://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk', echo=True)
 Base = declarative_base()
 
 class User(Base):

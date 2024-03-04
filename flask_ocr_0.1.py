@@ -14,6 +14,7 @@ import pymysql
 import pandas as pd
 import asyncio
 from flask_cors import CORS
+import hashlib
 logger = set_logger(log_level='DEBUG')
 
 OCR_MODEL = CnOcr()
@@ -225,6 +226,66 @@ class LiSi(db.Model):
     record_place = db.Column(db.String(255))
     record_time = db.Column(db.DateTime)
 
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
+    workplace = db.Column(db.String(120), nullable=False)
+    identity = db.Column(db.String(120), nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+
+def hash_password(password):
+    md5 = hashlib.md5()
+    md5.update(password.encode('utf-8'))
+    return md5.hexdigest()
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+
+    name = data.get('name')
+    phone = data.get('phone')
+    workplace = data.get('workplace')
+    identity = data.get('identity')
+    raw_password = data.get('password')
+
+    if not all([name, phone, workplace, identity, raw_password]):
+        return jsonify({'error': '缺少必填字段'}), 400
+
+    # md5密码加密
+    hashed_password = hash_password(raw_password)
+
+    # 创建用户对象
+    new_user = User(name=name, phone=phone, workplace=workplace, identity=identity, password=hashed_password)
+
+    # 将用户对象添加到数据库会话中
+    db.session.add(new_user)
+
+    # 提交会话以将用户添加到数据库
+    db.session.commit()
+
+    return jsonify({'message': '注册成功'})
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+
+    name = data.get('name')
+    raw_password = data.get('password')
+
+    if not all([name, raw_password]):
+        return jsonify({'error': '缺少必填字段'}), 400
+
+    # md5密码加密
+    hashed_password = hash_password(raw_password)
+
+    # 查询数据库中是否存在匹配的用户记录
+    user = User.query.filter_by(name=name, password=hashed_password).first()
+
+    if user:
+        return jsonify({'message': '登录成功'})
+    else:
+        return jsonify({'error': '姓名或密码错误'}), 401
 
 @app.route('/lisidata', methods=['GET'])
 def get_lisi_data():
