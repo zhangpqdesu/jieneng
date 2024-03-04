@@ -15,7 +15,7 @@
 			"path" : "pages/result/result",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "结果",
 				"enablePullDownRefresh" : false,
 				"navigationBarBackgroundColor": "#fff"
 			}
@@ -116,7 +116,7 @@
 			},
 			
 			{
-				"pagePath": "pages/result/result",
+				"pagePath": "pages/personalCenter/personalCenter",
 				"iconPath": "static/person.png",
 				"selectedIconPath": "static/person1.png",
 				"text": "个人中心"
