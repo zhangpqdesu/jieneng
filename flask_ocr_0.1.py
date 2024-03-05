@@ -9,8 +9,6 @@ from flask_sqlalchemy import SQLAlchemy
 from cnocr import CnOcr
 from cnocr.utils import set_logger
 from sqlalchemy import text
-import math
-import pymysql
 import pandas as pd
 import asyncio
 from flask_cors import CORS
@@ -37,34 +35,6 @@ class OcrResponse:
     def dict(self) -> Dict[str, Any]:
         return {'results': self.results}
 
-
-
-
-# 去除文本框中可能有的中文字符
-def process_text(text):
-    # 使用正则表达式匹配中文字符，并将其替换为空字符串
-    processed_text = re.sub(r'[\u4e00-\u9fa5]', '', text)
-    return processed_text
-
-
-# 根据型号判断能效，这里暂时不考虑功率影响，对应能效都是我在网上查到的
-def determine_energy_efficiency(processed_text):
-    if "YE3-160M1-2" in processed_text:
-        return "IE3", False
-    elif "YE2-355M-8" in processed_text:
-        return "IE2", False
-    elif "SCB10-1250" in processed_text:
-        return "落后产品，不计算能效", True
-    elif "ZT250VSD-10.4GHN 380/50" in processed_text:
-        return "IE1", False
-    elif "YE3-315M-2" in processed_text:
-        return "IE3", False
-    elif "YE3-355L-6" in processed_text:
-        return "IE3", False
-    else:
-        return "未知", "未知"
-
-
 @app.route('/ocr', methods=['POST'])
 def ocr() -> Dict[str, Any]:
     file = request.files['image']
@@ -79,64 +49,81 @@ def ocr() -> Dict[str, Any]:
 
     text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]
     print(text_array)
-    # 提取包含 'kW' 或 'KW' 的文本框，并用正则表达式提取数字
+    
+    # 提取功率
     extracted_power = []
-    extracted_efficiency = []
-    extracted_rotated_speed = []
-    extracted_motor_type = []
     for text in text_array:
-        # 提取功率
         match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)
-
         if match_power:
             extracted_power.append(int(match_power.group(1)))
+            break
         elif 'kW' in text or 'KW' in text:
-            # 尝试从前一个文本框中提取数字
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
                 if previous_text.isdigit():
                     extracted_power.append(int(previous_text))
-
-        # 提取效率
+                    break
+    
+    # 提取效率
+    extracted_efficiency = []
+    for text in text_array:
         match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
         if match_efficiency:
-            extracted_efficiency.append(float(match_efficiency.group(1)))
+            extracted_efficiency.append(match_efficiency.group(1))
+            break
         elif '%' in text:
             index = text_array.index(text)
             if index > 0:
-                if 60<float(text_array[index - 1])<100:
-                    extracted_efficiency.append(float(text_array[index - 1]))
-
-        match_speed = re.search(r'(\d+(?:\.\d+)?)\s*[rR]/?\s*m\s*i\s*n', text)
+                if 60 < float(text_array[index - 1]) < 100:
+                    extracted_efficiency.append(text_array[index - 1])
+                    break
+    
+    # 提取转速
+    extracted_rotated_speed = []
+    for text in text_array:
+        match_speed = re.search(r'(\d+(?:\.\d+)?)\s*[rR]\s*m\s*i\s*n', text)
         if match_speed:
-            extracted_rotated_speed.append(float(match_speed.group(1)))
+            extracted_rotated_speed.append(match_speed.group(1))
+            break
         elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rmir' in text.lower():
             index = text_array.index(text)
             if index > 0:
-                extracted_rotated_speed.append(float(text_array[index - 1]))
-        
+                extracted_rotated_speed.append(text_array[index - 1])
+                break
+    
+    # 提取电机型号
+    extracted_motor_type = []
+    for text in text_array:
         match_motor_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)
         if match_motor_type:
             extracted_motor_type = match_motor_type.group(1)
+            print("1", extracted_motor_type)
+            break
         elif '型号' in text or 'type' in text:
             index = text_array.index(text)
-            if 0 <= index <len(text_array)-1:
-                extracted_motor_type=text_array[index + 1]
+            if 0 <= index < len(text_array) - 1:
+                extracted_motor_type = text_array[index + 1]
+                print("2", extracted_motor_type)
+                break
+    
     print("功率：", extracted_power)
     print("效率：", extracted_efficiency)
     print("转速：", extracted_rotated_speed)
-    print("型号：",extracted_motor_type)
+    print("型号：", extracted_motor_type)
+    
     # 构建返回给前端的字典
     response_data = {
         "power": extracted_power,
         "efficiency": extracted_efficiency,
         "rotated_speed": extracted_rotated_speed,
-        "motor_type":extracted_motor_type
+        "motor_type": extracted_motor_type
     }
     
     # 返回 JSON 响应
     return jsonify(response_data)
+
+
 
 class backward_devices(db.Model):
     __tablename__ = '落后设备'
