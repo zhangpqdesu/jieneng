@@ -101,7 +101,7 @@
 				};
 				console.log(this.message)
 				uni.request({
-					url:'http://127.0.0.1:5000/login',
+					url:'http://192.168.43.64:8080/login',
 					method: 'POST',
 					data:{
 						name: this.message.username,

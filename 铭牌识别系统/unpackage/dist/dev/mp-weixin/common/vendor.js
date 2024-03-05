@@ -19614,10 +19614,35 @@ exports.default = _default;
 /* 223 */,
 /* 224 */,
 /* 225 */,
+<<<<<<< Updated upstream
 /* 226 */
 /*!***************************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-checkbox-group/props.js ***!
   \***************************************************************************/
+=======
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */,
+/* 237 */,
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */,
+/* 243 */,
+/* 244 */
+/*!******************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-checkbox-group/props.js ***!
+  \******************************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19711,6 +19736,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 227 */,
 /* 228 */,
 /* 229 */,
@@ -19722,6 +19748,19 @@ exports.default = _default;
 /*!*********************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-checkbox/props.js ***!
   \*********************************************************************/
+=======
+/* 245 */,
+/* 246 */,
+/* 247 */,
+/* 248 */,
+/* 249 */,
+/* 250 */,
+/* 251 */,
+/* 252 */
+/*!************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-checkbox/props.js ***!
+  \************************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19805,6 +19844,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 235 */,
 /* 236 */,
 /* 237 */,
@@ -19816,6 +19856,19 @@ exports.default = _default;
 /*!*****************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-form/props.js ***!
   \*****************************************************************/
+=======
+/* 253 */,
+/* 254 */,
+/* 255 */,
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-form/props.js ***!
+  \********************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19875,10 +19928,17 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 243 */
 /*!*******************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/libs/util/async-validator.js ***!
   \*******************************************************************/
+=======
+/* 261 */
+/*!**********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/libs/util/async-validator.js ***!
+  \**********************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21056,10 +21116,17 @@ Schema.warning = warning;
 Schema.messages = messages;
 var _default = Schema; // # sourceMappingURL=index.js.map
 exports.default = _default;
+<<<<<<< Updated upstream
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../download/HBuilderX.3.99.2023122611/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 244)))
 
 /***/ }),
 /* 244 */
+=======
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../download/HBuilderX.3.99.2023122611/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 262)))
+
+/***/ }),
+/* 262 */
+>>>>>>> Stashed changes
 /*!********************************************************!*\
   !*** ./node_modules/node-libs-browser/mock/process.js ***!
   \********************************************************/
@@ -21090,7 +21157,11 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
+<<<<<<< Updated upstream
         if (!path) path = __webpack_require__(/*! path */ 245);
+=======
+        if (!path) path = __webpack_require__(/*! path */ 263);
+>>>>>>> Stashed changes
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -21103,7 +21174,11 @@ exports.features = {};
 
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 245 */
+=======
+/* 263 */
+>>>>>>> Stashed changes
 /*!***********************************************!*\
   !*** ./node_modules/path-browserify/index.js ***!
   \***********************************************/
@@ -21413,6 +21488,7 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
+<<<<<<< Updated upstream
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 244)))
 
 /***/ }),
@@ -21425,6 +21501,20 @@ var substr = 'ab'.substr(-1) === 'b'
 /*!**********************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-form-item/props.js ***!
   \**********************************************************************/
+=======
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 262)))
+
+/***/ }),
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */
+/*!*************************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-form-item/props.js ***!
+  \*************************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21487,6 +21577,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 252 */,
 /* 253 */,
 /* 254 */,
@@ -21498,6 +21589,19 @@ exports.default = _default;
 /*!******************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-input/props.js ***!
   \******************************************************************/
+=======
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */
+/*!*********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-input/props.js ***!
+  \*********************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21699,6 +21803,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 260 */,
 /* 261 */,
 /* 262 */,
@@ -21794,6 +21899,19 @@ exports.default = _default;
 /*!*****************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-icon/icons.js ***!
   \*****************************************************************/
+=======
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */,
+/* 284 */,
+/* 285 */
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-icon/icons.js ***!
+  \********************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22021,10 +22139,17 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 276 */
 /*!*****************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-icon/props.js ***!
   \*****************************************************************/
+=======
+/* 286 */
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-icon/props.js ***!
+  \********************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22128,6 +22253,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
+<<<<<<< Updated upstream
 /* 277 */,
 /* 278 */,
 /* 279 */,
@@ -22139,6 +22265,19 @@ exports.default = _default;
 /*!*****************************************************************!*\
   !*** E:/uni-app项目代码/铭牌识别系统/uview-ui/components/u-line/props.js ***!
   \*****************************************************************/
+=======
+/* 287 */,
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */,
+/* 292 */,
+/* 293 */,
+/* 294 */
+/*!********************************************************************!*\
+  !*** E:/github/jieneng/铭牌识别系统/uview-ui/components/u-line/props.js ***!
+  \********************************************************************/
+>>>>>>> Stashed changes
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

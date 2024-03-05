@@ -41,7 +41,7 @@ export default {
     
           // 将选择的图片上传到后端
           uni.uploadFile({
-            url: 'http://127.0.0.1:5000/ocr', // 请替换为你的后端接口地址
+            url: 'http://192.168.43.64:8080/ocr', // 请替换为你的后端接口地址
             filePath: res.tempFilePaths[0],
             name: 'image',
             success: function (uploadRes) {
