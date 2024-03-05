@@ -1,14 +1,10 @@
 <template>
   <view>
     <!-- 选择图片按钮 -->
-	<view class="user-info" style="border: 1px solid black; display: flex; align-items: center;">
-	      <image class="user-avatar" src="/static/user.jpg"></image>
-	      <view style="display: flex; flex-direction: column;">
-	        <text class="user-name" style="font-size: 22px; margin-bottom: 10px;">李四</text>
-	        <text class="user-role" style="font-size: 16px;">管理员</text>
-	      </view>
-	    </view>
-    <button @click="chooseImage">选择图片</button>
+	<view class="upload">
+		<image class="image" src="/static/photo/上传图片.png" mode="aspectFit" @click="chooseImage"></image>
+		<text style="color: #707070;margin-top: 10rpx;">点击图标拍照/选择图片</text>
+	</view>
 
     <!-- 展示选择的图片 -->
     <image :src="imgUrl" mode="aspectFit" v-if="imgUrl" style="width: 300px; height: 300px;"></image>
@@ -73,22 +69,15 @@ export default {
   }
 }
 </script>
-<style scoped>
-.user-info {
-  display: flex;
-  align-items: center;
-  margin-top: 20rpx;
-}
 
-.user-avatar {
-  width: 150rpx;
-  height: 150rpx;
-  border-radius: 50%;
-}
-
-.user-name {
-  font-size: 32rpx;
-  color: #333;
-  margin-left: 20rpx;
+<style lang="scss">
+.upload{
+	margin-top: 20%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	.image{
+		height: 100rpx;
+	}
 }
 </style>

@@ -12,10 +12,10 @@
 		},
 		
 		{
-			"path" : "pages/result/result",
+			"path" : "pages/home/home",
 			"style" : 
 			{
-				"navigationBarTitleText" : "结果",
+				"navigationBarTitleText" : "",
 				"enablePullDownRefresh" : false,
 				"navigationBarBackgroundColor": "#fff"
 			}
@@ -26,15 +26,16 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false
+				"enablePullDownRefresh" : false,
+				"navigationBarBackgroundColor": "#fff"
 			}
 		},
 		
 		{
-			"path" : "pages/home/home",
+			"path" : "pages/result/result",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "结果",
 				"enablePullDownRefresh" : false,
 				"navigationBarBackgroundColor": "#fff"
 			}
@@ -57,36 +58,45 @@
 				"enablePullDownRefresh" : false
 			}
 		},
+		
 		{
 			"path" : "pages/handleFile/handleFile",
 			"style" : 
 			{
 				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false
+				"enablePullDownRefresh" : false,
+				"navigationBarBackgroundColor": "#fff"
 			}
 		},
+		
 		{
 			"path" : "pages/checkHistoryRecords/checkHistoryRecords",
 			"style" : 
 			{
 				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false
+				"enablePullDownRefresh" : false,
+				"navigationBarBackgroundColor": "#fff"
 			}
 		},
+		
 		{
 			"path" : "pages/personalCenter/personalCenter",
 			"style" : 
 			{
 				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false
+				"enablePullDownRefresh" : false,
+				"navigationBarBackgroundColor": "#ffc283",
+				"navigationStyle": "custom"
 			}
 		},
+		
 		{
 			"path" : "pages/conTactUs/conTactUs",
 			"style" : 
 			{
 				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false
+				"enablePullDownRefresh" : false,
+				"navigationBarBackgroundColor": "#fff"
 			}
 		}
 	],

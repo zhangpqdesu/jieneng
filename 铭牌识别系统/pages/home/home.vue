@@ -6,7 +6,7 @@
 		</view>
 		
 		<view class="box">
-			<view class="nameCompany">公司名称</view>
+			<view class="nameCompany">{{company}}</view>
 			<view class="modify" @click="modify">修改公司名称</view>
 			<image src="../../static/home-company.png" mode="aspectFit" class="homeCompany"></image>
 		</view>
@@ -56,7 +56,14 @@
 			return {
 				searchContent: "",
 				imageList: [],  // 用于存储已选择的图片信息
+				company:''
 			};
+		},
+		onShow() {
+		    // 从本地存储中获取参数
+		    this.company = uni.getStorageSync('company') || '';
+		    // 清空本地存储，确保下一次可以重新设置
+		    uni.removeStorageSync('company');
 		},
 		methods:{
 			modify(){

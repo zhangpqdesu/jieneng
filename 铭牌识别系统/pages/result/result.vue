@@ -31,6 +31,8 @@
 			</view>
 			
 			<view class="line"></view>
+			<image class="import" src="/static/photo/导入.png" mode="aspectFit" @click="clickImport"></image>
+			
 			<view class="result" v-model="list.batch">
 				<view>能效等级：</view>
 				<view style="font-weight: bold;">{{list.grade}}</view>
@@ -114,6 +116,11 @@
 		},
 		
 		methods:{
+			clickImport(){
+				uni.switchTab({
+					url:'/pages/personalCenter/personalCenter'
+				})
+			},
 			clickType(e){
 				this.typeIndex=e
 			},
@@ -267,6 +274,18 @@
 			height: 10rpx;
 			background-color: #E5E5E5;
 			margin-bottom: 60rpx;
+			position: relative;
+		}
+		.import{
+			margin-top: 15%;
+			width: 100rpx;
+			height: 100rpx;
+			display: flex;
+			position: absolute;
+			top: 50%; /* 将 .import 定位到 .line 的中间 */
+			left: 50%;
+			transform: translate(-50%, -50%); /* 调整位置 */
+			z-index: 1;
 		}
 		.result{
 			font-size: 30rpx;

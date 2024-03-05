@@ -1,12 +1,16 @@
 <template>
-  <view>
-	  <view class="user-info" style="border: 1px solid black; display: flex; align-items: center;">
-	        <image class="user-avatar" src="/static/user.jpg"></image>
-	        <view style="display: flex; flex-direction: column;">
-	          <text class="user-name" style="font-size: 22px; margin-bottom: 10px;">李四</text>
-	          <text class="user-role" style="font-size: 16px;">管理员</text>
-	        </view>
-	      </view>
+	<view>
+		<view class="out">
+			<image class="default" src="/static/photo/default.png" mode="aspectFit"></image>
+			<view class="personalDetail">
+				<view class="name">{{name}}</view>
+				<view class="name2">{{name2}}</view>
+			</view>  
+		</view>
+		
+		<view class="line"></view>
+	  
+	  
    <view class="item" v-for="(item, index) in lisiData" :key="index">
      <image class="item-image" :src="`/static/photo/${index + 1}.jpg`"></image>
      <view class="item-details">
@@ -25,8 +29,13 @@
 export default {
   data() {
     return {
-      lisiData: [] // Initialize an empty array to store data from the backend
+      lisiData: [] ,// Initialize an empty array to store data from the backend
+	  name:'',
+	  name2:'普通用户'
     };
+  },
+  onShow(){
+  	this.name = uni.getStorageSync('name') || '未登录';
   },
   mounted() {
     // Make a GET request to the backend API endpoint
@@ -45,7 +54,36 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+.out{
+	position: relative;
+	.default{
+		position: absolute;
+		left: 50rpx;
+		top: 60rpx;
+		height: 120rpx;
+		width: 120rpx;
+	}
+	.personalDetail{
+		position: absolute;
+		left: 220rpx;
+		top: 60rpx;
+		.name{
+			font-size: 35rpx;
+		}
+		.name2{
+			margin-top: 30rpx;
+			font-size: 25rpx;
+		}
+	}
+}
+.line{
+	position: absolute;
+	top: 200rpx;
+	width: 750rpx;
+	height: 10rpx;
+	background-color: #E5E5E5;
+}
 .user-info {
   display: flex;
   align-items: center;

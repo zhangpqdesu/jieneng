@@ -141,6 +141,21 @@
   height: 10rpx;
   background-color: #E5E5E5;
   margin-bottom: 60rpx;
+  position: relative;
+}
+.out .box1 .import {
+  margin-top: 15%;
+  width: 100rpx;
+  height: 100rpx;
+  display: flex;
+  position: absolute;
+  top: 50%;
+  /* 将 .import 定位到 .line 的中间 */
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  /* 调整位置 */
+  z-index: 1;
 }
 .out .box1 .result {
   font-size: 30rpx;

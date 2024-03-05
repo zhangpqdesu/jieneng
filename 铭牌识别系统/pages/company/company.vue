@@ -19,11 +19,12 @@
 	export default {
 		data() {
 			return {
-				company:""
+				company:''
 			};
 		},
 		methods:{
 			onSubmit(){
+				uni.setStorageSync('company', this.company);
 				uni.switchTab({
 					url:'/pages/home/home'
 				})

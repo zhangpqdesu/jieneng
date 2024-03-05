@@ -80,7 +80,7 @@
 				
 				// 发送POST请求
 				uni.request({
-					url:'http://192.168.43.64:8080/register',
+					url:'http://127.0.0.1:5000/register',
 					method: 'POST',
 					withCredentials: true,
 					data: requestData,
