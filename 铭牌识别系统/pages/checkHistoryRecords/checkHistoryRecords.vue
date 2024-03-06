@@ -26,6 +26,7 @@
 </template>
 
 <script>
+	import config from '../../config.js';
 export default {
   data() {
     return {
@@ -40,7 +41,7 @@ export default {
   mounted() {
     // Make a GET request to the backend API endpoint
     uni.request({
-      url: 'http://127.0.0.1:5000/lisidata', // Replace 'your-backend-url' with the actual URL of your backend
+      url: `${config.SERVER_URL}/lisidata`, // Replace 'your-backend-url' with the actual URL of your backend
       method: 'GET',
       success: (res) => {
         // Update the lisiData array with the data received from the backend

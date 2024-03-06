@@ -20,12 +20,12 @@
 				<text class="text">扫描</text>
 			</view>
 			<!-- 照片 -->
-			<view class="select" @click="clickPhoto">
+			<!-- <view class="select" @click="clickPhoto">
 				<view class="block" style="background-color: #FFECE8;">
 					<image src="/static/photo.png" mode="aspectFit" class="scanSelect"></image>
 				</view>
 				<text class="text">照片</text>
-			</view>
+			</view> -->
 			<!-- 文件 -->
 			<view class="select" @click="clickFile">
 				<view class="block" style="background-color: #FFF5D7;">
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+	import config from '../../config.js';
 	export default {
 		data() {
 			return {
@@ -91,7 +92,7 @@
 						// 上传图片
 						this.imageList.forEach((image, index) => {
 							uni.uploadFile({
-								url: 'http://127.0.0.1:5000/upload',  // 后端接口地址
+								url: `${config.SERVER_URL}/ocr`,  // 后端接口地址
 								filePath: image.file.path,  // 使用 path 属性
 								name: 'file',
 								formData: {

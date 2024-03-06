@@ -54,6 +54,7 @@
 </template>
 
 <script>
+	import config from '../../config.js';
 	export default {
 		data() {
 			return {
@@ -101,7 +102,7 @@
 				};
 				console.log(this.message)
 				uni.request({
-					url:'http://127.0.0.1:5000/login',
+					url: `${config.SERVER_URL}/login`,
 					method: 'POST',
 					data:{
 						name: this.message.username,
@@ -117,7 +118,7 @@
 								icon: 'success',
 								duration: 5000,
 								success: () => {
-									uni.setStorageSync('name',this,message.username);
+									uni.setStorageSync('name',this.message.username);
 									uni.switchTab({
 										url: '/pages/home/home'
 									});

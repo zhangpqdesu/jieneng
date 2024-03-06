@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import config from '../../config.js';
 export default {
   data() {
     return {
@@ -37,7 +38,7 @@ export default {
     
           // 将选择的图片上传到后端
           uni.uploadFile({
-            url: 'http://192.168.43.64:8080/ocr', // 请替换为你的后端接口地址
+            url: `${config.SERVER_URL}/ocr`, // 请替换为你的后端接口地址
             filePath: res.tempFilePaths[0],
             name: 'image',
             success: function (uploadRes) {

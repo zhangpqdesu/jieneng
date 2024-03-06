@@ -12,6 +12,7 @@
 </template>
 
 <script>
+	import config from '../../config.js';
 export default {
   data() {
     return {
@@ -32,7 +33,7 @@ export default {
       // 遍历已选择的文件数组，逐个上传文件
       this.selectedFiles.forEach(file => {
         uni.uploadFile({
-          url: 'http://127.0.0.1:5000/upload',
+          url: `${config.SERVER_URL}/upload`,
           filePath: file.path,
           name: 'file',
           formData: {

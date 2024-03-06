@@ -15,6 +15,7 @@
 				<view class="content">修正系数:<input class="input" v-model="list.correction" /></view>
 				<view class="content">额定功率:<input class="input" v-model="list.feng_power" />kW</view>
 				<view class="content">效率:<input class="input" v-model="list.feng_efficiency" /></view>
+				<view class="content">型号:<input class="input" v-model="list.fan_type" /></view>
 			</view>
 			<view class="box2" v-else-if="typeIndex==1">
 				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
@@ -28,6 +29,7 @@
 				<view class="content">主轴流量:<input class="input" v-model="list.flow" /></view>
 				<view class="content">滞止压力:<input class="input" v-model="list.press" />V</view>
 				<view class="content">修正系数:<input class="input" v-model="list.correction" /></view>
+				<view class="content">型号:<input class="input" v-model="list.pump_type" /></view>
 			</view>
 			
 			<view class="line"></view>
@@ -35,7 +37,7 @@
 			
 			<view class="result" v-model="list.batch">
 				<view>能效等级：</view>
-				<view style="font-weight: bold;">{{list.grade}}</view>
+				<view style="font-weight: bold;">{{list.grade}}3级</view>
 			</view>
 			<view class="result" v-model="list.batch">
 				<view>是否淘汰：</view>
@@ -58,6 +60,7 @@
 </template>
 
 <script>
+	import config from '../../config.js';
 	export default {
 		mounted() {
 		    // 在 mounted 钩子中获取 OCR 结果参数并展示
@@ -111,6 +114,8 @@
 					grade:"",
 					is_backward:"",
 					imgUrl:"",
+					pump_type:"",
+					fan_type:"",
 				}
 			};
 		},
@@ -131,7 +136,7 @@
 			},
 			async sendData() {
 			    try {
-			        const response = await fetch('http://127.0.0.1:5000/is_backward', {
+			        const response = await fetch(`${config.SERVER_URL}/is_backward`, {
 			            method: 'POST',
 			            headers: {
 			                'Content-Type': 'application/json'

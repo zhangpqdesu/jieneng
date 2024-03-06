@@ -34,6 +34,7 @@
 </template>
 
 <script>
+	import config from '../../config.js';
 	export default {
 		data() {
 			return {
@@ -80,7 +81,7 @@
 				
 				// 发送POST请求
 				uni.request({
-					url:'http://127.0.0.1:5000/register',
+					url: `${config.SERVER_URL}/register`,
 					method: 'POST',
 					withCredentials: true,
 					data: requestData,
