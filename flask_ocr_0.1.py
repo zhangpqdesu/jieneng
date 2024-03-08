@@ -1,4 +1,5 @@
 import io
+import os
 from copy import deepcopy
 from typing import List, Dict, Any
 import re
@@ -13,6 +14,7 @@ import pandas as pd
 import asyncio
 from flask_cors import CORS
 import hashlib
+from datetime import datetime
 logger = set_logger(log_level='DEBUG')
 
 OCR_MODEL = CnOcr()
@@ -40,6 +42,11 @@ def ocr() -> Dict[str, Any]:
     file = request.files['image']
     img_bytes = file.read()
     image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
+    
+    upload_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+    image_filename = f"receiveImage/{upload_time}.jpg"
+    os.makedirs("receiveImage", exist_ok=True)
+    image.save(image_filename)
     
     res = OCR_MODEL.ocr(image)
     for _one in res:
@@ -122,8 +129,6 @@ def ocr() -> Dict[str, Any]:
     
     # 返回 JSON 响应
     return jsonify(response_data)
-
-
 
 class backward_devices(db.Model):
     __tablename__ = '落后设备'
