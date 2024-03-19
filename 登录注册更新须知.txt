@@ -1,4 +1,0 @@
-1.在mysql中建立数据库MingPai
-2.在signUp_logIn.py文件中，将
-   engine = create_engine('mysql+pymysql://username:password@localhost/MingPai', echo=True)
-   中的username和password修改为自己的数据库用户名和密码

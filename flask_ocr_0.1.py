@@ -17,26 +17,23 @@ import hashlib
 from datetime import datetime
 logger = set_logger(log_level='DEBUG')
 
-OCR_MODEL = CnOcr()
-app = Flask(__name__)
+OCR_MODEL = CnOcr()#实例化对象
+app = Flask(__name__)#flask服务
 CORS(app, origins="http://localhost:8080")
-#持久层框架，配置数据库连接信息
+#持久层框架，配置数据库连接信息，这里可以查看数据库配置信息
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
-
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
+db = SQLAlchemy(app)#
 
 # ocr返回类
+#以上都是固定的
 class OcrResponse:
     def __init__(self, results: List[Dict[str, Any]]) -> None:
         self.results = results
 
     def dict(self) -> Dict[str, Any]:
         return {'results': self.results}
-
+#ocr函数
 @app.route('/ocr', methods=['POST'])
 def ocr() -> Dict[str, Any]:
     file = request.files['image']
@@ -54,17 +51,20 @@ def ocr() -> Dict[str, Any]:
         if 'cropped_img' in _one:
             _one.pop('cropped_img')
 
-    text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]
+#以上功能：将文件存到receiveImage目录下，并调用ocr函数进行文字识别
+    text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]#基于ocr服务返回的原始格式修改，提取出所有文字，并整理为数组
     print(text_array)
     
-    # 提取功率
+    # 提取电机功率（这里需要添加判断逻辑，根据水泵、电机、风机的类型不同，编写不同的正则表达式进行参数提取，目前只写了电机的）
     extracted_power = []
     for text in text_array:
-        match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)
+        match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)#情况1：参数与单位在统一文本框中
+        #具体来说，它查找一个或多个数字字符（\d+），后面可能跟着零个或多个空格（\s*），然后是一个可选的负号（-?），再后面是零个或多个空格（\s*），
+        # 最后是一个表示功率单位的字符串（[kK][Ww]）。这个正则表达式使用了非捕获组（(?:)）来匹配负号和空格，以避免将它们包含在最终的匹配结果中。
         if match_power:
             extracted_power.append(int(match_power.group(1)))
             break
-        elif 'kW' in text or 'KW' in text:
+        elif 'kW' in text or 'KW' in text:#情况2：参数值与单位中间分隔部分太大，被识别为两个文本框
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
@@ -76,10 +76,12 @@ def ocr() -> Dict[str, Any]:
     extracted_efficiency = []
     for text in text_array:
         match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
+        #这段代码使用正则表达式从文本中提取效率值。具体来说，它查找一个或多个数字字符（\d+），后面可能跟着一个小数点和一个或多个数字字符（.\d+），
+        # 然后是一个可选的百分号（%）。这个正则表达式使用了非捕获组（(?:)）来匹配小数点和百分号，以避免将它们包含在最终的匹配结果中。
         if match_efficiency:
-            extracted_efficiency.append(match_efficiency.group(1))
+            extracted_efficiency.append(match_efficiency.group(1))#情况1
             break
-        elif '%' in text:
+        elif '%' in text:#情况2
             index = text_array.index(text)
             if index > 0:
                 if 60 < float(text_array[index - 1]) < 100:
@@ -91,9 +93,11 @@ def ocr() -> Dict[str, Any]:
     for text in text_array:
         match_speed = re.search(r'(\d+(?:\.\d+)?)\s*[rR]\s*m\s*i\s*n', text)
         if match_speed:
-            extracted_rotated_speed.append(match_speed.group(1))
+            extracted_rotated_speed.append(match_speed.group(1))#情况1
+            #具体来说，它查找一个或多个数字字符（\d+），后面可能跟着一个小数点和一个或多个数字字符（.\d+），然后是一个表示速度单位的字符串（[rR] m i n）
+            # 这个正则表达式使用了非捕获组（(?:)）来匹配小数点和速度单位，以避免将它们包含在最终的匹配结果中。
             break
-        elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rmir' in text.lower():
+        elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rmir' in text.lower():#情况2
             index = text_array.index(text)
             if index > 0:
                 extracted_rotated_speed.append(text_array[index - 1])
@@ -102,16 +106,18 @@ def ocr() -> Dict[str, Any]:
     # 提取电机型号
     extracted_motor_type = []
     for text in text_array:
-        match_motor_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)
+        match_motor_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)#情况1
+        #具体来说，它查找一个字符串“型号”，后面可能跟着一个冒号（：）或中文冒号（：），然后是一个或多个非空白字符（[^：\s]+）
+        # 这个正则表达式使用了非捕获组（(?:)）来匹配冒号和空格，以避免将它们包含在最终的匹配结果中。
         if match_motor_type:
             extracted_motor_type = match_motor_type.group(1)
-            print("1", extracted_motor_type)
+            print("情况1：", extracted_motor_type)
             break
-        elif '型号' in text or 'type' in text:
+        elif '型号' in text or 'type' in text:#情况2
             index = text_array.index(text)
             if 0 <= index < len(text_array) - 1:
                 extracted_motor_type = text_array[index + 1]
-                print("2", extracted_motor_type)
+                print("情况2", extracted_motor_type)
                 break
     
     print("功率：", extracted_power)
@@ -150,7 +156,7 @@ def is_backward():
     is_backward = "不是落后设备"
     batch = "无"
     for device in backward_devices_list:
-        # 如果设备名在data['motor_type']中（无视大小写）
+        # 如果设备名在data['motor_type']中（无视大小写）但如何处理有中文的设备？待修正
         if device.name.lower() in data['motor_type'].lower():
             # 将is_backward设为"是落后设备"
             is_backward = "是落后设备"
@@ -161,7 +167,7 @@ def is_backward():
     return jsonify({'is_backward': is_backward, 'batch': batch})
 
 
-async def process_file(file):
+async def process_file(file):#文件处理功能，等待能效计算函数中
     df = pd.read_excel(file)
     
     required_columns = ['转速', '效率', '额定功率']
@@ -175,14 +181,14 @@ async def process_file(file):
     return df
 
 
-async def process_files(files):
+async def process_files(files):#文件处理功能，等待能效计算函数中
     processed_files = []
     for file in files:
         processed_df = await process_file(file)
         processed_files.append(processed_df)
     return processed_files
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['POST'])#上传多个文件的函数，调用上面的两个处理文件的函数并返回给前端下载
 def upload_files():
     uploaded_files = request.files.getlist('files[]')
     loop = asyncio.new_event_loop()
@@ -209,7 +215,7 @@ def download_file(filename):
     # 提供文件下载
     return send_file(filename, as_attachment=True)
 
-class LiSi(db.Model):
+class LiSi(db.Model):#持久层框架样例，用于显示某用户的所有拍摄记录
     __tablename__ = '李四'
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(255))
@@ -218,7 +224,7 @@ class LiSi(db.Model):
     record_place = db.Column(db.String(255))
     record_time = db.Column(db.DateTime)
 
-class User(db.Model):
+class User(db.Model):#用户表
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
@@ -227,11 +233,11 @@ class User(db.Model):
     identity = db.Column(db.String(120), nullable=False)
     password = db.Column(db.String(120), nullable=False)
 
-def hash_password(password):
+def hash_password(password):#md5加密密码
     md5 = hashlib.md5()
     md5.update(password.encode('utf-8'))
     return md5.hexdigest()
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST'])#注册功能
 def register():
     data = request.json
 
@@ -258,7 +264,7 @@ def register():
 
     return jsonify({'message': '注册成功'})
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST'])#登录功能
 def login():
     data = request.json
 
@@ -279,7 +285,7 @@ def login():
     else:
         return jsonify({'error': '姓名或密码错误'}), 401
 
-@app.route('/lisidata', methods=['GET'])
+@app.route('/lisidata', methods=['GET'])#获取李四的历史拍摄数据
 def get_lisi_data():
     lisi_data = LiSi.query.all()
     lisi_json = []
