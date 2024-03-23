@@ -64,7 +64,7 @@
 		    // 从本地存储中获取参数
 		    this.company = uni.getStorageSync('company') || '';
 		    // 清空本地存储，确保下一次可以重新设置
-		    uni.removeStorageSync('company');
+		    // uni.removeStorageSync('company');
 		},
 		methods:{
 			modify(){

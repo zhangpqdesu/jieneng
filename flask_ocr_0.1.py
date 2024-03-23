@@ -33,108 +33,111 @@ class OcrResponse:
 
     def dict(self) -> Dict[str, Any]:
         return {'results': self.results}
-#ocr函数
-@app.route('/ocr', methods=['POST'])
-def ocr() -> Dict[str, Any]:
-    file = request.files['image']
+def save_image_and_ocr(file):
     img_bytes = file.read()
     image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
-    
+
     upload_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     image_filename = f"receiveImage/{upload_time}.jpg"
     os.makedirs("receiveImage", exist_ok=True)
     image.save(image_filename)
-    
+
     res = OCR_MODEL.ocr(image)
     for _one in res:
         _one['position'] = _one['position'].tolist()
         if 'cropped_img' in _one:
             _one.pop('cropped_img')
 
-#以上功能：将文件存到receiveImage目录下，并调用ocr函数进行文字识别
-    text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]#基于ocr服务返回的原始格式修改，提取出所有文字，并整理为数组
-    print(text_array)
-    
-    # 提取电机功率（这里需要添加判断逻辑，根据水泵、电机、风机的类型不同，编写不同的正则表达式进行参数提取，目前只写了电机的）
+    text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]
+    return text_array
+
+def extract_motor_parameters(text_array):
     extracted_power = []
+    extracted_efficiency = []
+    extracted_rotated_speed = []
+    extracted_motor_type = []
+
     for text in text_array:
-        match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)#情况1：参数与单位在统一文本框中
-        #具体来说，它查找一个或多个数字字符（\d+），后面可能跟着零个或多个空格（\s*），然后是一个可选的负号（-?），再后面是零个或多个空格（\s*），
-        # 最后是一个表示功率单位的字符串（[kK][Ww]）。这个正则表达式使用了非捕获组（(?:)）来匹配负号和空格，以避免将它们包含在最终的匹配结果中。
+        match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)
         if match_power:
             extracted_power.append(int(match_power.group(1)))
             break
-        elif 'kW' in text or 'KW' in text:#情况2：参数值与单位中间分隔部分太大，被识别为两个文本框
+        elif 'kW' in text or 'KW' in text:
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
                 if previous_text.isdigit():
                     extracted_power.append(int(previous_text))
                     break
-    
-    # 提取效率
-    extracted_efficiency = []
+
     for text in text_array:
         match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
-        #这段代码使用正则表达式从文本中提取效率值。具体来说，它查找一个或多个数字字符（\d+），后面可能跟着一个小数点和一个或多个数字字符（.\d+），
-        # 然后是一个可选的百分号（%）。这个正则表达式使用了非捕获组（(?:)）来匹配小数点和百分号，以避免将它们包含在最终的匹配结果中。
         if match_efficiency:
-            extracted_efficiency.append(match_efficiency.group(1))#情况1
+            extracted_efficiency.append(match_efficiency.group(1))
             break
-        elif '%' in text:#情况2
+        elif '%' in text:
             index = text_array.index(text)
             if index > 0:
                 if 60 < float(text_array[index - 1]) < 100:
                     extracted_efficiency.append(text_array[index - 1])
                     break
-    
-    # 提取转速
-    extracted_rotated_speed = []
+
     for text in text_array:
         match_speed = re.search(r'(\d+(?:\.\d+)?)\s*[rR]\s*m\s*i\s*n', text)
         if match_speed:
-            extracted_rotated_speed.append(match_speed.group(1))#情况1
-            #具体来说，它查找一个或多个数字字符（\d+），后面可能跟着一个小数点和一个或多个数字字符（.\d+），然后是一个表示速度单位的字符串（[rR] m i n）
-            # 这个正则表达式使用了非捕获组（(?:)）来匹配小数点和速度单位，以避免将它们包含在最终的匹配结果中。
+            extracted_rotated_speed.append(match_speed.group(1))
             break
-        elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rmir' in text.lower():#情况2
+        elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rmir' in text.lower():
             index = text_array.index(text)
             if index > 0:
                 extracted_rotated_speed.append(text_array[index - 1])
                 break
-    
-    # 提取电机型号
-    extracted_motor_type = []
+
     for text in text_array:
-        match_motor_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)#情况1
-        #具体来说，它查找一个字符串“型号”，后面可能跟着一个冒号（：）或中文冒号（：），然后是一个或多个非空白字符（[^：\s]+）
-        # 这个正则表达式使用了非捕获组（(?:)）来匹配冒号和空格，以避免将它们包含在最终的匹配结果中。
+        match_motor_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)
         if match_motor_type:
             extracted_motor_type = match_motor_type.group(1)
             print("情况1：", extracted_motor_type)
             break
-        elif '型号' in text or 'type' in text:#情况2
+        elif '型号' in text or 'type' in text:
             index = text_array.index(text)
             if 0 <= index < len(text_array) - 1:
                 extracted_motor_type = text_array[index + 1]
                 print("情况2", extracted_motor_type)
                 break
+
+    return extracted_power, extracted_efficiency, extracted_rotated_speed, extracted_motor_type
+
+@app.route('/ocr', methods=['POST'])
+def ocr() -> Dict[str, Any]:
+    file = request.files['image']
+    text_array = save_image_and_ocr(file)
+    print(text_array)
+    if('电机' or '电动机' in text_array):
+        extracted_power, extracted_efficiency, extracted_rotated_speed, extracted_motor_type = extract_motor_parameters(text_array)
+        typeIndex=1
+        print("功率：", extracted_power)
+        print("效率：", extracted_efficiency)
+        print("转速：", extracted_rotated_speed)
+        print("型号：", extracted_motor_type)
+        
+        response_data = {
+            "power": extracted_power,
+            "efficiency": extracted_efficiency,
+            "rotated_speed": extracted_rotated_speed,
+            "motor_type": extracted_motor_type,
+            "typeIndex":typeIndex
+        }
+
+        return jsonify(response_data)
+    elif ('风机' in text_array):
+        typeIndex=0
+        return "typeIndex:0"
+    elif('循环泵'in text_array):
+        typeIndex=2
+        return "typeIndex:2"
     
-    print("功率：", extracted_power)
-    print("效率：", extracted_efficiency)
-    print("转速：", extracted_rotated_speed)
-    print("型号：", extracted_motor_type)
-    
-    # 构建返回给前端的字典
-    response_data = {
-        "power": extracted_power,
-        "efficiency": extracted_efficiency,
-        "rotated_speed": extracted_rotated_speed,
-        "motor_type": extracted_motor_type
-    }
-    
-    # 返回 JSON 响应
-    return jsonify(response_data)
+    return "no matched devices!"
 
 class backward_devices(db.Model):
     __tablename__ = '落后设备'
@@ -142,7 +145,6 @@ class backward_devices(db.Model):
     name = db.Column(db.String(50), primary_key=True)
     batch = db.Column(db.String(50))
 
-from flask import jsonify
 
 @app.route('/is_backward', methods=['POST'])
 def is_backward():
@@ -165,6 +167,8 @@ def is_backward():
 
     print(is_backward, batch)
     return jsonify({'is_backward': is_backward, 'batch': batch})
+
+
 
 
 async def process_file(file):#文件处理功能，等待能效计算函数中
@@ -214,15 +218,6 @@ def upload_files():
 def download_file(filename):
     # 提供文件下载
     return send_file(filename, as_attachment=True)
-
-class LiSi(db.Model):#持久层框架样例，用于显示某用户的所有拍摄记录
-    __tablename__ = '李四'
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(255))
-    type = db.Column(db.String(255))
-    energy_consumption = db.Column(db.String(255))
-    record_place = db.Column(db.String(255))
-    record_time = db.Column(db.DateTime)
 
 class User(db.Model):#用户表
     __tablename__ = 'users'
@@ -285,20 +280,69 @@ def login():
     else:
         return jsonify({'error': '姓名或密码错误'}), 401
 
-@app.route('/lisidata', methods=['GET'])#获取李四的历史拍摄数据
-def get_lisi_data():
-    lisi_data = LiSi.query.all()
-    lisi_json = []
-    for data in lisi_data:
-        lisi_json.append({
-            'id': data.id,
-            'url': data.url,
-            'type': data.type,
-            'energy_consumption': data.energy_consumption,
-            'record_place': data.record_place,
-            'record_time': data.record_time.strftime('%Y-%m-%d %H:%M:%S') if data.record_time else None
-        })
-    return jsonify(lisi_json)
+class UserPhoto(db.Model):
+    __tablename__ = 'user_photos'
+
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(255), nullable=False)
+    url = db.Column(db.String(255), default=None)
+    type = db.Column(db.String(255), default=None)
+    energy_consumption = db.Column(db.String(255), default=None)
+    record_place = db.Column(db.String(255), default=None)
+    record_time = db.Column(db.TIMESTAMP, nullable=False, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    is_backward= db.Column(db.String(255), default=None)
+    extra_info=db.Column(db.String(255),default=None)
+    
+@app.route('/listdata', methods=['GET'])
+def list_user_photos():
+    # 获取前端传递的用户名参数
+    username = request.args.get('username')
+
+    if not username:
+        return jsonify({'error': 'Username is required'}), 400
+
+    # 查询该用户名对应的所有user_photos记录
+    user_photos = UserPhoto.query.filter_by(username=username).all()
+    print("user数据：")
+    for photo in user_photos:
+        print("id:", photo.id)
+        print("record_place:", photo.record_place)
+        print("type:", photo.type)
+        print("energy_consumption:", photo.energy_consumption)
+        print("record_time:", photo.record_time)
+        print("is_backward:",photo.is_backward)
+        print("extra_info",photo.extra_info)
+    # 将查询到的数据转换为适合前端的格式
+    photos_data = [{
+        'id': photo.id,
+        'record_place': photo.record_place,
+        'type': photo.type,
+        'is_backward':photo.is_backward,
+        "extra_info":photo.extra_info,
+        'energy_consumption': photo.energy_consumption,
+        'record_time': photo.record_time.strftime('%Y-%m-%d %H:%M:%S') if photo.record_time else None
+    } for photo in user_photos]
+
+    return jsonify({'data': photos_data})
+
+@app.route('/save_photo_data', methods=['POST'])
+def save_photo_data():
+    data = request.json
+    photo = UserPhoto(
+        username=data.get('username'),
+        url=data.get('imgUrl'),
+        type=data.get('type'),  # 根据你的业务逻辑提供类型
+        energy_consumption=data.get('efficiency'),  # 你可能需要调整字段名称和数据来源
+        record_place='SCU',  # 根据你的业务逻辑提供记录地点
+        is_backward=data.get('is_backward'),  # 你可能需要计算 is_backward 或者从前端传递
+        extra_info=data.get('extraInfo')
+    )
+    db.session.add(photo)
+    db.session.commit()
+    
+    # 返回存储成功的提示或者其他数据
+    return jsonify({'message': 'Photo data stored successfully'})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

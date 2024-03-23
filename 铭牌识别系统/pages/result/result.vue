@@ -21,8 +21,22 @@
 				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
 				<view class="content">效率（%）:<input class="input" v-model="list.efficiency" /></view>
 				<view class="content">型号:<input class="input" v-model="list.motor_type" /></view>
-				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>
-				
+				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>	
+				<view class="content">出厂时间：<input class="input" v-model="list.run_time" /></view>
+				<view class="content">
+				    类型:
+				    <select class="content" v-model="list.motor_type_classification">
+				      <option value="三相异步电动机">三相异步电动机</option>
+				      <option value="电容起动异步电动机">电容起动异步电动机</option>
+				      <option value="电容运转异步电动机">电容运转异步电动机</option>
+				      <option value="双值电容异步电动机">双值电容异步电动机</option>
+				      <option value="空调器风扇用异步电动机">空调器风扇用异步电动机</option>
+				      <option value="异步起动三相永磁同步电动机">异步起动三相永磁同步电动机</option>
+				      <option value="空调器风扇用无刷直流电动机">空调器风扇用无刷直流电动机</option>
+				      <option value="电梯用永磁同步电动机">电梯用永磁同步电动机</option>
+				      <option value="变频驱动永磁同步电动机">变频驱动永磁同步电动机</option>
+				    </select>
+				  </view>
 			</view>
 			<view class="box2" v-else>
 				<view class="content">主轴转速:<input class="input" v-model="list.rpm" />r/s</view>
@@ -30,16 +44,18 @@
 				<view class="content">滞止压力:<input class="input" v-model="list.press" />V</view>
 				<view class="content">修正系数:<input class="input" v-model="list.correction" /></view>
 				<view class="content">型号:<input class="input" v-model="list.pump_type" /></view>
+				
 			</view>
 			
 			<view class="line"></view>
+			
 			<image class="import" src="/static/photo/导入.png" mode="aspectFit" @click="clickImport"></image>
 			
-			<view class="result" v-model="list.batch">
+			<view class="result" v-model="list.energy_consumption">
 				<view>能效等级：</view>
-				<view style="font-weight: bold;">{{list.grade}}3级</view>
+				<view style="font-weight: bold;">{{list.energy_consumption}}3级</view>
 			</view>
-			<view class="result" v-model="list.batch">
+			<view class="result" v-model="list.is_backward">
 				<view>是否淘汰：</view>
 				<view style="font-weight: bold;">{{list.is_backward}}</view>
 			</view>
@@ -47,12 +63,13 @@
 				<view>来源：</view>
 				<view style="font-weight: bold;">{{list.batch}}</view>
 			</view>
-			
+			<view style="font-weight: bold;">备注:<input class="input" v-model="list.extraInfo" /></view>
 			<view class="flip">
 				<button class="button" hover-class="button2">上一页</button>
 				<button class="button" hover-class="button2">下一页</button>
 			</view>
-			
+			<button class="send-button" @click="sendToBackend">发送数据到后端</button>
+
 			<button class="return" hover-class="return2" @click="clickReturn">返回首页</button>
 			
 		</view>
@@ -66,24 +83,26 @@
 		    // 在 mounted 钩子中获取 OCR 结果参数并展示
 		    var ocrResult = uni.getStorageSync('ocrResult');
 			var imgUrl = uni.getStorageSync('imgUrl');
-		    if (ocrResult && imgUrl) {
+		    if (ocrResult && imgUrl&&ocrResult.typeIndex==1) {
 		        // 展示 OCR 结果中的参数
 		        console.log('efficiency:', ocrResult.efficiency);
 		        console.log('power:', ocrResult.power);
 				console.log('rotated_speed:', ocrResult.rotated_speed);
 				console.log('motor_type:',ocrResult.motor_type);
 		        console.log('imgUrl:',imgUrl);
+				console.log('original typeIndex:',ocrResult.typeIndex);
 				this.list.efficiency = ocrResult.efficiency;
 		        this.list.power = ocrResult.power;
 		        this.list.rotated_speed = ocrResult.rotated_speed;
 				this.list.motor_type=ocrResult.motor_type;
 				this.list.imgUrl=imgUrl;
+				this.typeIndex=ocrResult.typeIndex;
 				this.sendData();
 				// 成功获取并展示 OCR 结果后删除缓存数据
 				uni.removeStorageSync('ocrResult');
 				uni.removeStorageSync('imgUrl');
 				console.log('缓存数据已删除');
-
+				
 		    } else {
 		        console.error('未获取到 OCR 结果');
 		    }
@@ -111,20 +130,62 @@
 					correction:"",
 					power:"",
 					batch:"",
-					grade:"",
+					energy_consumption:"",
 					is_backward:"",
 					imgUrl:"",
 					pump_type:"",
 					fan_type:"",
+					run_time:"",
+					motor_type_classification:"",
+					extraInfo:"",
+					record_place:"SCU",
+					record_time:""
 				}
 			};
 		},
 		
 		methods:{
+			// async sendToBackend() {
+			//     try {
+			//         if (this.typeIndex === 1) {
+			//             const dataToSend = {
+			// 				username:uni.getStorageSync('name'),
+			//                 imgUrl: this.list.imgUrl,
+			//                 motor_type: this.list.motor_type,
+			//                 energy_consumption: this.list.efficiency, // 这里假设 efficiency 对应 energy_consumption
+			//                 record_place: 'SCU', // 根据需求设置记录地点
+			//                 record_time: new Date(), // 根据需求设置记录时间
+			//                 extra_info: this.list.extraInfo
+			//             };
+			
+			//             const response = await fetch('/save_photo_data', {
+			//                 method: 'POST',
+			//                 headers: {
+			//                     'Content-Type': 'application/json'
+			//                 },
+			//                 body: JSON.stringify(dataToSend)
+			//             });
+			
+			//             if (!response.ok) {
+			//                 throw new Error('Network response was not ok');
+			//             }
+			
+			//             // 处理后端返回的数据
+			//             const responseData = await response.json();
+			//             console.log(responseData);
+			//         } else {
+			//             console.log('typeIndex is not 1. No action taken.');
+			//         }
+			//     } catch (error) {
+			//         console.error('Error:', error);
+			//     }
+			// },
+
 			clickImport(){
-				uni.switchTab({
-					url:'/pages/personalCenter/personalCenter'
-				})
+				uni.showToast({
+				    title: '数据已提交',
+				    duration: 2000
+				});
 			},
 			clickType(e){
 				this.typeIndex=e
@@ -143,7 +204,7 @@
 			            },
 			            body: JSON.stringify(this.list)
 			        });
-			
+					
 			        if (!response.ok) {
 			            throw new Error('Network response was not ok');
 			        }
