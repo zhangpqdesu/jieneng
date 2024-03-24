@@ -25,7 +25,7 @@
 			<view v-else class="text2">验证码</view>
 			
 			<view v-if="state" class="border">
-				<input class="block" type="input" placeholder="请输入密码" v-model="message.password">
+				<input class="block" type="password" placeholder="请输入密码" v-model="message.password">
 			</view>
 			<view v-else class="border">
 				<input class="block" type="input" placeholder="请输入验证码" v-model="message.verification">

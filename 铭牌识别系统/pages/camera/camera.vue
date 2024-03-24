@@ -9,8 +9,6 @@
     <!-- 展示选择的图片 -->
     <image :src="imgUrl" mode="aspectFit" v-if="imgUrl" style="width: 300px; height: 300px;"></image>
 
-   
-    
   </view>
 </template>
 
@@ -38,23 +36,25 @@ export default {
     
           // 将选择的图片上传到后端
           uni.uploadFile({
-            url: `${config.SERVER_URL}/ocr`, // 请替换为你的后端接口地址
+            url: `${config.SERVER_URL}/ocr`,
             filePath: res.tempFilePaths[0],
             name: 'image',
             success: function (uploadRes) {
               console.log('上传成功，后端返回数据:', uploadRes.data);
               try {
-                var ocrResult = JSON.parse(uploadRes.data);
-                console.log('解析后的 OCR 结果:', ocrResult);
-                that.ocrResult = ocrResult;
-				// 在发送请求并获取到参数后
-				uni.setStorageSync('ocrResult', ocrResult);
-				uni.setStorageSync('imgUrl',that.imgUrl);
-				uni.reLaunch({
-			  url: '/pages/result/result'
-				});
+                var response = JSON.parse(uploadRes.data);
+                console.log('解析后的响应数据:', response);
+                that.ocrResult = response;
+                
+                // 存储图片路径到本地存储
+                uni.setStorageSync('imgUrl', response.image_filename);
+                
+                // 重定向到结果页面
+                uni.reLaunch({
+                  url: '/pages/result/result'
+                });
               } catch (error) {
-                console.error('解析 OCR 结果出错:', error);
+                console.error('解析响应数据出错:', error);
               }
             },
             fail: function (error) {

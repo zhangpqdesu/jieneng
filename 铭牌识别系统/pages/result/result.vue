@@ -68,7 +68,7 @@
 				<button class="button" hover-class="button2">上一页</button>
 				<button class="button" hover-class="button2">下一页</button>
 			</view>
-			<button class="send-button" @click="sendToBackend">发送数据到后端</button>
+			<button class="send-button" @click="save_records">发送数据到后端</button>
 
 			<button class="return" hover-class="return2" @click="clickReturn">返回首页</button>
 			
@@ -83,6 +83,8 @@
 		    // 在 mounted 钩子中获取 OCR 结果参数并展示
 		    var ocrResult = uni.getStorageSync('ocrResult');
 			var imgUrl = uni.getStorageSync('imgUrl');
+			var company=uni.getStorageSync('company');
+			var username=uni.getStorageSync('name');
 		    if (ocrResult && imgUrl&&ocrResult.typeIndex==1) {
 		        // 展示 OCR 结果中的参数
 		        console.log('efficiency:', ocrResult.efficiency);
@@ -90,6 +92,7 @@
 				console.log('rotated_speed:', ocrResult.rotated_speed);
 				console.log('motor_type:',ocrResult.motor_type);
 		        console.log('imgUrl:',imgUrl);
+				console.log('username:',username);
 				console.log('original typeIndex:',ocrResult.typeIndex);
 				this.list.efficiency = ocrResult.efficiency;
 		        this.list.power = ocrResult.power;
@@ -97,10 +100,13 @@
 				this.list.motor_type=ocrResult.motor_type;
 				this.list.imgUrl=imgUrl;
 				this.typeIndex=ocrResult.typeIndex;
+				this.list.record_place=company;
+				this.list.username=username;
 				this.sendData();
 				// 成功获取并展示 OCR 结果后删除缓存数据
 				uni.removeStorageSync('ocrResult');
 				uni.removeStorageSync('imgUrl');
+				
 				console.log('缓存数据已删除');
 				
 		    } else {
@@ -113,9 +119,9 @@
 		data() {
 			return {
 				typeArr:[
-					{id:1,title:"风机"},
-					{id:2,title:"电机"},
-					{id:3,title:"水泵"}
+					{id:0,title:"风机"},
+					{id:1,title:"电机"},
+					{id:2,title:"水泵"}
 				],
 				
 				typeIndex:0,
@@ -138,49 +144,14 @@
 					run_time:"",
 					motor_type_classification:"",
 					extraInfo:"",
-					record_place:"SCU",
-					record_time:""
+					record_place:"",
+					record_time:"",
+					name:""
 				}
 			};
 		},
 		
 		methods:{
-			// async sendToBackend() {
-			//     try {
-			//         if (this.typeIndex === 1) {
-			//             const dataToSend = {
-			// 				username:uni.getStorageSync('name'),
-			//                 imgUrl: this.list.imgUrl,
-			//                 motor_type: this.list.motor_type,
-			//                 energy_consumption: this.list.efficiency, // 这里假设 efficiency 对应 energy_consumption
-			//                 record_place: 'SCU', // 根据需求设置记录地点
-			//                 record_time: new Date(), // 根据需求设置记录时间
-			//                 extra_info: this.list.extraInfo
-			//             };
-			
-			//             const response = await fetch('/save_photo_data', {
-			//                 method: 'POST',
-			//                 headers: {
-			//                     'Content-Type': 'application/json'
-			//                 },
-			//                 body: JSON.stringify(dataToSend)
-			//             });
-			
-			//             if (!response.ok) {
-			//                 throw new Error('Network response was not ok');
-			//             }
-			
-			//             // 处理后端返回的数据
-			//             const responseData = await response.json();
-			//             console.log(responseData);
-			//         } else {
-			//             console.log('typeIndex is not 1. No action taken.');
-			//         }
-			//     } catch (error) {
-			//         console.error('Error:', error);
-			//     }
-			// },
-
 			clickImport(){
 				uni.showToast({
 				    title: '数据已提交',
@@ -220,7 +191,46 @@
 			    } catch (error) {
 			        console.error('Error:', error);
 			    }
+			},
+			async save_records() {
+			    try {
+			        // 构建需要发送给后端的对象
+			        const requestData = {
+			            username: this.list.username,  // 替换为真实的用户名或者从页面获取
+			            imgUrl: this.list.imgUrl,
+			            type: this.typeArr[this.typeIndex].title, // 获取当前选中的类型
+			            energy_consumption:this.list.energy_consumption,
+						record_place:this.list.record_place,
+						//时间自动指定为发送请求的时间
+						
+			            is_backward: this.list.is_backward,
+			            extraInfo: this.list.extraInfo
+			            // 添加其他参数
+			        };
+			
+			        const response = await fetch(`${config.SERVER_URL}/save_photo_data`, {
+			            method: 'POST',
+			            headers: {
+			                'Content-Type': 'application/json'
+			            },
+			            body: JSON.stringify(requestData)
+			        });
+			        
+			        if (!response.ok) {
+			            throw new Error('Network response was not ok');
+			        }
+			
+			        // 处理后端返回的数据
+			        const responseData = await response.json();
+			        console.log(responseData);
+			
+			        // 更新页面或者执行其他操作
+			
+			    } catch (error) {
+			        console.error('Error:', error);
+			    }
 			}
+
 
 		}
 	}

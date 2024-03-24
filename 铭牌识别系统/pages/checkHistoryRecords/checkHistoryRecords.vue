@@ -17,6 +17,7 @@
       <view v-for="(item, index) in listData" :key="index" class="item">
         <image class="item-image" :src="item.url"></image>
         <view class="item-details">
+		  <text class="record-place">记录url: {{ item.url }}</text>
           <text class="record-place">记录地址: {{ item.record_place }}</text>
           <text class="type">机器类型: {{ item.type }}</text>
           <text class="energy-consumption">机器能效：{{ item.energy_consumption }}</text>

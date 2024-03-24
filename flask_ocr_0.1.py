@@ -168,9 +168,6 @@ def is_backward():
     print(is_backward, batch)
     return jsonify({'is_backward': is_backward, 'batch': batch})
 
-
-
-
 async def process_file(file):#文件处理功能，等待能效计算函数中
     df = pd.read_excel(file)
     
@@ -235,7 +232,6 @@ def hash_password(password):#md5加密密码
 @app.route('/register', methods=['POST'])#注册功能
 def register():
     data = request.json
-
     name = data.get('name')
     phone = data.get('phone')
     workplace = data.get('workplace')
@@ -306,6 +302,7 @@ def list_user_photos():
     print("user数据：")
     for photo in user_photos:
         print("id:", photo.id)
+        print("url:",photo.url)
         print("record_place:", photo.record_place)
         print("type:", photo.type)
         print("energy_consumption:", photo.energy_consumption)
@@ -315,6 +312,7 @@ def list_user_photos():
     # 将查询到的数据转换为适合前端的格式
     photos_data = [{
         'id': photo.id,
+        'url':photo.url,
         'record_place': photo.record_place,
         'type': photo.type,
         'is_backward':photo.is_backward,
@@ -333,7 +331,7 @@ def save_photo_data():
         url=data.get('imgUrl'),
         type=data.get('type'),  # 根据你的业务逻辑提供类型
         energy_consumption=data.get('efficiency'),  # 你可能需要调整字段名称和数据来源
-        record_place='SCU',  # 根据你的业务逻辑提供记录地点
+        record_place=data.get('record_place'),  # 根据你的业务逻辑提供记录地点
         is_backward=data.get('is_backward'),  # 你可能需要计算 is_backward 或者从前端传递
         extra_info=data.get('extraInfo')
     )
