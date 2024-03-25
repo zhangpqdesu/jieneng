@@ -1,5 +1,6 @@
 import io
 import os
+import waitress
 from copy import deepcopy
 from typing import List, Dict, Any
 import re
@@ -59,38 +60,39 @@ def extract_motor_parameters(text_array):
 
     for text in text_array:
         match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)
+        
         if match_power:
-            extracted_power.append(int(match_power.group(1)))
+            extracted_power=(int(match_power.group(1)))
             break
         elif 'kW' in text or 'KW' in text:
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
                 if previous_text.isdigit():
-                    extracted_power.append(int(previous_text))
+                    extracted_power=(int(previous_text))
                     break
 
     for text in text_array:
         match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
         if match_efficiency:
-            extracted_efficiency.append(match_efficiency.group(1))
+            extracted_efficiency=(match_efficiency.group(1))
             break
         elif '%' in text:
             index = text_array.index(text)
             if index > 0:
                 if 60 < float(text_array[index - 1]) < 100:
-                    extracted_efficiency.append(text_array[index - 1])
+                    extracted_efficiency=(text_array[index - 1])
                     break
 
     for text in text_array:
         match_speed = re.search(r'(\d+(?:\.\d+)?)\s*[rR]\s*m\s*i\s*n', text)
         if match_speed:
-            extracted_rotated_speed.append(match_speed.group(1))
+            extracted_rotated_speed=(match_speed.group(1))
             break
         elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rmir' in text.lower():
             index = text_array.index(text)
             if index > 0:
-                extracted_rotated_speed.append(text_array[index - 1])
+                extracted_rotated_speed=(text_array[index - 1])
                 break
 
     for text in text_array:
@@ -343,4 +345,4 @@ def save_photo_data():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    waitress.serve(app, host='127.0.0.1', port=5000)

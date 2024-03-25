@@ -45,9 +45,9 @@ export default {
                 var response = JSON.parse(uploadRes.data);
                 console.log('解析后的响应数据:', response);
                 that.ocrResult = response;
-                
+                uni.setStorageSync('ocrResult',response);
                 // 存储图片路径到本地存储
-                uni.setStorageSync('imgUrl', response.image_filename);
+                uni.setStorageSync('imgUrl', res.tempFilePaths[0]);
                 
                 // 重定向到结果页面
                 uni.reLaunch({

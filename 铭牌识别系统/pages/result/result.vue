@@ -81,10 +81,22 @@
 	export default {
 		mounted() {
 		    // 在 mounted 钩子中获取 OCR 结果参数并展示
+		    // 从本地存储中获取 ocr 结果
 		    var ocrResult = uni.getStorageSync('ocrResult');
-			var imgUrl = uni.getStorageSync('imgUrl');
-			var company=uni.getStorageSync('company');
-			var username=uni.getStorageSync('name');
+		    console.log('OCR 结果:', ocrResult);
+		    
+		    // 从本地存储中获取图片 URL
+		    var imgUrl = uni.getStorageSync('imgUrl');
+		    console.log('图片 URL:', imgUrl);
+		    
+		    // 从本地存储中获取公司名称
+		    var company = uni.getStorageSync('company');
+		    console.log('公司名称:', company);
+		    
+		    // 从本地存储中获取用户名
+		    var username = uni.getStorageSync('name');
+		    console.log('用户名:', username);
+			
 		    if (ocrResult && imgUrl&&ocrResult.typeIndex==1) {
 		        // 展示 OCR 结果中的参数
 		        console.log('efficiency:', ocrResult.efficiency);
