@@ -85,7 +85,7 @@ def extract_motor_parameters(text_array):
                     break
 
     for text in text_array:
-        match_speed = re.search(r'(\d+(?:\.\d+)?)\s*[rR]\s*m\s*i\s*n', text)
+        match_speed = re.search( r'(\d+)\s*[rR]/min', text)
         if match_speed:
             extracted_rotated_speed=(match_speed.group(1))
             break
@@ -110,14 +110,81 @@ def extract_motor_parameters(text_array):
 
     return extracted_power, extracted_efficiency, extracted_rotated_speed, extracted_motor_type
 
+def extract_pump_parameters(text_array):
+    extracted_speed = None
+    extracted_flow_rate = None
+    extracted_head = None
+    extracted_model = None
+
+    # 提取转速（单位为r/min）
+    for i, text in enumerate(text_array):
+        match_speed = re.search(r'(\d+)\s*[rR]/min', text)
+        if match_speed:
+            extracted_speed = match_speed.group(1)
+            break
+        elif 'r/min' in text.lower() or 'rmin' in text.lower() or 'rmir' in text.lower():
+            if i > 0:
+                previous_text = text_array[i - 1]
+                # if previous_text.isdigit():
+                extracted_speed = previous_text
+                break
+
+    # 提取流量（单位为m³/h）
+    for text in text_array:
+        match_flow_rate = re.search(r'(\d+)\s*[mM]³/h', text)
+        if match_flow_rate:
+            extracted_flow_rate = match_flow_rate.group(1)
+            break
+        elif 'm3/h' in text.lower():
+            index = text_array.index(text)
+            if index > 0:
+                previous_text = text_array[index - 1]
+                if previous_text.isdigit():
+                    extracted_flow_rate = previous_text
+                    break
+
+    # 提取扬程（单位为m）
+    for text in text_array:
+        match_head = re.search(r'(\d+)(?=\s*[mM]$)', text)
+        if match_head:
+            extracted_head = match_head.group(1)
+            break
+        elif text.lower()=='m':
+            index = text_array.index(text)
+            if index > 0:
+                previous_text = text_array[index - 1]
+                if previous_text.isdigit():
+                    extracted_head = previous_text
+                    break
+
+    # 提取型号
+    for text in text_array:
+        match_model = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)
+        if match_model:
+            extracted_model = match_model.group(1)
+            print("情况1：", extracted_model)
+            break
+        elif '型号' in text or 'model' in text:
+            index = text_array.index(text)
+            if 0 <= index < len(text_array) - 1:
+                extracted_model = text_array[index + 1]
+                print("情况2", extracted_model)
+                break
+
+    return extracted_speed, extracted_flow_rate, extracted_head, extracted_model
+
+
 @app.route('/ocr', methods=['POST'])
 def ocr() -> Dict[str, Any]:
     file = request.files['image']
     text_array = save_image_and_ocr(file)
     print(text_array)
-    if('电机' or '电动机' in text_array):
+    
+    if any('电机' in text or '电动机' in text for text in text_array):
+    # 电机相关的逻辑
         extracted_power, extracted_efficiency, extracted_rotated_speed, extracted_motor_type = extract_motor_parameters(text_array)
         typeIndex=1
+        print("typeIndex:",typeIndex)
         print("功率：", extracted_power)
         print("效率：", extracted_efficiency)
         print("转速：", extracted_rotated_speed)
@@ -130,16 +197,33 @@ def ocr() -> Dict[str, Any]:
             "motor_type": extracted_motor_type,
             "typeIndex":typeIndex
         }
-
+        print(response_data)
         return jsonify(response_data)
     elif ('风机' in text_array):
         typeIndex=0
+        print("typeIndex:",typeIndex)
         return "typeIndex:0"
-    elif('循环泵'in text_array):
+    elif ('泵' in text for text in text_array):
         typeIndex=2
-        return "typeIndex:2"
-    
-    return "no matched devices!"
+        print("typeIndex:",typeIndex)
+        extracted_speed, extracted_flow_rate, extracted_head, extracted_model = extract_pump_parameters(text_array)
+        print("转速：", extracted_speed, "r/min")
+        print("流量：", extracted_flow_rate, "m³/h")
+        print("扬程：", extracted_head, "m")
+        print("型号：", extracted_model)
+        
+        response_data = {
+        "typeIndex": typeIndex,
+        "rotate_speed": extracted_speed,  # 转速
+        "flowRate": extracted_flow_rate,  # 流量
+        "head": extracted_head,  # 扬程
+        "model": extracted_model  # 型号
+    }
+        return jsonify(response_data)
+    response_data = {
+        "typeIndex": 0,
+    }
+    return response_data
 
 class backward_devices(db.Model):
     __tablename__ = '落后设备'
@@ -159,13 +243,25 @@ def is_backward():
     results = []
     is_backward = "不是落后设备"
     batch = "无"
+
     for device in backward_devices_list:
-        # 如果设备名在data['motor_type']中（无视大小写）但如何处理有中文的设备？待修正
-        if device.name.lower() in data['motor_type'].lower():
-            # 将is_backward设为"是落后设备"
-            is_backward = "是落后设备"
-            # 返回设备名和对应的batch属性
-            batch = device.batch
+        # 检查设备名中是否包含中文字符
+        contains_chinese = re.search(r'[\u4e00-\u9fff]+', device.name)
+
+        # 如果设备名包含中文字符，则直接比对
+        if contains_chinese:
+            if device.name in data['motor_type']:
+                # 将is_backward设为"是落后设备"
+                is_backward = "是落后设备"
+                # 返回设备名和对应的batch属性
+                batch = device.batch
+        # 如果设备名没有中文字符，则转换为小写后比对
+        else:
+            if device.name.lower() in data['motor_type'].lower():
+                # 将is_backward设为"是落后设备"
+                is_backward = "是落后设备"
+                # 返回设备名和对应的batch属性
+                batch = device.batch
 
     print(is_backward, batch)
     return jsonify({'is_backward': is_backward, 'batch': batch})

@@ -39,11 +39,10 @@
 				  </view>
 			</view>
 			<view class="box2" v-else>
-				<view class="content">主轴转速:<input class="input" v-model="list.rpm" />r/s</view>
-				<view class="content">主轴流量:<input class="input" v-model="list.flow" /></view>
-				<view class="content">滞止压力:<input class="input" v-model="list.press" />V</view>
-				<view class="content">修正系数:<input class="input" v-model="list.correction" /></view>
-				<view class="content">型号:<input class="input" v-model="list.pump_type" /></view>
+				<view class="content">主轴转速:<input class="input" v-model="list.rotate_speed" />r/min</view>
+				<view class="content">主轴流量:<input class="input" v-model="list.flowRate">m³/h</view>
+				<view class="content">扬程:<input class="input" v-model="list.head" />m</view>
+				<view class="content">型号:<input class="input" v-model="list.model" /></view>
 				
 			</view>
 			
@@ -96,31 +95,42 @@
 		    // 从本地存储中获取用户名
 		    var username = uni.getStorageSync('name');
 		    console.log('用户名:', username);
-			
-		    if (ocrResult && imgUrl&&ocrResult.typeIndex==1) {
-		        // 展示 OCR 结果中的参数
-		        console.log('efficiency:', ocrResult.efficiency);
-		        console.log('power:', ocrResult.power);
-				console.log('rotated_speed:', ocrResult.rotated_speed);
-				console.log('motor_type:',ocrResult.motor_type);
-		        console.log('imgUrl:',imgUrl);
-				console.log('username:',username);
-				console.log('original typeIndex:',ocrResult.typeIndex);
-				this.list.efficiency = ocrResult.efficiency;
-		        this.list.power = ocrResult.power;
-		        this.list.rotated_speed = ocrResult.rotated_speed;
-				this.list.motor_type=ocrResult.motor_type;
-				this.list.imgUrl=imgUrl;
-				this.typeIndex=ocrResult.typeIndex;
-				this.list.record_place=company;
-				this.list.username=username;
-				this.sendData();
-				// 成功获取并展示 OCR 结果后删除缓存数据
-				uni.removeStorageSync('ocrResult');
-				uni.removeStorageSync('imgUrl');
-				
-				console.log('缓存数据已删除');
-				
+		    
+		    if (ocrResult && imgUrl) {
+		        // 根据 typeIndex 判断设备类型并展示参数
+		        if (ocrResult.typeIndex === 1) {
+		            // 电机逻辑
+		            this.list.efficiency = ocrResult.efficiency;
+		            this.list.power = ocrResult.power;
+		            this.list.rotated_speed = ocrResult.rotated_speed;
+		            this.list.motor_type = ocrResult.motor_type;
+		            this.list.imgUrl = imgUrl;
+		            this.typeIndex = ocrResult.typeIndex;
+		            this.list.record_place = company;
+		            this.list.username = username;
+		            this.sendData();
+		            // 成功获取并展示 OCR 结果后删除缓存数据
+		            uni.removeStorageSync('ocrResult');
+		            uni.removeStorageSync('imgUrl');
+		            
+		            console.log('缓存数据已删除');
+		        } else if (ocrResult.typeIndex === 2) {
+		            // 水泵逻辑
+		            this.list.rotate_speed = ocrResult.rotate_speed; // 转速
+		            this.list.flowRate = ocrResult.flowRate; // 流量
+		            this.list.head = ocrResult.head; // 扬程
+		            this.list.model = ocrResult.model; // 型号
+		            this.list.imgUrl = imgUrl;
+		            this.typeIndex = ocrResult.typeIndex;
+		            this.list.record_place = company;
+		            this.list.username = username;
+		            this.sendData();
+		            // 成功获取并展示 OCR 结果后删除缓存数据
+		            uni.removeStorageSync('ocrResult');
+		            uni.removeStorageSync('imgUrl');
+		            
+		            console.log('缓存数据已删除');
+		        }
 		    } else {
 		        console.error('未获取到 OCR 结果');
 		    }
@@ -131,6 +141,7 @@
 		data() {
 			return {
 				typeArr:[
+					
 					{id:0,title:"风机"},
 					{id:1,title:"电机"},
 					{id:2,title:"水泵"}
@@ -143,7 +154,7 @@
 					rotated_speed:"",
 					motor_type:"",
 					rpm:"",
-					flow:"",
+					flowRate:"",
 					press:"",
 					correction:"",
 					power:"",
@@ -158,7 +169,9 @@
 					extraInfo:"",
 					record_place:"",
 					record_time:"",
-					name:""
+					name:"",
+					head:"",
+					model:""
 				}
 			};
 		},
