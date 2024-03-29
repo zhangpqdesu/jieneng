@@ -68,9 +68,9 @@ def extract_motor_parameters(text_array):
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
-                if previous_text.isdigit():
-                    extracted_power=(int(previous_text))
-                    break
+                
+                extracted_power=(int(previous_text))
+                break
 
     for text in text_array:
         match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
@@ -125,7 +125,7 @@ def extract_pump_parameters(text_array):
         elif 'r/min' in text.lower() or 'rmin' in text.lower() or 'rmir' in text.lower():
             if i > 0:
                 previous_text = text_array[i - 1]
-                # if previous_text.isdigit():
+                
                 extracted_speed = previous_text
                 break
 
@@ -139,9 +139,9 @@ def extract_pump_parameters(text_array):
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
-                if previous_text.isdigit():
-                    extracted_flow_rate = previous_text
-                    break
+                
+                extracted_flow_rate = previous_text
+                break
 
     # 提取扬程（单位为m）
     for text in text_array:
@@ -153,9 +153,8 @@ def extract_pump_parameters(text_array):
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
-                if previous_text.isdigit():
-                    extracted_head = previous_text
-                    break
+                extracted_head = previous_text
+                break
 
     # 提取型号
     for text in text_array:
@@ -193,30 +192,28 @@ def extract_fan_parameters(text_array):
         elif 'r/min' in text.lower() or 'rmin' in text.lower() or 'rmir' in text.lower():
             if i > 0:
                 previous_text = text_array[i - 1]
-                if previous_text.isdigit():
-                    extracted_speed = previous_text
-                    break
+                extracted_speed = previous_text
+                break
 
     # 提取流量（单位为m³/h）
     # 提取流量（单位为m³/h或m³/min）
     for text in text_array:
         # 匹配m³/h
-        match_flow_rate_h = re.search(r'(\d+)\s*[mM]³/h', text)
+        match_flow_rate_h = re.search(r'(\d+)\s*[mM][³3]/h', text)
         if match_flow_rate_h:
             extracted_flow_rate = match_flow_rate_h.group(1)
             break
         # 匹配m³/min
-        match_flow_rate_min = re.search(r'(\d+)\s*[mM]³/min', text)
+        match_flow_rate_min = re.search(r'(\d+)\s*[mM][3³`]/min', text)
         if match_flow_rate_min:
             extracted_flow_rate = match_flow_rate_min.group(1)
             break
-        elif 'm3/h' in text.lower() or 'm3/min' in text.lower():
+        elif 'm3/h' in text.lower() or 'm`/min' in text.lower():
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
-                if previous_text.isdigit():
-                    extracted_flow_rate = previous_text
-                    break
+                extracted_flow_rate = previous_text
+                break
 
     # 提取压力（单位为Mpa）
     for text in text_array:
@@ -224,13 +221,12 @@ def extract_fan_parameters(text_array):
         if match_pressure:
             extracted_pressure = match_pressure.group(1)
             break
-        elif '[Mm]pa' in text.lower():
+        elif 'mpa' in text.lower():
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
-                if previous_text.isdigit():
-                    extracted_pressure = previous_text
-                    break
+                extracted_pressure = previous_text
+                break
 
     # 提取功率（单位为kW）
     for text in text_array:
@@ -242,9 +238,9 @@ def extract_fan_parameters(text_array):
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
-                if previous_text.isdigit():
-                    extracted_power = previous_text
-                    break
+                
+                extracted_power = previous_text
+                break
 
     # 提取效率（单位为%）
     for text in text_array:
@@ -256,9 +252,8 @@ def extract_fan_parameters(text_array):
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
-                if previous_text.isdigit():
-                    extracted_efficiency = previous_text
-                    break
+                extracted_efficiency = previous_text
+                break
 
     return extracted_speed, extracted_flow_rate, extracted_pressure, extracted_power, extracted_efficiency
 
@@ -283,7 +278,7 @@ def ocr() -> Dict[str, Any]:
             "power": extracted_power,
             "efficiency": extracted_efficiency,
             "rotated_speed": extracted_rotated_speed,
-            "motor_type": extracted_motor_type,
+            "model": extracted_motor_type,
             "typeIndex":typeIndex
         }
         print(response_data)
@@ -342,7 +337,7 @@ class backward_devices(db.Model):
 @app.route('/is_backward', methods=['POST'])
 def is_backward():
     data = request.json
-    print('Received data:', data)
+    print('Received data in is_backward:', data)
     # 查询数据库中所有的落后设备记录
     backward_devices_list = backward_devices.query.all()
 
@@ -357,14 +352,14 @@ def is_backward():
 
         # 如果设备名包含中文字符，则直接比对
         if contains_chinese:
-            if device.name in data['motor_type']:
+            if data['model'] is not None and device.name == data['model'].strip():
                 # 将is_backward设为"是落后设备"
                 is_backward = "是落后设备"
                 # 返回设备名和对应的batch属性
                 batch = device.batch
         # 如果设备名没有中文字符，则转换为小写后比对
         else:
-            if device.name.lower() in data['motor_type'].lower():
+            if data['model'] is not None and device.name.lower() == data['model'].lower().strip():
                 # 将is_backward设为"是落后设备"
                 is_backward = "是落后设备"
                 # 返回设备名和对应的batch属性

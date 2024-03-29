@@ -20,7 +20,7 @@
 			<view class="box2" v-else-if="typeIndex==1">
 				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
 				<view class="content">效率（%）:<input class="input" v-model="list.efficiency" /></view>
-				<view class="content">型号:<input class="input" v-model="list.motor_type" /></view>
+				<view class="content">型号:<input class="input" v-model="list.model" /></view>
 				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>	
 				<view class="content">出厂时间：<input class="input" v-model="list.run_time" /></view>
 				<view class="content">
@@ -103,7 +103,7 @@
 		            this.list.efficiency = ocrResult.efficiency;
 		            this.list.power = ocrResult.power;
 		            this.list.rotated_speed = ocrResult.rotated_speed;
-		            this.list.motor_type = ocrResult.motor_type;
+		            this.list.model = ocrResult.model;
 		            this.list.imgUrl = imgUrl;
 		            this.typeIndex = ocrResult.typeIndex;
 		            this.list.record_place = company;
@@ -170,7 +170,6 @@
 					efficiency:"",
 					power:"",
 					rotated_speed:"",
-					motor_type:"",
 					rpm:"",
 					flowRate:"",
 					pressure:"",
@@ -180,8 +179,6 @@
 					energy_consumption:"",
 					is_backward:"",
 					imgUrl:"",
-					pump_type:"",
-					fan_type:"",
 					run_time:"",
 					motor_type_classification:"",
 					extraInfo:"",
@@ -189,7 +186,7 @@
 					record_time:"",
 					name:"",
 					head:"",
-					model:""
+					model:"",
 				}
 			};
 		},
