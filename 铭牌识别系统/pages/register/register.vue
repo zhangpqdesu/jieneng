@@ -69,6 +69,7 @@
 					});
 					return;
 				};
+				
 				console.log("注册请求数据", this.form);
 				// 构造请求函数
 				const requestData = {
@@ -79,6 +80,9 @@
 					password: this.form.password,
 				};
 				
+	
+					
+				
 				// 发送POST请求
 				uni.request({
 					url: `${config.SERVER_URL}/register`,
@@ -88,8 +92,9 @@
 					success: (res) =>{
 						console.log(res.data);
 						uni.showToast({
-							title: '注册成功',
-							icon: 'success'
+							title: '申请已提交！请等待管理员审批',
+							icon: 'success',
+							duration:2000
 						});
 						uni.navigateTo({
 							url: '/pages/index/index'

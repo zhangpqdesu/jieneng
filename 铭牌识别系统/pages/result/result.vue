@@ -11,11 +11,11 @@
 			<view class="box2" v-if="typeIndex==0">
 				<view class="content">主轴转速:<input class="input" v-model="list.rpm" />r/s</view>
 				<view class="content">主轴流量:<input class="input" v-model="list.flow" /></view>
-				<view class="content">滞止压力:<input class="input" v-model="list.press" />V</view>
+				<view class="content">滞止压力:<input class="input" v-model="list.pressure" />V</view>
 				<view class="content">修正系数:<input class="input" v-model="list.correction" /></view>
-				<view class="content">额定功率:<input class="input" v-model="list.feng_power" />kW</view>
-				<view class="content">效率:<input class="input" v-model="list.feng_efficiency" /></view>
-				<view class="content">型号:<input class="input" v-model="list.fan_type" /></view>
+				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>
+				<view class="content">效率:<input class="input" v-model="list.efficiency" /></view>
+				<view class="content">型号:<input class="input" v-model="list.model" /></view>
 			</view>
 			<view class="box2" v-else-if="typeIndex==1">
 				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
@@ -39,7 +39,7 @@
 				  </view>
 			</view>
 			<view class="box2" v-else>
-				<view class="content">主轴转速:<input class="input" v-model="list.rotate_speed" />r/min</view>
+				<view class="content">主轴转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
 				<view class="content">主轴流量:<input class="input" v-model="list.flowRate">m³/h</view>
 				<view class="content">扬程:<input class="input" v-model="list.head" />m</view>
 				<view class="content">型号:<input class="input" v-model="list.model" /></view>
@@ -116,7 +116,7 @@
 		            console.log('缓存数据已删除');
 		        } else if (ocrResult.typeIndex === 2) {
 		            // 水泵逻辑
-		            this.list.rotate_speed = ocrResult.rotate_speed; // 转速
+		            this.list.rotated_speed = ocrResult.rotated_speed; // 转速
 		            this.list.flowRate = ocrResult.flowRate; // 流量
 		            this.list.head = ocrResult.head; // 扬程
 		            this.list.model = ocrResult.model; // 型号
@@ -130,9 +130,27 @@
 		            uni.removeStorageSync('imgUrl');
 		            
 		            console.log('缓存数据已删除');
+		        } else if (ocrResult.typeIndex === 0) {
+		            // 风机逻辑
+		            this.list.rotated_speed = ocrResult.rotated_speed; // 转速
+		            this.list.flowRate = ocrResult.flowRate; // 流量
+		            this.list.pressure = ocrResult.pressure; // 压力
+		            this.list.power = ocrResult.power; // 功率
+		            this.list.efficiency = ocrResult.efficiency; // 效率
+		            this.list.imgUrl = imgUrl;
+					this.list.model = ocrResult.model; // 型号
+		            this.typeIndex = ocrResult.typeIndex;
+		            this.list.record_place = company;
+		            this.list.username = username;
+		            this.sendData();
+		            // 成功获取并展示 OCR 结果后删除缓存数据
+		            uni.removeStorageSync('ocrResult');
+		            uni.removeStorageSync('imgUrl');
+		            
+		            console.log('缓存数据已删除');
+		        } else {
+		            console.error('未获取到 OCR 结果');
 		        }
-		    } else {
-		        console.error('未获取到 OCR 结果');
 		    }
 		},
 		onShow() {
@@ -155,7 +173,7 @@
 					motor_type:"",
 					rpm:"",
 					flowRate:"",
-					press:"",
+					pressure:"",
 					correction:"",
 					power:"",
 					batch:"",
@@ -178,6 +196,7 @@
 		
 		methods:{
 			clickImport(){
+				this.sendData();
 				uni.showToast({
 				    title: '数据已提交',
 				    duration: 2000
