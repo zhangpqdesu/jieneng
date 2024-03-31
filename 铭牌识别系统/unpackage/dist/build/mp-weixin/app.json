@@ -1,0 +1,47 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/home/home",
+    "pages/camera/camera",
+    "pages/result/result",
+    "pages/register/register",
+    "pages/company/company",
+    "pages/handleFile/handleFile",
+    "pages/checkHistoryRecords/checkHistoryRecords",
+    "pages/personalCenter/personalCenter",
+    "pages/conTactUs/conTactUs"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#fdfce2"
+  },
+  "tabBar": {
+    "borderStyle": "black",
+    "selectedColor": "#FF8D1A",
+    "color": "#808080",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "iconPath": "static/home.png",
+        "selectedIconPath": "static/home1.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/camera/camera",
+        "iconPath": "static/scan.png",
+        "selectedIconPath": "static/scan1.png",
+        "text": "扫描"
+      },
+      {
+        "pagePath": "pages/personalCenter/personalCenter",
+        "iconPath": "static/person.png",
+        "selectedIconPath": "static/person1.png",
+        "text": "个人中心"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

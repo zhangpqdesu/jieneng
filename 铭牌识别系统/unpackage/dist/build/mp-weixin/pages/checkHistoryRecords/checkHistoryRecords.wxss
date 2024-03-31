@@ -1,0 +1,6 @@
+.out{position:relative}.out .default{position:absolute;left:50rpx;top:60rpx;height:120rpx;width:120rpx}.out .personalDetail{position:absolute;left:220rpx;top:60rpx}.out .personalDetail .name{font-size:35rpx}.out .personalDetail .name2{margin-top:30rpx;font-size:25rpx}.line{position:absolute;top:200rpx;width:750rpx;height:10rpx;background-color:#e5e5e5}.user-info{display:flex;align-items:center;margin-top:20rpx}.user-avatar{width:150rpx;height:150rpx;border-radius:50%}.user-name{font-size:32rpx;color:#333;margin-left:20rpx}.file-info{margin-top:20px;border:1px solid #ccc;padding:10px}.btn{margin-top:10px;padding:5px 10px;background-color:#007bff;color:#fff;border:none;border-radius:4px;cursor:pointer}.item{display:flex;align-items:center;padding:10px;border-bottom:1px solid #ccc}.item-image{width:100px;height:100px;margin-right:10px}.item-details{display:flex;flex-direction:column}.record-place,
+.type,
+.is_backward,
+.energy-consumption,
+.extraInfo,
+.record-time{margin-bottom:5px}

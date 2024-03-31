@@ -100,7 +100,9 @@
 }
 .record-place,
 .type,
+.is_backward,
 .energy-consumption,
+.extraInfo,
 .record-time {
   margin-bottom: 5px;
 }
