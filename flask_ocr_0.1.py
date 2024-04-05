@@ -530,7 +530,7 @@ def save_photo_data():
         username=data.get('username'),
         url=data.get('imgUrl'),
         type=data.get('type'),  # 根据你的业务逻辑提供类型
-        energy_consumption=data.get('efficiency'),  # 你可能需要调整字段名称和数据来源
+        energy_consumption=data.get('energy_consumption'),  # 你可能需要调整字段名称和数据来源
         record_place=data.get('record_place'),  # 根据你的业务逻辑提供记录地点
         is_backward=data.get('is_backward'),  # 你可能需要计算 is_backward 或者从前端传递
         extra_info=data.get('extraInfo')

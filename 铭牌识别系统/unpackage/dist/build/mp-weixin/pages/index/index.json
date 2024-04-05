@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "",
-  "usingComponents": {
-    "u-checkbox-group": "/uview-ui/components/u-checkbox-group/u-checkbox-group",
-    "u-checkbox": "/uview-ui/components/u-checkbox/u-checkbox"
-  }
-}

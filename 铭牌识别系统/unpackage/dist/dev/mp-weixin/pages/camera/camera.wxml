@@ -1,1 +1,0 @@
-<view><view class="upload"><image class="image" src="/static/photo/上传图片.png" mode="aspectFit" data-event-opts="{{[['tap',[['chooseImage',['$event']]]]]}}" bindtap="__e"></image><text style="color:#707070;margin-top:10rpx;">点击图标拍照/选择图片</text></view><block wx:if="{{imgUrl}}"><image style="width:300px;height:300px;" src="{{imgUrl}}" mode="aspectFit"></image></block></view>

@@ -1,1 +1,0 @@
-<view class="contact-us"><view class="contact-info"><image class="logo" src="/static/logo.png"></image><view class="info"><text>公司名称：UniApp Corp</text><view class="_br"></view><text>地址：123 Main St, City, Country</text><view class="_br"></view><text>电话：123-456-7890</text><view class="_br"></view><text>邮箱：info@uniapp.com</text></view></view><view class="map"></view></view>
