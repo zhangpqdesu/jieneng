@@ -4,7 +4,7 @@ import waitress
 from copy import deepcopy
 from typing import List, Dict, Any
 import re
-from pydantic import BaseModel
+from sqlalchemy import and_
 from PIL import Image
 from flask import Flask, jsonify, request,send_file
 from flask_sqlalchemy import SQLAlchemy
@@ -20,7 +20,7 @@ logger = set_logger(log_level='DEBUG')
 
 OCR_MODEL = CnOcr()#实例化对象
 app = Flask(__name__)#flask服务
-CORS(app, origins="http://localhost:8080")
+CORS(app)
 #持久层框架，配置数据库连接信息，这里可以查看数据库配置信息
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -28,6 +28,11 @@ db = SQLAlchemy(app)#
 
 # ocr返回类
 #以上都是固定的
+@app.route('/')
+def hello():
+    return 'Hello, World! This is a test function.'
+
+
 class OcrResponse:
     def __init__(self, results: List[Dict[str, Any]]) -> None:
         self.results = results
@@ -437,8 +442,8 @@ def register():
     workplace = data.get('workplace')
     identity = data.get('identity')
     raw_password = data.get('password')
-
-    if not all([name, phone, workplace, identity, raw_password]):
+#, phone, workplace, identity,
+    if not all([name ,raw_password]):
         return jsonify({'error': '缺少必填字段'}), 400
 
     # md5密码加密
@@ -541,6 +546,37 @@ def save_photo_data():
     # 返回存储成功的提示或者其他数据
     return jsonify({'message': 'Photo data stored successfully'})
 
+class MotorFile(db.Model):
+    __tablename__ = 'triple_motor'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    power = db.Column(db.Float(precision=2))
+    efficiency = db.Column(db.Float(precision=2))
+    rotate_speed = db.Column(db.Integer)
+    energy_consumption = db.Column(db.String(255))
+
+@app.route('/query_motor_files', methods=['GET'])
+def query_motor_files():
+    rotated_speed = request.args.get('rotated_speed', type=int)
+    power = request.args.get('power', type=float)
+    efficiency = request.args.get('efficiency', type=float)
+    print("转速:",rotated_speed)
+    # 查询请求的功率是否在数据库中有记录
+    existing_record = MotorFile.query.filter_by(power=power).first()
+    if not existing_record:
+        # 如果请求的功率不在数据库中有记录，则找到比该功率小的最近一条记录，并将请求的功率用这个值代替
+        below_power = MotorFile.query.filter(MotorFile.power < power).order_by(MotorFile.power.desc()).first()
+        if below_power:
+            power = below_power.power
+
+    # 按照之前的逻辑进行查询
+    if rotated_speed is None or rotated_speed >= 0 :
+        result = MotorFile.query.filter(and_(MotorFile.power == power, efficiency>=MotorFile.efficiency )) \
+                                .order_by(MotorFile.efficiency.desc()).first()
+        if result:
+            energy_consumption = result.energy_consumption
+            return jsonify({'energy_consumption': energy_consumption})
+
+    return jsonify({'energy_consumption': '低于3级'})
 
 if __name__ == '__main__':
     waitress.serve(app, host='127.0.0.1', port=5000)

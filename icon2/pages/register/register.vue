@@ -78,9 +78,6 @@
 					password: this.form.password,
 				};
 				
-	
-					
-				
 				// 发送POST请求
 				uni.request({
 					url: `${config.SERVER_URL}/register`,
@@ -94,9 +91,7 @@
 							icon: 'success',
 							duration:2000
 						});
-						uni.navigateTo({
-							url: '/pages/index/index'
-						});
+						
 					},
 					fail:(err)=>{
 						console.error(err);

@@ -115,7 +115,7 @@
 					// 成功获取并展示 OCR 结果后删除缓存数据
 					uni.removeStorageSync('ocrResult');
 					uni.removeStorageSync('imgUrl');
-
+					this.computeMotorEnergyConsumption();
 					console.log('缓存数据已删除');
 				} else if (ocrResult.typeIndex === 2) {
 					// 水泵逻辑
@@ -157,17 +157,7 @@
 				}
 			}
 		},
-		created() {
-			if (this.list.efficiency >= 93.33) {
-				this.energy_consumption = "一级"
-			} else if (this.list.efficiency >= 89.75)
-
-			{
-				this.energy_consumption = "二级"
-			} else if (this.list.efficiency >= 86.35) {
-				this.energy_consumption = "三级"
-			}
-		},
+		
 		onShow() {
 			uni.startPullDownRefresh();
 		},
@@ -194,14 +184,13 @@
 				list: {
 					efficiency: "",
 					power: "",
-					rotated_speed: "",
+					rotated_speed: 0,
 					rpm: "",
 					flowRate: "",
 					pressure: "",
 					correction: "",
 					power: "",
 					batch: "",
-					
 					is_backward: "",
 					imgUrl: "",
 					run_time: "",
@@ -220,15 +209,12 @@
 		methods: {
 			clickImport() {
 				this.sendData();
-				if (this.list.efficiency >= 93.33) {
-					this.energy_consumption = "一级"
-				} else if (this.list.efficiency >= 89.75)
-
-				{
-					this.energy_consumption = "二级"
-				} else if (this.list.efficiency >= 86.35) {
-					this.energy_consumption = "三级"
-				}
+				
+					if(this.typeIndex===1)
+					{
+						this.computeMotorEnergyConsumption();
+					}
+				
 				uni.showToast({
 					title: '数据已提交',
 					duration: 2000
@@ -242,9 +228,29 @@
 					url: '/pages/home/home'
 				})
 			},
+			async computeMotorEnergyConsumption() {
+			    uni.request({
+			        url: config.SERVER_URL + '/query_motor_files',
+			        data: {
+			            power: this.list.power,
+			            efficiency: this.list.efficiency,
+			            rotated_speed: this.list.rotated_speed
+			        },
+			        method: 'GET',
+			        success: (res) => {
+			            console.log(res.data);
+			            // 处理后端返回的数据
+			            const responseData = res.data;
+			            console.log(responseData);
+			            
+			            // 更新页面上的能效
+			            this.energy_consumption = responseData.energy_consumption;
+			        }
+			    });
+			},
 			async sendData() {
 				 uni.request({
-				    url: 'http://162.14.67.149:5000/is_backward', //仅为示例，并非真实接口地址。
+				     url: config.SERVER_URL + '/is_backward', //仅为示例，并非真实接口地址。
 				    data: JSON.stringify(this.list),
 						method: 'POST',
 				    header: {
@@ -333,7 +339,8 @@
 			        console.log(responseData); */
 					
 					uni.request({
-					    url: 'http://162.14.67.149:5000/save_photo_data', //仅为示例，并非真实接口地址。
+						url: config.SERVER_URL + '/save_photo_data',
+					    // url: 'http://162.14.67.149:5000/save_photo_data', //仅为示例，并非真实接口地址。
 					    data: JSON.stringify(requestData),
 						method: 'POST',
 					    header: {
@@ -351,10 +358,6 @@
 							
 					    }
 					}); 
-			
-			
-			
-			
 			
 			
 			        // 更新页面或者执行其他操作
