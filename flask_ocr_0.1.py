@@ -684,13 +684,34 @@ def query_motor_files():
             power = below_power.power
 
     # 按照之前的逻辑进行查询
+
     if rotated_speed is None or rotated_speed >= 0:
         result = MotorFile.query.filter(and_(MotorFile.power == power, efficiency >= MotorFile.efficiency)) \
             .order_by(MotorFile.efficiency.desc()).first()
+
+    if rotated_speed is None or rotated_speed == 0 :
+        result = MotorFile.query.filter(and_(MotorFile.power == power, efficiency>=MotorFile.efficiency )) \
+                                .order_by(MotorFile.efficiency.desc()).first()
+
         if result:
             energy_consumption = result.energy_consumption
             return jsonify({'energy_consumption': energy_consumption})
+    elif 1300>=rotated_speed>0:
+        result = MotorFile.query.filter(
+    and_(MotorFile.power == power, efficiency >= MotorFile.efficiency, rotated_speed <= MotorFile.rotate_speed)
+).order_by(MotorFile.rotate_speed.asc(), MotorFile.efficiency.desc()).first()
+        if result:
+            energy_consumption = result.energy_consumption
+            return jsonify({'energy_consumption': energy_consumption})
+    elif rotated_speed>1300:
+        rotated_speed=1301
+        result = MotorFile.query.filter(
+    and_(MotorFile.power == power, efficiency >= MotorFile.efficiency, rotated_speed <= MotorFile.rotate_speed)
+).order_by(MotorFile.rotate_speed.asc(), MotorFile.efficiency.desc()).first()
 
+        if result:
+            energy_consumption = result.energy_consumption
+            return jsonify({'energy_consumption': energy_consumption})
     return jsonify({'energy_consumption': '低于3级'})
 
 
@@ -714,6 +735,5 @@ def ventilation_fan():
     print("风机能效等级", grade)
     return jsonify({'energy_consumption': grade})
 
-
 if __name__ == '__main__':
-    waitress.serve(app, host='127.0.0.1', port=5000)
+    waitress.serve(app, host='162.14.67.149', port=5000)
