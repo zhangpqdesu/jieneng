@@ -10,13 +10,16 @@
 			</view>
 
 			<view class="box2" v-if="typeIndex==0">
-				<view class="content">主轴转速:<input class="input" v-model="list.rpm" />r/s</view>
-				<view class="content">主轴流量:<input class="input" v-model="list.flow" /></view>
-				<view class="content">滞止压力:<input class="input" v-model="list.pressure" />V</view>
-				<view class="content">修正系数:<input class="input" v-model="list.correction" /></view>
-				<view class="content">额定功率:<input class="input" v-model="list.power" />kW</view>
-				<view class="content">效率:<input class="input" v-model="list.efficiency" /></view>
-				<view class="content">型号:<input class="input" v-model="list.model" /></view>
+				<view class="content">机号:<input class="input" v-model="list.machine_number" /></view>
+				<view class="content">轮毂比:<input class="input" v-model="list.r" /></view>
+				<view class="content">型号:<input class="input" v-model="list.type" /></view>
+				<view class="content">滞止密度:<input class="input" v-model="list.p1" />m³/s</view>
+				<view class="content">圆周速度:<input class="input" v-model="list.u" />m/s</view>
+				<view class="content">主轴转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
+				<view class="content">容积流量:<input class="input" v-model="list.flowRate" />m³/h</view>
+				<view class="content">滞止压力:<input class="input" v-model="list.pressure" />pa</view>
+				<view class="content">功率:<input class="input" v-model="list.power" />kW</view>
+				<view class="content">效率:<input class="input" v-model="list.efficiency" />%</view>
 			</view>
 			<view class="box2" v-else-if="typeIndex==1">
 				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
@@ -135,13 +138,17 @@
 					console.log('缓存数据已删除');
 				} else if (ocrResult.typeIndex === 0) {
 					// 风机逻辑
+					this.list.machine_number = ocrResult.machine_number; // 机号
+					this.list.r = ocrResult.r; // 轮毂比
+					this.list.type = ocrResult.type; // 型号
+					this.list.p1 = ocrResult.p1; // 密度
+					this.list.u = ocrResult.u; // 速度
 					this.list.rotated_speed = ocrResult.rotated_speed; // 转速
 					this.list.flowRate = ocrResult.flowRate; // 流量
 					this.list.pressure = ocrResult.pressure; // 压力
 					this.list.power = ocrResult.power; // 功率
 					this.list.efficiency = ocrResult.efficiency; // 效率
 					this.list.imgUrl = imgUrl;
-					this.list.model = ocrResult.model; // 型号
 					this.typeIndex = ocrResult.typeIndex;
 					this.list.record_place = company;
 					this.list.username = username;
@@ -201,6 +208,11 @@
 					name: "",
 					head: "",
 					model: "",
+					machine_number: "",
+					r: "",
+					type: "",
+					p1: "",
+					u: "",
 
 				}
 			};
@@ -213,6 +225,10 @@
 					if(this.typeIndex===1)
 					{
 						this.computeMotorEnergyConsumption();
+					}
+					if(this.typeIndex===0)
+					{
+						this.computeVentilationEnergyConsumption();
 					}
 				
 				uni.showToast({
@@ -235,6 +251,33 @@
 			            power: this.list.power,
 			            efficiency: this.list.efficiency,
 			            rotated_speed: this.list.rotated_speed
+			        },
+			        method: 'GET',
+			        success: (res) => {
+			            console.log(res.data);
+			            // 处理后端返回的数据
+			            const responseData = res.data;
+			            console.log(responseData);
+			            
+			            // 更新页面上的能效
+			            this.energy_consumption = responseData.energy_consumption;
+			        }
+			    });
+			},
+			async computeVentilationEnergyConsumption() {
+			    uni.request({
+			        url: config.SERVER_URL + '/ventilation_fan',
+			        data: {
+						machine_number:this.list.machine_number,
+						r:this.list.r,
+						type:this.list.type,
+						p1:this.list.p1,
+						u:this.list.u,
+						rotated_speed:this.list.rotated_speed,
+						flowRate:this.list.flowRate,
+						pressure:this.list.pressure,
+						power:this.list.power,
+						efficiency:this.list.efficiency,
 			        },
 			        method: 'GET',
 			        success: (res) => {
@@ -458,7 +501,7 @@
 				flex-wrap: wrap; //允许换行
 				justify-content: flex-start;
 				padding-left: 60rpx;
-				padding-top: 10%;
+				padding-top: 8%;
 
 				.content {
 					display: flex;

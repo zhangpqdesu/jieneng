@@ -1,29 +1,36 @@
 {
   "description": "项目配置文件。",
   "packOptions": {
-    "ignore": [],
-    "include": []
+    "ignore": []
   },
   "setting": {
     "urlCheck": false,
     "es6": false,
     "postcss": false,
-    "minified": true,
+    "minified": false,
     "newFeature": true,
-    "bigPackageSizeSupport": true,
-    "babelSetting": {
-      "ignore": [],
-      "disablePlugins": [],
-      "outputPath": ""
-    }
+    "bigPackageSizeSupport": true
   },
   "compileType": "miniprogram",
-  "libVersion": "3.4.0",
+  "libVersion": "",
   "appid": "wx724fbcd052c3dd2b",
   "projectname": "铭牌识别系统",
-  "condition": {},
-  "editorSetting": {
-    "tabIndent": "insertSpaces",
-    "tabSize": 2
+  "condition": {
+    "search": {
+      "current": -1,
+      "list": []
+    },
+    "conversation": {
+      "current": -1,
+      "list": []
+    },
+    "game": {
+      "current": -1,
+      "list": []
+    },
+    "miniprogram": {
+      "current": -1,
+      "list": []
+    }
   }
 }
