@@ -47,6 +47,10 @@
 				<view class="content">主轴流量:<input class="input" v-model="list.flowRate">m³/h</view>
 				<view class="content">扬程:<input class="input" v-model="list.head" />m</view>
 				<view class="content">型号:<input class="input" v-model="list.model" /></view>
+				<view class="content">功率:<input class="input" v-model="list.power" />kw</view>
+				<view class="content">级数:<input class="input" v-model="list.p1" />kg/m³</view>
+				<view class="content">密度:<input class="input" v-model="list.stage" /></view>
+				<view class="content">效率:<input class="input" v-model="list.efficiency" />%</view>
 
 			</view>
 
@@ -126,6 +130,10 @@
 					this.list.flowRate = ocrResult.flowRate; // 流量
 					this.list.head = ocrResult.head; // 扬程
 					this.list.model = ocrResult.model; // 型号
+					this.list.power = ocrResult.power; // 功率
+					this.list.stage = ocrResult.stage; // 级数
+					this.list.p1 = ocrResult.p1; // 密度
+					this.list.efficiency = ocrResult.efficiency; // 效率
 					this.list.imgUrl = imgUrl;
 					this.typeIndex = ocrResult.typeIndex;
 					this.list.record_place = company;
@@ -213,7 +221,7 @@
 					type: "",
 					p1: "",
 					u: "",
-
+					stage:""
 				}
 			};
 		},
@@ -229,6 +237,10 @@
 					if(this.typeIndex===0)
 					{
 						this.computeVentilationEnergyConsumption();
+					}
+					if(this.typeIndex===2)
+					{
+						this.computePumpConsumption();
 					}
 				
 				uni.showToast({
@@ -264,6 +276,7 @@
 			        }
 			    });
 			},
+			// 风机
 			async computeVentilationEnergyConsumption() {
 			    uni.request({
 			        url: config.SERVER_URL + '/ventilation_fan',
@@ -278,6 +291,32 @@
 						pressure:this.list.pressure,
 						power:this.list.power,
 						efficiency:this.list.efficiency,
+			        },
+			        method: 'GET',
+			        success: (res) => {
+			            console.log(res.data);
+			            // 处理后端返回的数据
+			            const responseData = res.data;
+			            console.log(responseData);
+			            
+			            // 更新页面上的能效
+			            this.energy_consumption = responseData.energy_consumption;
+			        }
+			    });
+			},
+			// 水泵
+			async computePumpConsumption() {
+			    uni.request({
+			        url: config.SERVER_URL + '/water_pump',
+			        data: {
+						rotated_speed:this.list.rotated_speed, // 转速
+						flowRate:this.list.flowRate, // 流量
+						head:this.list.head, // 扬程
+						model:this.list.model, // 型号
+						power:this.list.power,// 功率
+						stage:this.list.stage, // 级数
+						p1:this.list.p1, // 级数
+						efficiency:this.list.efficiency, // 效率
 			        },
 			        method: 'GET',
 			        success: (res) => {
@@ -515,7 +554,7 @@
 				.content input {
 					margin-left: 20rpx;
 					margin-right: 20rpx;
-					width: 80rpx;
+					width: 100rpx;
 					position: relative;
 					padding-bottom: 5rpx;
 					font-weight: 500 !important;

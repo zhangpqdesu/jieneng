@@ -86,12 +86,22 @@
 					data: requestData,
 					success: (res) =>{
 						console.log(res.data);
-						uni.showToast({
-							title: '申请已提交！请等待管理员审批',
-							icon: 'success',
-							duration:2000
-						});
-						
+						if(requestData.name=="" || requestData.password=="")
+						{
+							uni.showToast({
+								title: '存在必填字段空缺',
+								icon: 'error',
+								duration:2000
+							});
+						}
+						else
+						{
+							uni.showToast({
+								title: '申请已提交！请等待审批',
+								icon: 'success',
+								duration:2000
+							});
+						}
 					},
 					fail:(err)=>{
 						console.error(err);

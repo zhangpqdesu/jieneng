@@ -527,7 +527,7 @@ def Efficiency(session, Input_data, pump_type, Q, ns, rotation_speed, power):
 
 
 # ————————————能效1级———————————— #
-def efficiencyOne(power, pump_type):
+def efficiencyOne(Input_data, power, pump_type, Q, ns, rotation_speed):
     EOne = 0
     if power <= 3:
         if 'QXL' in pump_type:
@@ -574,7 +574,7 @@ def efficiencyOne(power, pump_type):
 
 
 # ————————————能效2级———————————— #
-def efficiencyTwo(power, pump_type):
+def efficiencyTwo(Input_data, power, pump_type, Q, ns, rotation_speed):
     ETwo = 0
     if power <= 3:
         if 'QXL' in pump_type:
@@ -619,57 +619,79 @@ def efficiencyTwo(power, pump_type):
             ETwo = Efficiency(session, Input_data, pump_type, Q, ns, rotation_speed, power) + 1.8
     return ETwo
 
+
 # ——————————能效3级———————————— #
 def efficiencyThree(session, Input_data, pump_type, Q, ns, rotation_speed, power):
-    EThree = Efficiency(session, Input_data, pump_type, Q, ns, rotation_speed, power) - Ed_deviation(power, pump_type, rotation_speed)
+    EThree = Efficiency(session, Input_data, pump_type, Q, ns, rotation_speed, power) - Ed_deviation(power, pump_type,
+                                                                                                     rotation_speed)
     return EThree
 
+
 # ————————————示例输入———————————— #
-def get_input_data():
-    rotation_speed = int(input("请输入转速："))
-    flow_rate = float(input("请输入流量："))
-    head = float(input("请输入扬程："))
-    stage = int(input("请输入级数："))
-    power = float(input("请输入功率："))
-    pump_type = input("请输入泵类型：")
-    ns = int(input("请输入ns："))
+def get_input_data2(n, Q, H, stage, P, Type, Efficiency):
+    # rotation_speed = int(input("请输入转速："))
+    # flow_rate = float(input("请输入流量："))
+    # head = float(input("请输入扬程："))
+    # stage = int(input("请输入级数："))
+    # power = float(input("请输入功率："))
+    # pump_type = input("请输入泵类型：")
+    ns = calculate_ns(n, Q, H)
 
-    return {'rotation_speed': rotation_speed, 'flow_rate': flow_rate, 'head': head, 'stage': stage, 'power': power,
-            'pump_type': pump_type, 'ns': ns}
+    return {'rotation_speed': n, 'flow_rate': Q, 'head': H, 'stage': stage, 'power': P,
+            'pump_type': Type, 'ns': ns,'Efficiency':Efficiency}
 
 
-# 初始化示例数据数组
-Input_data = []
-
-# 循环获取用户输入，并将数据添加到示例数据数组中
-while True:
-    data = get_input_data()
-    Input_data.append(data)
-
-    continue_input = input("是否继续输入？(y/n): ")
-    if continue_input.lower() != 'y':
-        break
-
-rotation_speed = data['rotation_speed']
-Q = data['flow_rate']
-pump_type = data['pump_type']
-head = data['head']
-stage = data['stage']
-power = data['power']
-ns = data['ns']
-
-E_finally_result = Efficiency(session, Input_data, pump_type, Q, ns, rotation_speed, power)
-print(f"电泵效率为：{E_finally_result:.2f}%")
+# # 初始化示例数据数组
+# Input_data = []
+#
+# # 循环获取用户输入，并将数据添加到示例数据数组中
+# while True:
+#     data = get_input_data()
+#     Input_data.append(data)
+#
+#     continue_input = input("是否继续输入？(y/n): ")
+#     if continue_input.lower() != 'y':
+#         break
+#
+# rotation_speed = data['rotation_speed']
+# Q = data['flow_rate']
+# pump_type = data['pump_type']
+# head = data['head']
+# stage = data['stage']
+# power = data['power']
+# ns = data['ns']
+#
+# E_finally_result = Efficiency(session, Input_data, pump_type, Q, ns, rotation_speed, power)
+# print(f"电泵效率为：{E_finally_result:.2f}%")
 
 
 # ————————————计算实际的能效等级———————————— #
-def real_efficiency():
-    realE = int(input("请输入实际效率："))
-    if realE >= efficiencyOne(power, pump_type):
-        print("1级")
-    elif efficiencyTwo(power, pump_type) <= realE <= efficiencyOne(power, pump_type):
-        print("2级")
-    elif efficiencyThree(session, Input_data, pump_type, Q, ns, rotation_speed, power) <= realE <= efficiencyTwo(power, pump_type):
-        print("3级")
+def real_efficiency(n, Q, H, stage, P, Type,Efficiency):
+    # 初始化示例数据数组
+    Input_data = []
+
+    # 循环获取用户输入，并将数据添加到示例数据数组中
+    while True:
+        data = get_input_data2(n, Q, H, stage, P, Type,Efficiency)
+        Input_data.append(data)
+        break
+
+    rotation_speed = data['rotation_speed']
+    Q = data['flow_rate']
+    pump_type = data['pump_type']
+    head = data['head']
+    stage = data['stage']
+    power = data['power']
+    ns = data['ns']
+    realE = data['Efficiency']
+
+    if realE >= efficiencyOne(Input_data, power, pump_type, Q, ns, rotation_speed):
+        return "1级"
+    elif efficiencyTwo(Input_data, power, pump_type, Q, ns, rotation_speed) <= realE <= efficiencyOne(
+            Input_data, power, pump_type, Q, ns, rotation_speed):
+        return "2级"
+    elif efficiencyThree(session, Input_data, pump_type, Q, ns, rotation_speed, power) <= realE <= efficiencyTwo(
+            Input_data, power, pump_type, Q, ns, rotation_speed):
+        return "3级"
     else:
-        print("不合格！")
+        return "低于3级！"

@@ -18,6 +18,9 @@ import hashlib
 from datetime import datetime
 
 from ventilation_fan import finally_result, get_input_data
+from Clearwater_centrifugal_pump import finally_result
+from Centrifugal_pump_for_petrochemical import final_result2
+from small_submersible_electric_pump import get_input_data2, real_efficiency
 
 logger = set_logger(log_level='DEBUG')
 
@@ -30,6 +33,7 @@ app.config[
     'SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)  #
+
 
 # app.config[
 #     'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
@@ -328,7 +332,7 @@ def extract_fan_parameters(text_array):
         if match_p1:
             extracted_p1 = match_p1.group(1)
             break
-        elif 'm3/h' in text.lower() or 'm`/min' in text.lower():
+        elif 'm3/h' in text.lower():
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
@@ -348,7 +352,14 @@ def extract_fan_parameters(text_array):
                 extracted_u = previous_text
                 break
 
-    return extracted_speed, extracted_flow_rate, extracted_pressure, extracted_power, extracted_efficiency, extracted_machine_number, extracted_r, extracted_type, extracted_p1, extracted_u
+    # 提取水泵级数
+    for text in text_array:
+        match_stage = re.search(r'/(?P<stage>\d)', text)
+        if match_stage:
+            extracted_stage = match_stage.group(1)
+            break
+
+    return extracted_speed, extracted_flow_rate, extracted_pressure, extracted_power, extracted_efficiency, extracted_machine_number, extracted_r, extracted_type, extracted_p1, extracted_u, extracted_stage
 
 
 @app.route('/ocr', methods=['POST'])
@@ -379,10 +390,10 @@ def ocr() -> Dict[str, Any]:
         return jsonify(response_data)
     elif any('风机' in text for text in text_array):
         # 风机相关的逻辑
-        typeIndex = 0
-        print("typeIndex:", typeIndex)
         extracted_machine_number, extracted_r, extracted_type, extracted_p1, extracted_u, extracted_speed, extracted_flow_rate, extracted_pressure, extracted_power, extracted_efficiency = extract_fan_parameters(
             text_array)
+        typeIndex = 0
+        print("typeIndex:", typeIndex)
         print("机号：", extracted_machine_number, "")
         print("轮毂比：", extracted_r, "")
         print("型号：", extracted_type, "")
@@ -411,20 +422,27 @@ def ocr() -> Dict[str, Any]:
 
 
     elif ('泵' in text for text in text_array):
+        extracted_speed, extracted_flow_rate, extracted_head, extracted_model, extracted_power, extracted_stage, extracted_efficiency = extract_pump_parameters(
+            text_array)
         typeIndex = 2
         print("typeIndex:", typeIndex)
-        extracted_speed, extracted_flow_rate, extracted_head, extracted_model = extract_pump_parameters(text_array)
         print("转速：", extracted_speed, "r/min")
         print("流量：", extracted_flow_rate, "m³/h")
         print("扬程：", extracted_head, "m")
         print("型号：", extracted_model)
+        print("功率：", extracted_power, "kw")
+        print("级数：", extracted_stage)
+        print("效率：", extracted_efficiency, "%")
 
         response_data = {
             "typeIndex": typeIndex,
             "rotated_speed": extracted_speed,  # 转速
             "flowRate": extracted_flow_rate,  # 流量
             "head": extracted_head,  # 扬程
-            "model": extracted_model  # 型号
+            "model": extracted_model,  # 型号
+            "power": extracted_power,  # 功率
+            "stage": extracted_stage,  # 级数
+            "efficiency": extracted_efficiency  # 效率
         }
         return jsonify(response_data)
     response_data = {
@@ -689,25 +707,25 @@ def query_motor_files():
         result = MotorFile.query.filter(and_(MotorFile.power == power, efficiency >= MotorFile.efficiency)) \
             .order_by(MotorFile.efficiency.desc()).first()
 
-    if rotated_speed is None or rotated_speed == 0 :
-        result = MotorFile.query.filter(and_(MotorFile.power == power, efficiency>=MotorFile.efficiency )) \
-                                .order_by(MotorFile.efficiency.desc()).first()
+    if rotated_speed is None or rotated_speed == 0:
+        result = MotorFile.query.filter(and_(MotorFile.power == power, efficiency >= MotorFile.efficiency)) \
+            .order_by(MotorFile.efficiency.desc()).first()
 
         if result:
             energy_consumption = result.energy_consumption
             return jsonify({'energy_consumption': energy_consumption})
-    elif 1300>=rotated_speed>0:
+    elif 1300 >= rotated_speed > 0:
         result = MotorFile.query.filter(
-    and_(MotorFile.power == power, efficiency >= MotorFile.efficiency, rotated_speed <= MotorFile.rotate_speed)
-).order_by(MotorFile.rotate_speed.asc(), MotorFile.efficiency.desc()).first()
+            and_(MotorFile.power == power, efficiency >= MotorFile.efficiency, rotated_speed <= MotorFile.rotate_speed)
+        ).order_by(MotorFile.rotate_speed.asc(), MotorFile.efficiency.desc()).first()
         if result:
             energy_consumption = result.energy_consumption
             return jsonify({'energy_consumption': energy_consumption})
-    elif rotated_speed>1300:
-        rotated_speed=1301
+    elif rotated_speed > 1300:
+        rotated_speed = 1301
         result = MotorFile.query.filter(
-    and_(MotorFile.power == power, efficiency >= MotorFile.efficiency, rotated_speed <= MotorFile.rotate_speed)
-).order_by(MotorFile.rotate_speed.asc(), MotorFile.efficiency.desc()).first()
+            and_(MotorFile.power == power, efficiency >= MotorFile.efficiency, rotated_speed <= MotorFile.rotate_speed)
+        ).order_by(MotorFile.rotate_speed.asc(), MotorFile.efficiency.desc()).first()
 
         if result:
             energy_consumption = result.energy_consumption
@@ -734,6 +752,34 @@ def ventilation_fan():
     grade = finally_result(MachineNumber, r, type, Pf, p1, u, n, q, pr, pe, Nm)
     print("风机能效等级", grade)
     return jsonify({'energy_consumption': grade})
+
+
+@app.route('/water_pump', methods=['GET'])
+def water_pump():
+    Rho = float(request.args.get('P1')) if request.args.get('P1') else None
+    n = float(request.args.get('rotated_speed')) if request.args.get('rotated_speed') else None
+    Q = float(request.args.get('flowRate')) if request.args.get('flowRate') else None
+    H = float(request.args.get('head')) if request.args.get('head') else None
+    P = float(request.args.get('power')) if request.args.get('power') else None
+    Type = str(request.args.get('model')) if request.args.get('model') else None
+    stage = int(request.args.get('stage')) if request.args.get('stage') else None
+    Efficiency = float(request.args.get('efficiency')) if request.args.get('efficiency') else None
+
+    if '清水' in Type:
+        pump1 = finally_result(Rho, n, Q, H, P, Type, Efficiency)
+        print("水泵1", pump1)
+        return jsonify({'energy_consumption': pump1})
+    elif '石油' in Type or '化工' in Type:
+        pump2 = final_result2(n, Q, H, P, Rho, Type, Efficiency)
+        print("水泵2", pump2)
+        return jsonify({'energy_consumption': pump2})
+    elif '小型潜水' in Type:
+        get_input_data2(n, Q, H, stage, P, Type,Efficiency)
+        pump3 = real_efficiency(n, Q, H, stage, P, Type,Efficiency)
+        print("水泵3", pump3)
+        return jsonify({'energy_consumption': pump3})
+
+
 
 if __name__ == '__main__':
     waitress.serve(app, host='162.14.67.149', port=5000)

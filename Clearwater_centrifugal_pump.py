@@ -155,38 +155,38 @@ def efficiency_correction_value2(ns):
 
 
 # ————————————泵目标能效限定值———————————— #
-def pump_target_efficiency_value():
-    if Type == '单级单吸':
+def pump_target_efficiency_value(Type, n, Q, H):
+    if '单级单吸' in Type:
         ns = calculate_ns_1(n, Q, H)
-    elif Type == '单级双吸':
+    elif '单级双吸' in Type:
         ns = calculate_ns_2(n, Q, H)
     pump_target_efficiency = 0
     if 5 <= Q <= 10000 and 120 <= ns <= 210:
-        if Type == '单级单吸' or '单级多吸':
+        if '单级单吸' in Type or '单级多吸' in Type:
             result = single_stage_pump(Q)
             pump_target_efficiency = result[0]
-        elif Type == '多级':
+        elif '多级' in Type:
             result = multi_stage_pump(Q)
             pump_target_efficiency = result[0]
         else:
             print("不是单级也不是多级")
     elif 5 <= Q <= 10000 and 20 <= ns <= 120:
-        if Type == '单级' or '单级多吸':
+        if '单级' in Type or '单级多吸' in Type:
             result = single_stage_pump(Q)
             Efficiency_correction_value = efficiency_correction_value1(ns)
             pump_target_efficiency = result[0] - Efficiency_correction_value
-        elif Type == '多级':
+        elif '多级' in Type:
             result = multi_stage_pump(Q)
             Efficiency_correction_value = efficiency_correction_value1(ns)
             pump_target_efficiency = result[0] - Efficiency_correction_value
         else:
             print("不是单级也不是多级")
     elif 5 <= Q <= 10000 and 120 <= ns <= 300:
-        if Type == '单级' or '单级多吸':
+        if '单级' in Type or '单级多吸' in Type:
             result = single_stage_pump(Q)
             Efficiency_correction_value = efficiency_correction_value1(ns)
             pump_target_efficiency = result[0] - Efficiency_correction_value
-        elif Type == '多级':
+        elif '多级' in Type:
             result = multi_stage_pump(Q)
             Efficiency_correction_value = efficiency_correction_value1(ns)
             pump_target_efficiency = result[0] - Efficiency_correction_value
@@ -202,28 +202,28 @@ def pump_target_efficiency_value():
 
 
 # ————————————泵节能评价值———————————— #
-def pump_energySaving_assessment_value():
-    if Type == '单级单吸':
+def pump_energySaving_assessment_value(Type, n, Q, H):
+    if '单级单吸' in Type:
         ns = calculate_ns_1(n, Q, H)
-    elif Type == '单级双吸':
+    elif '单级双吸' in Type:
         ns = calculate_ns_2(n, Q, H)
     pump_energySaving = 0
     if 5 <= Q <= 10000 and 120 <= ns <= 210:
-        if Type == '单级单吸':
+        if '单级单吸' in Type:
             if Q <= 300:
                 result = single_stage_pump(Q)
                 pump_energySaving = result[1] + 2
             elif Q > 300:
                 result = single_stage_pump(Q)
                 pump_energySaving = result[1] + 1
-        elif Type == '单级双吸':
+        elif '单级双吸' in Type:
             if Q <= 600:
                 result = single_stage_pump(Q)
                 pump_energySaving = result[1] + 2
             elif Q > 600:
                 result = single_stage_pump(Q)
                 pump_energySaving = result[1] + 1
-        elif Type == '多级':
+        elif '多级' in Type:
             if Q <= 100:
                 result = multi_stage_pump(Q)
                 pump_energySaving = result[1] + 2
@@ -231,7 +231,7 @@ def pump_energySaving_assessment_value():
                 result = multi_stage_pump(Q)
                 pump_energySaving = result[1] + 1
     elif 5 <= Q <= 10000 and 20 <= ns <= 120:
-        if Type == '单级单吸':
+        if '单级单吸' in Type:
             if Q <= 300:
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value1(ns)
@@ -240,7 +240,7 @@ def pump_energySaving_assessment_value():
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value1(ns)
                 pump_energySaving = result[1] - Efficiency_correction_value + 1
-        elif Type == '单级多吸':
+        elif '单级多吸' in Type:
             if Q <= 600:
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value1(ns)
@@ -249,7 +249,7 @@ def pump_energySaving_assessment_value():
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value1(ns)
                 pump_energySaving = result[1] - Efficiency_correction_value + 1
-        elif Type == '多级':
+        elif '多级' in Type:
             if Q <= 100:
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value1(ns)
@@ -259,21 +259,21 @@ def pump_energySaving_assessment_value():
                 Efficiency_correction_value = efficiency_correction_value1(ns)
                 pump_energySaving = result[1] - Efficiency_correction_value + 1
     elif 5 <= Q <= 10000 and 120 <= ns <= 300:
-        if Type == '单级单吸':
+        if '单级单吸' in Type:
             if Q <= 300:
                 result = single_stage_pump(Q)
                 pump_energySaving = result[1] + 2
             elif Q > 300:
                 result = single_stage_pump(Q)
                 pump_energySaving = result[1] + 1
-        elif Type == '单级双吸':
+        elif '单级双吸' in Type:
             if Q <= 600:
                 result = single_stage_pump(Q)
                 pump_energySaving = result[1] + 2
             elif Q > 600:
                 result = single_stage_pump(Q)
                 pump_energySaving = result[1] + 1
-        elif Type == '多级':
+        elif '多级' in Type:
             if Q <= 100:
                 result = multi_stage_pump(Q)
                 pump_energySaving = result[1] + 2
@@ -281,7 +281,7 @@ def pump_energySaving_assessment_value():
                 result = multi_stage_pump(Q)
                 pump_energySaving = result[1] + 1
     elif 5 <= Q <= 10000 and 20 <= ns <= 120:
-        if Type == '单级单吸':
+        if '单级单吸' in Type:
             if Q <= 300:
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value2(ns)
@@ -290,7 +290,7 @@ def pump_energySaving_assessment_value():
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value2(ns)
                 pump_energySaving = result[1] - Efficiency_correction_value + 1
-        elif Type == '单级多吸':
+        elif '单级多吸' in Type:
             if Q <= 600:
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value2(ns)
@@ -299,7 +299,7 @@ def pump_energySaving_assessment_value():
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value2(ns)
                 pump_energySaving = result[1] - Efficiency_correction_value + 1
-        elif Type == '多级':
+        elif '多级' in Type:
             if Q <= 100:
                 result = single_stage_pump(Q)
                 Efficiency_correction_value = efficiency_correction_value2(ns)
@@ -326,22 +326,23 @@ def actual_pump_efficiency(Rho, H, Q, P):
     return efficiency
 
 
-# ————————————示例输入值———————————— #
-Rho = 1  # 密度
-n = 2900  # 转速
-Q = 173  # 流量
-H = 60  # 扬程
-P = 45  # 功率
-Type = '单级单吸'
+# ————————————比较结果———————————— #
+def finally_result(Rho, n, Q, H, P, Type, Efficiency):
+    # 泵目标能效限定值
+    pump_target_value = pump_target_efficiency_value(Type, n, Q, H)
+    # print(f"泵目标能效限定值为:{pump_target_value:.1f}%")
 
-# 泵目标能效限定值
-pump_target_efficiency_value = pump_target_efficiency_value()
-print(f"泵目标能效限定值为:{pump_target_efficiency_value:.1f}%")
+    # 泵节能评价值
+    pump_energySaving = pump_energySaving_assessment_value(Type, n, Q, H)
+    # print(f"泵节能评价值为:{pump_energySaving:.1f}%")
 
-# 泵节能评价值
-pump_energySaving = pump_energySaving_assessment_value()
-print(f"泵节能评价值为:{pump_energySaving:.1f}%")
+    if Efficiency >= pump_energySaving:
+        return '符合节能评价'
+    elif pump_target_value <= Efficiency < pump_energySaving:
+        return '符合目标效限定值'
+    else:
+        return '低于目标能效限定值'
 
-# 实际泵效率
-real_efficiency = actual_pump_efficiency(Rho, H, Q, P)
-print(f"实际泵效率为:{real_efficiency:.1f}%")
+    # # 实际泵效率
+    # real_efficiency = actual_pump_efficiency(Rho, H, Q, P)
+    # print(f"实际泵效率为:{real_efficiency:.1f}%")

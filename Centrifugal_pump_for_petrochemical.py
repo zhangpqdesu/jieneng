@@ -91,7 +91,7 @@ def search_correction_factor(ns):
 
 
 # ————————————泵规定点效率———————————— #
-def specified_point_efficiency(ns):
+def specified_point_efficiency(ns,Q):
     SpecifiedPE_result = 0
     if 20 <= ns < 120 or 210 < ns <= 300:
         SpecifiedPE_result = base_efficiency(Q) - search_correction_factor(ns)
@@ -101,7 +101,7 @@ def specified_point_efficiency(ns):
 
 
 # ————————————泵目标能效限定值-能效3级———————————— #
-def pump_target_efficiency_limit(ns):
+def pump_target_efficiency_limit(ns,Q):
     PumpTargetEL_result = 0
     if 20 <= ns < 120 or 210 < ns <= 300:
         PumpTargetEL_result = target_energy_efficiency_limit(Q) - search_correction_factor(ns)
@@ -114,14 +114,14 @@ def pump_target_efficiency_limit(ns):
 def pump_energy_saving_evaluation_value(ns, Q):
     PumpSavingEV_result = 0
     if 20 <= ns < 60:
-        PumpSavingEV_result = specified_point_efficiency(ns) + 5
+        PumpSavingEV_result = specified_point_efficiency(ns,Q) + 5
     elif 60 <= ns < 120:
-        PumpSavingEV_result = specified_point_efficiency(ns) + 1
+        PumpSavingEV_result = specified_point_efficiency(ns,Q) + 1
     elif 120 <= ns <= 300:
         if 5 <= Q <= 300:
-            PumpSavingEV_result = specified_point_efficiency(ns) + 1
+            PumpSavingEV_result = specified_point_efficiency(ns,Q) + 1
         elif Q > 300:
-            PumpSavingEV_result = specified_point_efficiency(ns) + 2
+            PumpSavingEV_result = specified_point_efficiency(ns,Q) + 2
     return PumpSavingEV_result
 
 
@@ -130,16 +130,16 @@ def one_level_value(ns, Q):
     OneLV_result = 0
     if 20 <= ns < 60:
         if 5 <= Q <= 300:
-            OneLV_result = specified_point_efficiency(ns) + 10
+            OneLV_result = specified_point_efficiency(ns,Q) + 10
         elif Q > 300:
-            OneLV_result = specified_point_efficiency(ns) + 11
+            OneLV_result = specified_point_efficiency(ns,Q) + 11
     elif 60 <= ns < 120:
         if 5 <= Q <= 300:
-            OneLV_result = specified_point_efficiency(ns) + 4
+            OneLV_result = specified_point_efficiency(ns,Q) + 4
         elif Q > 300:
-            OneLV_result = specified_point_efficiency(ns) + 5
+            OneLV_result = specified_point_efficiency(ns,Q) + 5
     elif 120 <= ns <= 300:
-        OneLV_result = specified_point_efficiency(ns) + 3
+        OneLV_result = specified_point_efficiency(ns,Q) + 3
     return OneLV_result
 
 
@@ -152,34 +152,37 @@ def actual_pump_efficiency(Rho, H, Q, P):
     return RealEfficiency
 
 
-# ————————————示例输入———————————— #
-n = 2980  # 转速
-Q = 325  # 流量
-H = 73.5  # 扬程
-P = 87.91  # 功率
-Rho = 1  # 密度
-Type = '单吸'
+# ————————————比较———————————— #
+def final_result2(n, Q, H, P, Rho, Type, Efficiency):
+    ns = 0
+    # 求比转速
+    if '单吸' in Type:
+        ns = calculate_ns_1(n, Q, H)
+    elif '双吸' in Type:
+        ns = calculate_ns_2(n, Q, H)
 
-# ————————————结果———————————— #
-ns = 0
-# 求比转速
-if Type == '单吸':
-    ns = calculate_ns_1(n, Q, H)
-elif Type == '双吸':
-    ns = calculate_ns_2(n, Q, H)
+    # 泵目标能效限定值=能效三级
+    ThreeLevel_value = pump_target_efficiency_limit(ns,Q)
+    # print(f"泵目标能效限定值(能效3级)为:{ThreeLevel_value:.1f}%")
 
-# 泵目标能效限定值=能效三级
-ThreeLevel_value = pump_target_efficiency_limit(ns)
-print(f"泵目标能效限定值(能效3级)为:{ThreeLevel_value:.1f}%")
+    # 泵节能评价值
+    TwoLevel_value = pump_energy_saving_evaluation_value(ns, Q)
+    # print(f"泵节能评价值(能效2级)为:{TwoLevel_value:.1f}%")
 
-# 泵节能评价值
-TwoLevel_value = pump_energy_saving_evaluation_value(ns, Q)
-print(f"泵节能评价值(能效2级)为:{TwoLevel_value:.1f}%")
+    # 能效1级的值
+    OneLevel_value = one_level_value(ns, Q)
+    # print(f"能效1级的值为:{OneLevel_value:.1f}%")
 
-# 能效1级的值
-OneLevel_value = one_level_value(ns, Q)
-print(f"能效1级的值为:{OneLevel_value:.1f}%")
+    # # 实际泵效率
+    # real_efficiency = actual_pump_efficiency(Rho, H, Q, P)
+    # print(f"实际泵效率为:{real_efficiency:.1f}%")
 
-# 实际泵效率
-real_efficiency = actual_pump_efficiency(Rho, H, Q, P)
-print(f"实际泵效率为:{real_efficiency:.1f}%")
+    if Efficiency >= OneLevel_value:
+        return '1级'
+    elif TwoLevel_value <= Efficiency < OneLevel_value:
+        return '2级(节能评价值)'
+    elif ThreeLevel_value <= Efficiency < TwoLevel_value:
+        return '3级(目标能效限定值)'
+    else:
+        return '低于目标能效限定值'
+
