@@ -15,7 +15,7 @@
 				<view class="content">型号:<input class="input" v-model="list.type" /></view>
 				<view class="content">滞止密度:<input class="input" v-model="list.p1" />m³/s</view>
 				<view class="content">圆周速度:<input class="input" v-model="list.u" />m/s</view>
-				<view class="content">主轴转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
+				<view class="content">转速:<input class="input" v-model="list.rotated_speed" />r/min</view>
 				<view class="content">容积流量:<input class="input" v-model="list.flowRate" />m³/h</view>
 				<view class="content">滞止压力:<input class="input" v-model="list.pressure" />pa</view>
 				<view class="content">功率:<input class="input" v-model="list.power" />kW</view>
@@ -452,6 +452,7 @@
 	}
 </script>
 
+
 <style lang="scss">
 	.out {
 		position: relative;
@@ -526,55 +527,56 @@
 			}
 
 			.box2 {
-				width: 680rpx;
-				height: 300rpx;
-				border-color: #E5E5E5;
-				background-color: #fff;
-				box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
-				border-radius: 30px;
-				position: absolute;
-				left: 50%;
-				transform: translateX(-50%);
-				margin-top: 40rpx;
-				display: flex;
-				flex-wrap: wrap; //允许换行
-				justify-content: flex-start;
-				padding-left: 60rpx;
-				padding-top: 8%;
+							width: 680rpx;
+							height: 300rpx;
+							border-color: #E5E5E5;
+							background-color: #fff;
+							box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
+							border-radius: 30px;
+							position: absolute;
+							left: 50%;
+							transform: translateX(-50%);
+							margin-top: 40rpx;
+							display: flex;
+							flex-wrap: wrap; //允许换行
+							justify-content: flex-start;
+							padding-left: 60rpx;
+							padding-top: 8%;
+			
+							.content {
+								margin-top: -10px;
+								display: flex;
+								width: 50%;
+								text-align: left;
+								font-size: 25rpx;
+								font-weight: bold;
+								text-align: left;
+								flex-wrap: wrap; /* 让内容自动换行 */
+							}
+							
+			
+							.content input {
+								margin-left: 0rpx;
+								margin-right: 0rpx;
+								width: 150rpx;
+								position: relative;
+								padding-bottom: 5rpx;
+								font-weight: 500 !important;
+								flex-basis: 50%; /* 每个input占据一半的空间 */
+							}
+			
+							.content input::after {
+								content: '';
+								display: block;
+								width: 100%;
+								height: 1px;
+								background-color: #cecece;
+								position: absolute;
+								bottom: 15%;
+								left: 0;
+							}
+						}
 
-				.content {
-					margin-top: -10px;
-					display: flex;
-					width: 50%;
-					text-align: left;
-					font-size: 25rpx;
-					font-weight: bold;
-					text-align: left;
-					flex-wrap: wrap; /* 让内容自动换行 */
-				}
-				
-
-				.content input {
-					margin-left: 0rpx;
-					margin-right: 0rpx;
-					width: 150rpx;
-					position: relative;
-					padding-bottom: 5rpx;
-					font-weight: 500 !important;
-					flex-basis: 50%; /* 每个input占据一半的空间 */
-				}
-
-				.content input::after {
-					content: '';
-					display: block;
-					width: 100%;
-					height: 1px;
-					background-color: #cecece;
-					position: absolute;
-					bottom: 15%;
-					left: 0;
-				}
-			}
 
 			.line {
 				margin-top: 60%;

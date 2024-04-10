@@ -7,7 +7,7 @@
 		
 		<view class="box">
 			<view class="nameCompany">{{company}}</view>
-			<view class="modify" @click="modify">修改公司名称</view>
+			<view class="modify" @click="modify">修改工厂名</view>
 			<image src="../../static/home-company.png" mode="aspectFit" class="homeCompany"></image>
 		</view>
 		
@@ -20,19 +20,19 @@
 				<text class="text">扫描</text>
 			</view>
 			<!-- 照片 -->
-			<!-- <view class="select" @click="clickPhoto">
+			<view class="select" @click="clickHand">
 				<view class="block" style="background-color: #FFECE8;">
 					<image src="/static/photo.png" mode="aspectFit" class="scanSelect"></image>
 				</view>
-				<text class="text">照片</text>
-			</view> -->
+				<text class="text">手动</text>
+			</view>
 			<!-- 文件 -->
-			<view class="select" @click="clickFile">
+			<!-- <view class="select" @click="clickFile">
 				<view class="block" style="background-color: #FFF5D7;">
 					<image src="/static/file.png" mode="aspectFit" class="scanSelect"></image>
 				</view>
 				<text class="text">文件</text>
-			</view>
+			</view> -->
 			<!-- 历史列表 -->
 			<view class="select" @click="clickHistory">
 				<view class="block" style="background-color: #E7F6EC;">
@@ -75,6 +75,11 @@
 			clickScan(){
 				uni.switchTab({
 					url:'/pages/camera/camera'
+				})
+			},
+			clickHand(){
+				uni.navigateTo({
+					url:'/pages/result/result'
 				})
 			},
 			clickPhoto() {
