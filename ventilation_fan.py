@@ -526,6 +526,8 @@ def finally_result(MachineNumber, r, type, Pf, p1, u, n, q, pr, pe, Nm):
 
     real_efficiency = real_grade(type, q, Pf, pe, Nm, pr)  # 计算出的实际效率值
     print("real", real_efficiency)
+    A = grade_one(Pf, p1, u, session, Input_data, type)
+    print("hh", A)
     if real_efficiency >= grade_one(Pf, p1, u, session, Input_data, type):
         return '1级'
     elif grade_two(Pf, p1, u, session, Input_data, type) <= real_efficiency < grade_one(Pf, p1, u, session,

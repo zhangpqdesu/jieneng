@@ -48,8 +48,8 @@
 				<view class="content">扬程:<input class="input" v-model="list.head" />m</view>
 				<view class="content">型号:<input class="input" v-model="list.model" /></view>
 				<view class="content">功率:<input class="input" v-model="list.power" />kw</view>
-				<view class="content">级数:<input class="input" v-model="list.p1" />kg/m³</view>
-				<view class="content">密度:<input class="input" v-model="list.stage" /></view>
+				<view class="content">级数:<input class="input" v-model="list.p1" /></view>
+				<view class="content">密度:<input class="input" v-model="list.stage" />kg/m³</view>
 				<view class="content">效率:<input class="input" v-model="list.efficiency" />%</view>
 
 			</view>
@@ -543,21 +543,25 @@
 				padding-top: 8%;
 
 				.content {
+					margin-top: -10px;
 					display: flex;
 					width: 50%;
 					text-align: left;
-					font-size: 28rpx;
+					font-size: 25rpx;
 					font-weight: bold;
 					text-align: left;
+					flex-wrap: wrap; /* 让内容自动换行 */
 				}
+				
 
 				.content input {
-					margin-left: 20rpx;
-					margin-right: 20rpx;
-					width: 100rpx;
+					margin-left: 0rpx;
+					margin-right: 0rpx;
+					width: 150rpx;
 					position: relative;
 					padding-bottom: 5rpx;
 					font-weight: 500 !important;
+					flex-basis: 50%; /* 每个input占据一半的空间 */
 				}
 
 				.content input::after {
@@ -567,7 +571,7 @@
 					height: 1px;
 					background-color: #cecece;
 					position: absolute;
-					bottom: 25%;
+					bottom: 15%;
 					left: 0;
 				}
 			}

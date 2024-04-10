@@ -18,7 +18,7 @@ import hashlib
 from datetime import datetime
 
 from ventilation_fan import finally_result, get_input_data
-from Clearwater_centrifugal_pump import finally_result
+from Clearwater_centrifugal_pump import finally_result1
 from Centrifugal_pump_for_petrochemical import final_result2
 from small_submersible_electric_pump import get_input_data2, real_efficiency
 
@@ -766,7 +766,7 @@ def water_pump():
     Efficiency = float(request.args.get('efficiency')) if request.args.get('efficiency') else None
 
     if '清水' in Type:
-        pump1 = finally_result(Rho, n, Q, H, P, Type, Efficiency)
+        pump1 = finally_result1(Rho, n, Q, H, P, Type, Efficiency)
         print("水泵1", pump1)
         return jsonify({'energy_consumption': pump1})
     elif '石油' in Type or '化工' in Type:

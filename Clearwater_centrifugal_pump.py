@@ -327,7 +327,7 @@ def actual_pump_efficiency(Rho, H, Q, P):
 
 
 # ————————————比较结果———————————— #
-def finally_result(Rho, n, Q, H, P, Type, Efficiency):
+def finally_result1(Rho, n, Q, H, P, Type, Efficiency):
     # 泵目标能效限定值
     pump_target_value = pump_target_efficiency_value(Type, n, Q, H)
     # print(f"泵目标能效限定值为:{pump_target_value:.1f}%")
@@ -339,7 +339,7 @@ def finally_result(Rho, n, Q, H, P, Type, Efficiency):
     if Efficiency >= pump_energySaving:
         return '符合节能评价'
     elif pump_target_value <= Efficiency < pump_energySaving:
-        return '符合目标效限定值'
+        return '符合目标能效限定值'
     else:
         return '低于目标能效限定值'
 
