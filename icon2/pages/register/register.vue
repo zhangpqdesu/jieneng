@@ -21,7 +21,7 @@
 			
 			<view class="agree">
 			    <u-checkbox-group>
-					<u-checkbox @change="clickChecked" v-model="checked" shape="circle" active-color="#FFC300" size="28rpx" />
+					<u-checkbox @change="clickChecked" v-model="checked" shape="circle" active-color="#FFC300" size="40rpx" />
 						已经阅读并同意<span class="highlight">用户协议、隐私政策</span>
 					</u-checkbox>
 			    </u-checkbox-group>
@@ -99,7 +99,8 @@
 							uni.showToast({
 								title: '申请已提交！请等待审批',
 								icon: 'success',
-								duration:2000
+								duration:2000,
+								mask: true
 							});
 						}
 					},
@@ -107,7 +108,7 @@
 						console.error(err);
 						uni.showToast({
 							title:'注册失败',
-							icon:'error'
+							icon:'error',
 						})
 					}
 				});

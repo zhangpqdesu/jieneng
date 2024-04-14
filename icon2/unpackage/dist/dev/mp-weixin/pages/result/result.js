@@ -226,6 +226,13 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../../config.js */ 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   mounted: function mounted() {
     // 在 mounted 钩子中获取 OCR 结果参数并展示
@@ -268,6 +275,10 @@ var _default = {
         this.list.flowRate = ocrResult.flowRate; // 流量
         this.list.head = ocrResult.head; // 扬程
         this.list.model = ocrResult.model; // 型号
+        this.list.power = ocrResult.power; // 功率
+        this.list.stage = ocrResult.stage; // 级数
+        this.list.p1 = ocrResult.p1; // 密度
+        this.list.efficiency = ocrResult.efficiency; // 效率
         this.list.imgUrl = imgUrl;
         this.typeIndex = ocrResult.typeIndex;
         this.list.record_place = company;
@@ -279,13 +290,17 @@ var _default = {
         console.log('缓存数据已删除');
       } else if (ocrResult.typeIndex === 0) {
         // 风机逻辑
+        this.list.machine_number = ocrResult.machine_number; // 机号
+        this.list.r = ocrResult.r; // 轮毂比
+        this.list.type = ocrResult.type; // 型号
+        this.list.p1 = ocrResult.p1; // 密度
+        this.list.u = ocrResult.u; // 速度
         this.list.rotated_speed = ocrResult.rotated_speed; // 转速
         this.list.flowRate = ocrResult.flowRate; // 流量
         this.list.pressure = ocrResult.pressure; // 压力
         this.list.power = ocrResult.power; // 功率
         this.list.efficiency = ocrResult.efficiency; // 效率
         this.list.imgUrl = imgUrl;
-        this.list.model = ocrResult.model; // 型号
         this.typeIndex = ocrResult.typeIndex;
         this.list.record_place = company;
         this.list.username = username;
@@ -326,7 +341,7 @@ var _default = {
         flowRate: "",
         pressure: "",
         correction: ""
-      }, (0, _defineProperty2.default)(_list, "power", ""), (0, _defineProperty2.default)(_list, "batch", ""), (0, _defineProperty2.default)(_list, "is_backward", ""), (0, _defineProperty2.default)(_list, "imgUrl", ""), (0, _defineProperty2.default)(_list, "run_time", ""), (0, _defineProperty2.default)(_list, "motor_type_classification", ""), (0, _defineProperty2.default)(_list, "extraInfo", ""), (0, _defineProperty2.default)(_list, "record_place", ""), (0, _defineProperty2.default)(_list, "record_time", ""), (0, _defineProperty2.default)(_list, "name", ""), (0, _defineProperty2.default)(_list, "head", ""), (0, _defineProperty2.default)(_list, "model", ""), _list)
+      }, (0, _defineProperty2.default)(_list, "power", ""), (0, _defineProperty2.default)(_list, "batch", ""), (0, _defineProperty2.default)(_list, "is_backward", ""), (0, _defineProperty2.default)(_list, "imgUrl", ""), (0, _defineProperty2.default)(_list, "run_time", ""), (0, _defineProperty2.default)(_list, "motor_type_classification", ""), (0, _defineProperty2.default)(_list, "extraInfo", ""), (0, _defineProperty2.default)(_list, "record_place", ""), (0, _defineProperty2.default)(_list, "record_time", ""), (0, _defineProperty2.default)(_list, "name", ""), (0, _defineProperty2.default)(_list, "head", ""), (0, _defineProperty2.default)(_list, "model", ""), (0, _defineProperty2.default)(_list, "machine_number", ""), (0, _defineProperty2.default)(_list, "r", ""), (0, _defineProperty2.default)(_list, "type", ""), (0, _defineProperty2.default)(_list, "p1", ""), (0, _defineProperty2.default)(_list, "u", ""), (0, _defineProperty2.default)(_list, "stage", ""), _list)
     };
   },
   methods: {
@@ -334,6 +349,12 @@ var _default = {
       this.sendData();
       if (this.typeIndex === 1) {
         this.computeMotorEnergyConsumption();
+      }
+      if (this.typeIndex === 0) {
+        this.computeVentilationEnergyConsumption();
+      }
+      if (this.typeIndex === 2) {
+        this.computePumpConsumption();
       }
       uni.showToast({
         title: '数据已提交',
@@ -381,7 +402,8 @@ var _default = {
         }, _callee);
       }))();
     },
-    sendData: function sendData() {
+    // 风机
+    computeVentilationEnergyConsumption: function computeVentilationEnergyConsumption() {
       var _this2 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
         return _regenerator.default.wrap(function _callee2$(_context2) {
@@ -389,9 +411,96 @@ var _default = {
             switch (_context2.prev = _context2.next) {
               case 0:
                 uni.request({
+                  url: _config.default.SERVER_URL + '/ventilation_fan',
+                  data: {
+                    machine_number: _this2.list.machine_number,
+                    r: _this2.list.r,
+                    type: _this2.list.type,
+                    p1: _this2.list.p1,
+                    u: _this2.list.u,
+                    rotated_speed: _this2.list.rotated_speed,
+                    flowRate: _this2.list.flowRate,
+                    pressure: _this2.list.pressure,
+                    power: _this2.list.power,
+                    efficiency: _this2.list.efficiency
+                  },
+                  method: 'GET',
+                  success: function success(res) {
+                    console.log(res.data);
+                    // 处理后端返回的数据
+                    var responseData = res.data;
+                    console.log(responseData);
+
+                    // 更新页面上的能效
+                    _this2.energy_consumption = responseData.energy_consumption;
+                  }
+                });
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    // 水泵
+    computePumpConsumption: function computePumpConsumption() {
+      var _this3 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                uni.request({
+                  url: _config.default.SERVER_URL + '/water_pump',
+                  data: {
+                    rotated_speed: _this3.list.rotated_speed,
+                    // 转速
+                    flowRate: _this3.list.flowRate,
+                    // 流量
+                    head: _this3.list.head,
+                    // 扬程
+                    model: _this3.list.model,
+                    // 型号
+                    power: _this3.list.power,
+                    // 功率
+                    stage: _this3.list.stage,
+                    // 级数
+                    p1: _this3.list.p1,
+                    // 级数
+                    efficiency: _this3.list.efficiency // 效率
+                  },
+
+                  method: 'GET',
+                  success: function success(res) {
+                    console.log(res.data);
+                    // 处理后端返回的数据
+                    var responseData = res.data;
+                    console.log(responseData);
+
+                    // 更新页面上的能效
+                    _this3.energy_consumption = responseData.energy_consumption;
+                  }
+                });
+              case 1:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    sendData: function sendData() {
+      var _this4 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                uni.request({
                   url: _config.default.SERVER_URL + '/is_backward',
                   //仅为示例，并非真实接口地址。
-                  data: JSON.stringify(_this2.list),
+                  data: JSON.stringify(_this4.list),
                   method: 'POST',
                   header: {
                     'Content-Type': 'application/json' //自定义请求头信息
@@ -404,8 +513,8 @@ var _default = {
                     console.log(responseData);
 
                     // 更新页面上的 is_backward 和 batch
-                    _this2.list.is_backward = responseData.is_backward;
-                    _this2.list.batch = responseData.batch;
+                    _this4.list.is_backward = responseData.is_backward;
+                    _this4.list.batch = responseData.batch;
                     ;
                   }
                 });
@@ -445,34 +554,34 @@ var _default = {
                 } */
               case 1:
               case "end":
-                return _context2.stop();
+                return _context4.stop();
             }
           }
-        }, _callee2);
+        }, _callee4);
       }))();
     },
     save_records: function save_records() {
-      var _this3 = this;
-      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+      var _this5 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
         var requestData;
-        return _regenerator.default.wrap(function _callee3$(_context3) {
+        return _regenerator.default.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 try {
                   // 构建需要发送给后端的对象
                   requestData = {
-                    username: _this3.list.username,
+                    username: _this5.list.username,
                     // 替换为真实的用户名或者从页面获取
-                    imgUrl: _this3.list.imgUrl,
-                    type: _this3.typeArr[_this3.typeIndex].title,
+                    imgUrl: _this5.list.imgUrl,
+                    type: _this5.typeArr[_this5.typeIndex].title,
                     // 获取当前选中的类型
-                    energy_consumption: _this3.energy_consumption,
-                    record_place: _this3.list.record_place,
+                    energy_consumption: _this5.energy_consumption,
+                    record_place: _this5.list.record_place,
                     //时间自动指定为发送请求的时间
 
-                    is_backward: _this3.list.is_backward,
-                    extraInfo: _this3.list.extraInfo
+                    is_backward: _this5.list.is_backward,
+                    extraInfo: _this5.list.extraInfo
                     // 添加其他参数
                   };
                   /* const response = await fetch(`${config.SERVER_URL}/save_photo_data`, {
@@ -517,10 +626,10 @@ var _default = {
                 }
               case 1:
               case "end":
-                return _context3.stop();
+                return _context5.stop();
             }
           }
-        }, _callee3);
+        }, _callee5);
       }))();
     }
   }

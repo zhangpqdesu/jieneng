@@ -29,20 +29,20 @@ app = Flask(__name__)  # flask服务
 CORS(app)
 # 持久层框架，配置数据库连接信息，这里可以查看数据库配置信息
 
-app.config[
-    'SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)  #
-
-
 # app.config[
-#     'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
+#     'SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# # 创建 SQLAlchemy 实例
-# db = SQLAlchemy()
-#
-# # 将 Flask 应用注册到 SQLAlchemy 实例中
-# db.init_app(app)
+# db = SQLAlchemy(app)  #
+
+
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# 创建 SQLAlchemy 实例
+db = SQLAlchemy()
+
+# 将 Flask 应用注册到 SQLAlchemy 实例中
+db.init_app(app)
 
 
 # ocr返回类
@@ -85,19 +85,62 @@ def extract_motor_parameters(text_array):
     extracted_rotated_speed = []
     extracted_motor_type = []
 
-    for text in text_array:
-        match_power = re.search(r'(\d+)\s*(?=-?\s*[kK][Ww])', text)
+    for i, text in enumerate(text_array):
+        # 匹配数字、小数点和字母"O"，在"O"的位置添加数字0
+        match_power = re.search(r'(\d+\.*\d*)(O?)(?=\s*[kK][Ww])', text)
+        if match_power:
+            power_digits = match_power.group(1)
+            power_letter_o = match_power.group(2)
+
+            # 如果匹配到字母"O"，在其位置添加数字0
+            if power_letter_o:
+                o_index = match_power.start(2)
+                power_digits = power_digits[:o_index] + '0' + power_digits[o_index:]
+
+            # 将结果转换为浮点数
+            extracted_power = float(power_digits)
+
+            # 第二次提取，同样对结果进行处理
+            extracted_power_second = float(match_power.group(1).replace('O', '0'))
+            # 第二次提取，同样对结果进行处理
+            extracted_power = float(extracted_power_second)
 
         if match_power:
-            extracted_power = (int(match_power.group(1)))
+            extracted_power = (float(extracted_power))
             break
-        elif 'kW' in text or 'KW' in text:
-            index = text_array.index(text)
-            if index > 0:
-                previous_text = text_array[index - 1]
+        elif 'kw' in text.lower():
+            # 检查当前带有 "kw" 的文本元素是否包含数字和字母
+            if any(char.isdigit() or char.isalpha() for char in text):
+                # 如果包含数字或字母，则直接提取当前文本元素中的功率信息
+                match_power = re.search(r'(\d+\.*\d*)(O?)(?=\s*[kK][Ww])', text)
+                if match_power:
+                    power_digits = match_power.group(1)
+                    power_letter_o = match_power.group(2)
 
-                extracted_power = (int(previous_text))
-                break
+                    # 如果匹配到字母"O"，在其位置添加数字0
+                    if power_letter_o:
+                        o_index = match_power.start(2)
+                        power_digits = power_digits[:o_index] + '0' + power_digits[o_index:]
+
+                    # 将结果转换为浮点数
+                    extracted_power = float(power_digits)
+
+                    # 第二次提取，同样对结果进行处理
+                    extracted_power_second = float(match_power.group(1).replace('O', '0'))
+                    # 第二次提取，同样对结果进行处理
+                    extracted_power = float(extracted_power_second)
+
+                if match_power:
+                    extracted_power = float(extracted_power)
+                    break
+            else:
+                # 如果不包含数字或字母，则回退到前一个文本元素中提取功率信息
+                if i > 0:
+                    previous_text = text_array[i - 1]
+                    match_previous_power = re.search(r'(\d+\.*\d*)(O?)(?=\s*[kK][Ww])', previous_text)
+                    if match_previous_power:
+                        extracted_power = float(match_previous_power.group(1).replace('O', '0'))
+                        break
 
     for text in text_array:
         match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
@@ -111,29 +154,46 @@ def extract_motor_parameters(text_array):
                     extracted_efficiency = (text_array[index - 1])
                     break
 
+    # 转速
     for text in text_array:
-        match_speed = re.search(r'(\d+)\s*[rR]/min', text)
+        match_speed = re.search(r'(\d+)\s*[rR]/min|rpm', text)
         if match_speed:
             extracted_rotated_speed = (match_speed.group(1))
             break
-        elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rmir' in text.lower():
+        elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rpm' in text.lower():
             index = text_array.index(text)
             if index > 0:
                 extracted_rotated_speed = (text_array[index - 1])
                 break
 
+    found_motor_type = False  # 标志是否找到型号信息
+
+    # 首先尝试匹配型号
     for text in text_array:
         match_motor_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)
         if match_motor_type:
             extracted_motor_type = match_motor_type.group(1)
             print("情况1：", extracted_motor_type)
+            found_motor_type = True
             break
-        elif '型号' in text or 'type' in text:
-            index = text_array.index(text)
-            if 0 <= index < len(text_array) - 1:
-                extracted_motor_type = text_array[index + 1]
-                print("情况2", extracted_motor_type)
-                break
+
+    if not found_motor_type:
+        # 如果没有匹配到型号，尝试匹配type
+        for i, text in enumerate(text_array):
+            print("type",text_array)
+            if 'type' in text.lower():
+                next_index = i + 1
+                if 0 <= next_index < len(text_array):
+                    next_text = text_array[next_index]
+                    # 检查 type 后面的内容是否合法
+                    if re.search(r'^[^\s]+', next_text):
+                        extracted_motor_type = next_text
+                        print("情况2:", extracted_motor_type)
+                        found_motor_type = True
+                        break
+
+    if not found_motor_type:
+        print("No motor type found.")
 
     return extracted_power, extracted_efficiency, extracted_rotated_speed, extracted_motor_type
 
@@ -368,7 +428,7 @@ def ocr() -> Dict[str, Any]:
     text_array = save_image_and_ocr(file)
     print(text_array)
 
-    if any('三相异步' in text or '电动机' in text for text in text_array):
+    if any('三相异步' in text or '电动机' in text or 'motors' in text.lower() for text in text_array):
         # 电机相关的逻辑
         extracted_power, extracted_efficiency, extracted_rotated_speed, extracted_motor_type = extract_motor_parameters(
             text_array)
@@ -687,6 +747,7 @@ class MotorFile(db.Model):
     energy_consumption = db.Column(db.String(255))
 
 
+# 电机
 @app.route('/query_motor_files', methods=['GET'])
 def query_motor_files():
     rotated_speed = request.args.get('rotated_speed', type=int)
@@ -733,6 +794,7 @@ def query_motor_files():
     return jsonify({'energy_consumption': '低于3级'})
 
 
+# 风机
 @app.route('/ventilation_fan', methods=['GET'])
 def ventilation_fan():
     MachineNumber = float(request.args.get('machine_number')) if request.args.get('machine_number') else None
@@ -754,6 +816,7 @@ def ventilation_fan():
     return jsonify({'energy_consumption': grade})
 
 
+# 水泵
 @app.route('/water_pump', methods=['GET'])
 def water_pump():
     Rho = float(request.args.get('P1')) if request.args.get('P1') else None
@@ -774,12 +837,11 @@ def water_pump():
         print("水泵2", pump2)
         return jsonify({'energy_consumption': pump2})
     elif '小型潜水' in Type:
-        get_input_data2(n, Q, H, stage, P, Type,Efficiency)
-        pump3 = real_efficiency(n, Q, H, stage, P, Type,Efficiency)
+        get_input_data2(n, Q, H, stage, P, Type, Efficiency)
+        pump3 = real_efficiency(n, Q, H, stage, P, Type, Efficiency)
         print("水泵3", pump3)
         return jsonify({'energy_consumption': pump3})
 
 
-
 if __name__ == '__main__':
-    waitress.serve(app, host='162.14.67.149', port=5000)
+    waitress.serve(app, host='127.0.0.1', port=5000)

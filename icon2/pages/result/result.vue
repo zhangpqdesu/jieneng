@@ -262,7 +262,8 @@
 			        data: {
 			            power: this.list.power,
 			            efficiency: this.list.efficiency,
-			            rotated_speed: this.list.rotated_speed
+			            rotated_speed: this.list.rotated_speed,
+						model: this.list.model
 			        },
 			        method: 'GET',
 			        success: (res) => {

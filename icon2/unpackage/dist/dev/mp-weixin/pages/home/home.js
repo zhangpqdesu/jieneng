@@ -222,6 +222,11 @@ var _default = {
         url: '/pages/camera/camera'
       });
     },
+    clickHand: function clickHand() {
+      uni.navigateTo({
+        url: '/pages/result/result'
+      });
+    },
     clickPhoto: function clickPhoto() {
       var _this = this;
       uni.chooseImage({

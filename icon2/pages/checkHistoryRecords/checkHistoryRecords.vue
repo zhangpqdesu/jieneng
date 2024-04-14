@@ -88,7 +88,25 @@
 	        });
 	      }
 	    },
-    mounted() {
+//     mounted() {
+//   // 获取当前用户的用户名
+//   const username = uni.getStorageSync('name') || '未登录';
+
+//   // 发起带有用户名参数的GET请求
+//   uni.request({
+//     url: `${config.SERVER_URL}/listdata?username=${username}`, // 将用户名作为查询参数添加到URL中
+//     method: 'GET',
+//     success: (res) => {
+//       // 更新 listData 数组为从后端接收到的数据
+//       this.listData = res.data.data; // 注意这里修改为 res.data.data
+//       console.log(this.listData); // 打印接收到的数据，确保数据已经正确获取
+//     },
+//     fail: (err) => {
+//       console.error('Failed to fetch data:', err);
+//     }
+//   });
+// }
+mounted() {
   // 获取当前用户的用户名
   const username = uni.getStorageSync('name') || '未登录';
 
@@ -97,8 +115,8 @@
     url: `${config.SERVER_URL}/listdata?username=${username}`, // 将用户名作为查询参数添加到URL中
     method: 'GET',
     success: (res) => {
-      // 更新 listData 数组为从后端接收到的数据
-      this.listData = res.data.data; // 注意这里修改为 res.data.data
+      // 更新 listData 数组为从后端接收到的数据，并进行反转操作
+      this.listData = res.data.data.reverse(); // 注意这里添加了 .reverse() 方法
       console.log(this.listData); // 打印接收到的数据，确保数据已经正确获取
     },
     fail: (err) => {
@@ -106,6 +124,7 @@
     }
   });
 }
+
   }
 </script>
 

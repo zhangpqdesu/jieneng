@@ -29,7 +29,7 @@
 			
 			<view class="agree">
 			    <u-checkbox-group>
-					<u-checkbox @change="clickChecked" v-model="checked" shape="circle" active-color="#FFC300" size="28rpx" />
+					<u-checkbox @change="clickChecked" v-model="checked" shape="circle" active-color="#FFC300" size="40rpx" />
 						已经阅读并同意<span class="highlight">用户协议、隐私政策</span>
 					</u-checkbox>
 			    </u-checkbox-group>
@@ -61,9 +61,8 @@
 					phone:"",
 					verification:""
 				},
-				checked:false,
+				checked: false,
 				state: true,
-				checked: false
 			}
 		},
 		onLoad() {

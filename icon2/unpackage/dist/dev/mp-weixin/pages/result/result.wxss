@@ -107,23 +107,28 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   padding-left: 60rpx;
-  padding-top: 10%;
+  padding-top: 8%;
 }
 .out .box1 .box2 .content {
+  margin-top: -10px;
   display: flex;
   width: 50%;
   text-align: left;
-  font-size: 28rpx;
+  font-size: 25rpx;
   font-weight: bold;
   text-align: left;
+  flex-wrap: wrap;
+  /* 让内容自动换行 */
 }
 .out .box1 .box2 .content input {
-  margin-left: 20rpx;
-  margin-right: 20rpx;
-  width: 80rpx;
+  margin-left: 0rpx;
+  margin-right: 0rpx;
+  width: 150rpx;
   position: relative;
   padding-bottom: 5rpx;
   font-weight: 500 !important;
+  flex-basis: 50%;
+  /* 每个input占据一半的空间 */
 }
 .out .box1 .box2 .content input::after {
   content: '';
@@ -132,7 +137,7 @@
   height: 1px;
   background-color: #cecece;
   position: absolute;
-  bottom: 25%;
+  bottom: 15%;
   left: 0;
 }
 .out .box1 .line {
