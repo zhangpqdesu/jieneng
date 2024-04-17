@@ -48,8 +48,8 @@
 				<view class="content">扬程:<input class="input" v-model="list.head" />m</view>
 				<view class="content">型号:<input class="input" v-model="list.model" /></view>
 				<view class="content">功率:<input class="input" v-model="list.power" />kw</view>
-				<view class="content">级数:<input class="input" v-model="list.p1" /></view>
-				<view class="content">密度:<input class="input" v-model="list.stage" />kg/m³</view>
+				<view class="content">密度:<input class="input" v-model="list.p1" />kg/m³</view>
+				<view class="content">级数:<input class="input" v-model="list.stage" /></view>
 				<view class="content">效率:<input class="input" v-model="list.efficiency" />%</view>
 
 			</view>
@@ -163,10 +163,10 @@
 					this.sendData();
 
 					// 成功获取并展示 OCR 结果后删除缓存数据
-					uni.removeStorageSync('ocrResult');
-					uni.removeStorageSync('imgUrl');
+					// uni.removeStorageSync('ocrResult');
+					// uni.removeStorageSync('imgUrl');
 
-					console.log('缓存数据已删除');
+					// console.log('缓存数据已删除');
 				} else {
 					console.error('未获取到 OCR 结果');
 				}
@@ -316,7 +316,7 @@
 						model:this.list.model, // 型号
 						power:this.list.power,// 功率
 						stage:this.list.stage, // 级数
-						p1:this.list.p1, // 级数
+						p1:this.list.p1, // 密度
 						efficiency:this.list.efficiency, // 效率
 			        },
 			        method: 'GET',

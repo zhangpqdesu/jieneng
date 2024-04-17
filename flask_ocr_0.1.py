@@ -197,12 +197,16 @@ def extract_motor_parameters(text_array):
 
     return extracted_power, extracted_efficiency, extracted_rotated_speed, extracted_motor_type
 
-
+# 提取水泵
 def extract_pump_parameters(text_array):
     extracted_speed = None
     extracted_flow_rate = None
     extracted_head = None
     extracted_model = None
+    extracted_power = None
+    extracted_stage = None
+    extracted_p1 = None
+    extracted_efficiency = None
 
     # 提取转速（单位为r/min）
     for i, text in enumerate(text_array):
@@ -219,7 +223,7 @@ def extract_pump_parameters(text_array):
 
     # 提取流量（单位为m³/h）
     for text in text_array:
-        match_flow_rate = re.search(r'(\d+)\s*[mM][3³]/h', text)
+        match_flow_rate = re.search(r'(\d+(\.\d+)?)\s*[mM][3³]/h', text)
         if match_flow_rate:
             extracted_flow_rate = match_flow_rate.group(1)
             break
@@ -233,7 +237,7 @@ def extract_pump_parameters(text_array):
 
     # 提取扬程（单位为m）
     for text in text_array:
-        match_head = re.search(r'(\d+)(?=\s*[mM]$)', text)
+        match_head = re.search(r'(\d+(\.\d+)?)(?=\s*[mM](?!\S))', text)
         if match_head:
             extracted_head = match_head.group(1)
             break
@@ -258,7 +262,49 @@ def extract_pump_parameters(text_array):
                 print("情况2", extracted_model)
                 break
 
-    return extracted_speed, extracted_flow_rate, extracted_head, extracted_model
+    # 提取水泵级数
+    for text in text_array:
+        match_stage = re.search(r'/(?P<stage>\d)', text)
+        if match_stage:
+            extracted_stage = match_stage.group(1)
+            break
+
+    # 提取功率（单位为kW）
+    for text in text_array:
+        match_power = re.search(r'(\d+\.?\d*)\s*[kK]w', text)
+        if match_power:
+            extracted_power = match_power.group(1)
+            break
+        elif 'kw' in text.lower() or 'kW' in text.lower():
+            index = text_array.index(text)
+            if index > 0:
+                previous_text = text_array[index - 1]
+                extracted_power = previous_text
+                break
+
+    # 提取密度
+    for text in text_array:
+        match_p1 = re.search(r'(\d+(\.\d+)?)\s*kg', text)
+        print("match_p1", match_p1)
+        if match_p1:
+            extracted_p1 = match_p1.group(1)
+            print("extracted_p1", extracted_p1)
+            break
+
+    # 提取效率（单位为%）
+    for text in text_array:
+        match_efficiency = re.search(r'(\d+(\.\d+)?)\s*%', text)
+        if match_efficiency:
+            extracted_efficiency = match_efficiency.group(1)
+            break
+        elif '%' in text.lower():
+            index = text_array.index(text)
+            if index > 0:
+                previous_text = text_array[index - 1]
+                extracted_efficiency = previous_text
+                break
+
+    return extracted_speed, extracted_flow_rate, extracted_head, extracted_model, extracted_stage, extracted_power, extracted_p1, extracted_efficiency
 
 
 import re
@@ -292,12 +338,12 @@ def extract_fan_parameters(text_array):
     # 提取流量（单位为m³/h或m³/min）
     for text in text_array:
         # 匹配m³/h
-        match_flow_rate_h = re.search(r'(\d+)\s*[mM][³3]/h', text)
+        match_flow_rate_h = re.search(r'(\d+(\.\d+)?)\s*[mM][³3]/h', text)
         if match_flow_rate_h:
             extracted_flow_rate = match_flow_rate_h.group(1)
             break
         # 匹配m³/min
-        match_flow_rate_min = re.search(r'(\d+)\s*[mM][3³`]/min', text)
+        match_flow_rate_min = re.search(r'(\d+(\.\d+)?)\s*[mM][3³`]/min', text)
         if match_flow_rate_min:
             extracted_flow_rate = match_flow_rate_min.group(1)
             break
@@ -308,7 +354,7 @@ def extract_fan_parameters(text_array):
                 extracted_flow_rate = previous_text
                 break
 
-    # 提取压力（单位为Mpa）
+    # 提取压力（单位为pa）
     for text in text_array:
         match_pressure = re.search(r'(\d+\.?\d*)\s*[Pp]a', text)
         if match_pressure:
@@ -323,9 +369,10 @@ def extract_fan_parameters(text_array):
 
     # 提取功率（单位为kW）
     for text in text_array:
-        match_power = re.search(r'(\d+\.?\d*)\s*[kK]w', text)
+        match_power = re.search(r'(\d+\.?\d*)\s*[kK][wW]', text)
         if match_power:
             extracted_power = match_power.group(1)
+            print("extracted_power",extracted_power)
             break
         elif 'kw' in text.lower() or 'kW' in text.lower():
             index = text_array.index(text)
@@ -350,20 +397,17 @@ def extract_fan_parameters(text_array):
 
     # 提取风机号
     for text in text_array:
-        match_machine_number = re.search(r'NO(\d+)', text)
+        # print("text",text)
+        match_machine_number = re.search(r'NO(\d+\.\d+)', text)
+        # print("match_machine_number", match_machine_number)
         if match_machine_number:
             extracted_machine_number = match_machine_number.group(1)
+            print("extracted_machine_number", extracted_machine_number)
             break
-        elif '%' in text.lower():
-            index = text_array.index(text)
-            if index > 0:
-                previous_text = text_array[index - 1]
-                extracted_machine_number = previous_text
-                break
 
     # 提取轮毂比
     for text in text_array:
-        match_r = re.search(r'轮毂比\s*[:：]?\s*(\d+(?:\.\d+)?)', text)
+        match_r = re.search(r'比\s*[:：]?\s*(\d+(?:\.\d+)?)', text)
         if match_r:
             extracted_r = match_r.group(1)
             break
@@ -379,18 +423,15 @@ def extract_fan_parameters(text_array):
         match_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)
         if match_type:
             extracted_type = match_type.group(1)
+            print("extracted_type", extracted_type)
             break
-        elif '%' in text.lower():
-            index = text_array.index(text)
-            if 0 <= index < len(text_array) - 1:
-                extracted_type = text_array[index + 1]
-                break
 
     # 提取密度
     for text in text_array:
-        match_p1 = re.search(r'(\d+)\s*[mM][3³`]/s', text)
+        match_p1 = re.search(r'(\d+(\.\d+)?)\s*[mM][3³`]/s', text)
         if match_p1:
             extracted_p1 = match_p1.group(1)
+            print("extracted_p1",extracted_p1)
             break
         elif 'm3/h' in text.lower():
             index = text_array.index(text)
@@ -412,14 +453,7 @@ def extract_fan_parameters(text_array):
                 extracted_u = previous_text
                 break
 
-    # 提取水泵级数
-    for text in text_array:
-        match_stage = re.search(r'/(?P<stage>\d)', text)
-        if match_stage:
-            extracted_stage = match_stage.group(1)
-            break
-
-    return extracted_speed, extracted_flow_rate, extracted_pressure, extracted_power, extracted_efficiency, extracted_machine_number, extracted_r, extracted_type, extracted_p1, extracted_u, extracted_stage
+    return extracted_speed ,extracted_r ,extracted_type ,extracted_p1 ,extracted_u, extracted_machine_number, extracted_flow_rate, extracted_pressure, extracted_power, extracted_efficiency
 
 
 @app.route('/ocr', methods=['POST'])
@@ -450,7 +484,7 @@ def ocr() -> Dict[str, Any]:
         return jsonify(response_data)
     elif any('风机' in text for text in text_array):
         # 风机相关的逻辑
-        extracted_machine_number, extracted_r, extracted_type, extracted_p1, extracted_u, extracted_speed, extracted_flow_rate, extracted_pressure, extracted_power, extracted_efficiency = extract_fan_parameters(
+        extracted_speed, extracted_r, extracted_type, extracted_p1, extracted_u, extracted_machine_number, extracted_flow_rate, extracted_pressure, extracted_power, extracted_efficiency = extract_fan_parameters(
             text_array)
         typeIndex = 0
         print("typeIndex:", typeIndex)
@@ -482,7 +516,7 @@ def ocr() -> Dict[str, Any]:
 
 
     elif ('泵' in text for text in text_array):
-        extracted_speed, extracted_flow_rate, extracted_head, extracted_model = extract_pump_parameters(
+        extracted_speed, extracted_flow_rate, extracted_head, extracted_model, extracted_stage, extracted_power, extracted_p1, extracted_efficiency= extract_pump_parameters(
             text_array)
         typeIndex = 2
         print("typeIndex:", typeIndex)
@@ -490,7 +524,11 @@ def ocr() -> Dict[str, Any]:
         print("流量：", extracted_flow_rate, "m³/h")
         print("扬程：", extracted_head, "m")
         print("型号：", extracted_model)
-        
+        print("功率：", extracted_power)
+        print("级数：", extracted_stage)
+        print("密度：", extracted_p1)
+        print("效率：", extracted_efficiency)
+
 
         response_data = {
             "typeIndex": typeIndex,
@@ -498,7 +536,11 @@ def ocr() -> Dict[str, Any]:
             "flowRate": extracted_flow_rate,  # 流量
             "head": extracted_head,  # 扬程
             "model": extracted_model,  # 型号
-            
+            "power": extracted_power,  # 功率
+            "stage": extracted_stage,  # 级数
+            "p1": extracted_p1,  # 密度
+            "efficiency": extracted_efficiency,  # 效率
+
         }
         return jsonify(response_data)
     response_data = {
