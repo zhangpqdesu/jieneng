@@ -163,10 +163,10 @@
 					this.sendData();
 
 					// 成功获取并展示 OCR 结果后删除缓存数据
-					uni.removeStorageSync('ocrResult');
-					uni.removeStorageSync('imgUrl');
+					//uni.removeStorageSync('ocrResult');
+					//uni.removeStorageSync('imgUrl');
 
-					console.log('缓存数据已删除');
+					//console.log('缓存数据已删除');
 				} else {
 					console.error('未获取到 OCR 结果');
 				}
