@@ -219,7 +219,7 @@ def extract_pump_parameters(text_array):
 
     # 提取流量（单位为m³/h）
     for text in text_array:
-        match_flow_rate = re.search(r'(\d+)\s*[mM]³/h', text)
+        match_flow_rate = re.search(r'(\d+)\s*[mM][3³]/h', text)
         if match_flow_rate:
             extracted_flow_rate = match_flow_rate.group(1)
             break
@@ -482,7 +482,7 @@ def ocr() -> Dict[str, Any]:
 
 
     elif ('泵' in text for text in text_array):
-        extracted_speed, extracted_flow_rate, extracted_head, extracted_model, extracted_power, extracted_stage, extracted_efficiency = extract_pump_parameters(
+        extracted_speed, extracted_flow_rate, extracted_head, extracted_model = extract_pump_parameters(
             text_array)
         typeIndex = 2
         print("typeIndex:", typeIndex)
@@ -490,9 +490,7 @@ def ocr() -> Dict[str, Any]:
         print("流量：", extracted_flow_rate, "m³/h")
         print("扬程：", extracted_head, "m")
         print("型号：", extracted_model)
-        print("功率：", extracted_power, "kw")
-        print("级数：", extracted_stage)
-        print("效率：", extracted_efficiency, "%")
+        
 
         response_data = {
             "typeIndex": typeIndex,
@@ -500,9 +498,7 @@ def ocr() -> Dict[str, Any]:
             "flowRate": extracted_flow_rate,  # 流量
             "head": extracted_head,  # 扬程
             "model": extracted_model,  # 型号
-            "power": extracted_power,  # 功率
-            "stage": extracted_stage,  # 级数
-            "efficiency": extracted_efficiency  # 效率
+            
         }
         return jsonify(response_data)
     response_data = {

@@ -26,7 +26,7 @@ export default {
     chooseImage: function() {
       var that = this;
       uni.chooseImage({
-        count: 9,
+        count: 1,
         sizeType: ['original', 'compressed'],
         sourceType: ['album', 'camera'],
         success: function (res) {
