@@ -1,6 +1,6 @@
 <template>
 	<view class="out">
-		<image :src="list.imgUrl" mode="aspectFit"></image>
+		<image :src="list.imgUrl" mode="aspectFit" alt="图片加载失败"></image>
 		<view class="box1">
 			<view class="slide"></view>
 
@@ -94,10 +94,6 @@
 			var ocrResult = uni.getStorageSync('ocrResult');
 			console.log('OCR 结果:', ocrResult);
 
-			// 从本地存储中获取图片 URL
-			var imgUrl = uni.getStorageSync('imgUrl');
-			console.log('图片 URL:', imgUrl);
-
 			// 从本地存储中获取公司名称
 			var company = uni.getStorageSync('company');
 			console.log('公司名称:', company);
@@ -106,7 +102,9 @@
 			var username = uni.getStorageSync('name');
 			console.log('用户名:', username);
 
-			if (ocrResult && imgUrl) {
+			if (ocrResult) {
+				ocrResult = JSON.parse(ocrResult)
+				console.log('OCR parse结果:', ocrResult);
 				// 根据 typeIndex 判断设备类型并展示参数
 				if (ocrResult.typeIndex === 1) {
 					// 电机逻辑
@@ -114,14 +112,16 @@
 					this.list.power = ocrResult.power;
 					this.list.rotated_speed = ocrResult.rotated_speed;
 					this.list.model = ocrResult.model;
-					this.list.imgUrl = imgUrl;
+					this.list.imgUrl =  ocrResult.imgUrl;
+					
 					this.typeIndex = ocrResult.typeIndex;
 					this.list.record_place = company;
 					this.list.username = username;
+					console.log("list",this.list)
 					this.sendData();
 					// 成功获取并展示 OCR 结果后删除缓存数据
-					uni.removeStorageSync('ocrResult');
-					uni.removeStorageSync('imgUrl');
+					// uni.removeStorageSync('ocrResult');
+					
 					this.computeMotorEnergyConsumption();
 					console.log('缓存数据已删除');
 				} else if (ocrResult.typeIndex === 2) {
@@ -134,7 +134,7 @@
 					this.list.stage = ocrResult.stage; // 级数
 					this.list.p1 = ocrResult.p1; // 密度
 					this.list.efficiency = ocrResult.efficiency; // 效率
-					this.list.imgUrl = imgUrl;
+					this.list.imgUrl =  ocrResult.imgUrl.replace(/\\/g, '/');
 					this.typeIndex = ocrResult.typeIndex;
 					this.list.record_place = company;
 					this.list.username = username;
@@ -156,7 +156,7 @@
 					this.list.pressure = ocrResult.pressure; // 压力
 					this.list.power = ocrResult.power; // 功率
 					this.list.efficiency = ocrResult.efficiency; // 效率
-					this.list.imgUrl = imgUrl;
+					this.list.imgUrl = ocrResult.imgUrl.replace(/\\/g, '/');
 					this.typeIndex = ocrResult.typeIndex;
 					this.list.record_place = company;
 					this.list.username = username;
@@ -170,6 +170,7 @@
 				} else {
 					console.error('未获取到 OCR 结果');
 				}
+				console.log("this.list.imgUrl:",this.list.imgUrl);
 			}
 		},
 		

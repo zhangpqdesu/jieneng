@@ -5,10 +5,11 @@
 		<image class="image" src="/static/photo/upload.png" mode="aspectFit" @click="chooseImage"></image>
 		<text style="color: #707070;margin-top: 10rpx;">点击图标拍照/选择图片</text>
 	</view>
-
+	<br>
+	<view style="text-align: center;">ocr模型由百度提供</view>
     <!-- 展示选择的图片 -->
     <image :src="imgUrl" mode="aspectFit" v-if="imgUrl" style="width: 300px; height: 300px;"></image>
-
+	
   </view>
 </template>
 
@@ -45,9 +46,8 @@ export default {
                 var response = JSON.parse(uploadRes.data);
                 console.log('解析后的响应数据:', response);
                 that.ocrResult = response;
-                uni.setStorageSync('ocrResult',response);
+                uni.setStorageSync('ocrResult',uploadRes.data);
                 // 存储图片路径到本地存储
-                uni.setStorageSync('imgUrl', res.tempFilePaths[0]);
                 
                 // 重定向到结果页面
                 uni.reLaunch({

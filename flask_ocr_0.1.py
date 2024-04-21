@@ -60,7 +60,9 @@ class OcrResponse:
     def dict(self) -> Dict[str, Any]:
         return {'results': self.results}
 
-
+import requests
+import base64
+import urllib.parse
 def save_image_and_ocr(file):
     img_bytes = file.read()
     image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
@@ -70,135 +72,97 @@ def save_image_and_ocr(file):
     image_path = os.path.abspath(os.path.join(UPLOAD_FOLDER, image_filename))
     image.save(image_path)
 
-    res = OCR_MODEL.ocr(image)  # 假设这是你的 OCR 模型的调用函数
-    for _one in res:
-        _one['position'] = _one['position'].tolist()
-        if 'cropped_img' in _one:
-            _one.pop('cropped_img')
+    # 将图像内容转换为 Base64 编码
+    image_base64 = get_file_content_as_base64(image_path, True)
 
-    text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]
-    return text_array,  'http://127.0.0.1:5000/static/receiveImage/' + image_filename  # 返回图片路径给前端
+    # 调用百度 OCR 进行文字识别
+    access_token = "24.8f49dc5e923618b3c9775dd2ef65562f.2592000.1716271304.282335-62580809"  # 你的百度 OCR 访问令牌
+    ocr_url = f"https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token={access_token}"
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+    }
+    payload = f'image={image_base64}&detect_direction=false&paragraph=false&probability=false'
+
+    response = requests.post(ocr_url, headers=headers, data=payload)
+
+    ocr_result = response.json()
+    text_array = [word['words'] for word in ocr_result.get('words_result', [])]
+
+    return text_array, 'http://127.0.0.1:5000/static/receiveImage/' + image_filename  # 返回图片路径给前端
+
+def get_file_content_as_base64(path, urlencoded=False):
+    """
+    获取文件base64编码
+    :param path: 文件路径
+    :param urlencoded: 是否对结果进行urlencoded 
+    :return: base64编码信息
+    """
+    with open(path, "rb") as f:
+        content = base64.b64encode(f.read()).decode("utf8")
+        if urlencoded:
+            content = urllib.parse.quote_plus(content)
+    return content
 
 
 
 def extract_motor_parameters(text_array):
     extracted_power = []
     extracted_efficiency = []
-    extracted_rotated_speed = []
-    extracted_motor_type = []
-
-    for i, text in enumerate(text_array):
-        # 匹配数字、小数点和字母"O"，在"O"的位置添加数字0
-        match_power = re.search(r'(\d+\.*\d*)(O?)(?=\s*[kK][Ww])', text)
-        if match_power:
-            power_digits = match_power.group(1)
-            power_letter_o = match_power.group(2)
-
-            # 如果匹配到字母"O"，在其位置添加数字0
-            if power_letter_o:
-                o_index = match_power.start(2)
-                power_digits = power_digits[:o_index] + '0' + power_digits[o_index:]
-
-            # 将结果转换为浮点数
-            extracted_power = float(power_digits)
-
-            # 第二次提取，同样对结果进行处理
-            extracted_power_second = float(match_power.group(1).replace('O', '0'))
-            # 第二次提取，同样对结果进行处理
-            extracted_power = float(extracted_power_second)
-
-        if match_power:
-            extracted_power = (float(extracted_power))
-            break
-        elif 'kw' in text.lower():
-            # 检查当前带有 "kw" 的文本元素是否包含数字和字母
-            if any(char.isdigit() or char.isalpha() for char in text):
-                # 如果包含数字或字母，则直接提取当前文本元素中的功率信息
-                match_power = re.search(r'(\d+\.*\d*)(O?)(?=\s*[kK][Ww])', text)
-                if match_power:
-                    power_digits = match_power.group(1)
-                    power_letter_o = match_power.group(2)
-
-                    # 如果匹配到字母"O"，在其位置添加数字0
-                    if power_letter_o:
-                        o_index = match_power.start(2)
-                        power_digits = power_digits[:o_index] + '0' + power_digits[o_index:]
-
-                    # 将结果转换为浮点数
-                    extracted_power = float(power_digits)
-
-                    # 第二次提取，同样对结果进行处理
-                    extracted_power_second = float(match_power.group(1).replace('O', '0'))
-                    # 第二次提取，同样对结果进行处理
-                    extracted_power = float(extracted_power_second)
-
-                if match_power:
-                    extracted_power = float(extracted_power)
-                    break
-            else:
-                # 如果不包含数字或字母，则回退到前一个文本元素中提取功率信息
-                if i > 0:
-                    previous_text = text_array[i - 1]
-                    match_previous_power = re.search(r'(\d+\.*\d*)(O?)(?=\s*[kK][Ww])', previous_text)
-                    if match_previous_power:
-                        extracted_power = float(match_previous_power.group(1).replace('O', '0'))
-                        break
-
+    extracted_speed = []
+    extracted_model = []
+    #提取功率
     for text in text_array:
-        match_efficiency = re.search(r'(\d+(?:\.\d+)?)\s*%', text)
-        if match_efficiency:
-            extracted_efficiency = (match_efficiency.group(1))
+        match_power = re.search(r'(\d+\.?\d*)\s*[kK][Ww]', text)
+        if match_power:
+            extracted_power = match_power.group(1)
             break
-        elif '%' in text:
+        elif 'kw' in text.lower() or 'kW' in text.lower():
             index = text_array.index(text)
             if index > 0:
-                if 60 < float(text_array[index - 1]) < 100:
-                    extracted_efficiency = (text_array[index - 1])
-                    break
-
-    # 转速
-    for text in text_array:
-        match_speed = re.search(r'(\d+)\s*[rR]/min|rpm', text)
-        if match_speed:
-            extracted_rotated_speed = (match_speed.group(1))
-            break
-        elif 'rmin' in text.lower() or 'r/min' in text.lower() or 'rpm' in text.lower():
-            index = text_array.index(text)
-            if index > 0:
-                extracted_rotated_speed = (text_array[index - 1])
+                previous_text = text_array[index - 1]
+                extracted_power = previous_text
                 break
-
-    found_motor_type = False  # 标志是否找到型号信息
-
-    # 首先尝试匹配型号
+    #提取效率
     for text in text_array:
-        match_motor_type = re.search(r'型号\s*[:：]?\s*([^：\s]+)', text)
-        if match_motor_type:
-            extracted_motor_type = match_motor_type.group(1)
-            print("情况1：", extracted_motor_type)
-            found_motor_type = True
+        match_efficiency = re.search(r'(\d{1,3}(?:\.\d{1,2})?)\s*%', text)
+        if match_efficiency:
+            extracted_efficiency = match_efficiency.group(1)
             break
+        elif '%' in text.lower():
+            index = text_array.index(text)
+            if index > 0:
+                previous_text = text_array[index - 1]
+                extracted_efficiency = previous_text
+                break
+    
+    #提取转速
+    for i, text in enumerate(text_array):
+        match_speed = re.search(r'(\d+)\s*[rR]/min', text)
+        if match_speed:
+            extracted_speed = match_speed.group(1)
+            break
+        elif 'r/min' in text.lower() or 'rmin' in text.lower() or 'rmir' in text.lower():
+            if i > 0:
+                previous_text = text_array[i - 1]
 
-    if not found_motor_type:
-        # 如果没有匹配到型号，尝试匹配type
-        for i, text in enumerate(text_array):
-            print("type",text_array)
-            if 'type' in text.lower():
-                next_index = i + 1
-                if 0 <= next_index < len(text_array):
-                    next_text = text_array[next_index]
-                    # 检查 type 后面的内容是否合法
-                    if re.search(r'^[^\s]+', next_text):
-                        extracted_motor_type = next_text
-                        print("情况2:", extracted_motor_type)
-                        found_motor_type = True
-                        break
-
-    if not found_motor_type:
-        print("No motor type found.")
-
-    return extracted_power, extracted_efficiency, extracted_rotated_speed, extracted_motor_type
-
+                extracted_speed = previous_text
+                break
+            
+    #提取型号
+    for text in text_array:
+        match_model = re.search(r'型号\s*:?(\S+)', text)
+        if match_model:
+            extracted_model = match_model.group(1)
+            print("情况1 in motor ：", extracted_model)
+            break
+        elif '型号' in text or 'model' in text:
+            index = text_array.index(text)
+            if 0 <= index < len(text_array) - 1:
+                extracted_model = text_array[index + 1]
+                print("情况2 in motor", extracted_model)
+                break
+    return extracted_power, extracted_efficiency, extracted_speed, extracted_model
 # 提取水泵
 def extract_pump_parameters(text_array):
     extracted_speed = None

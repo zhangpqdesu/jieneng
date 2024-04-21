@@ -12,10 +12,13 @@
     <!-- 显示从后端获取的数据 -->
     <view v-if="listData.length > 0">
 		<view class="export-button">
-	      <button class="btn" @click="exportData">导出数据（请在网页端使用）</button>
+	      <button class="btn" @click="exportData">导出数据（请在PC端使用）</button>
 	    </view>
       <view v-for="(item, index) in listData" :key="index" class="item">
-        <image class="item-image" :src="item.url"></image>
+		  <view>
+			      <image class="item-image" mode="widthFix" :src="item.url"></image>  
+		  </view>
+  
         <view class="item-details">
 		  <text class="record-place">记录url: {{ item.url }}</text>
           <text class="record-place">记录地址: {{ item.record_place }}</text>
@@ -61,26 +64,7 @@
 				  	duration: 2000
 				  });
 	            // Convert data to JSON
-	            const jsonData = JSON.stringify(res.data.data);
-	
-	            // Create a Blob with the JSON data
-	            const blob = new Blob([jsonData], { type: 'application/json' });
-	
-	            // Create a temporary URL for the Blob
-	            const url = window.URL.createObjectURL(blob);
-	
-	            // Create a link element
-	            const link = document.createElement('a');
-	            link.href = url;
-	            link.setAttribute('download', 'data.json');
-	
-	            // Simulate click to trigger download
-	            document.body.appendChild(link);
-	            link.click();
-	
-	            // Cleanup
-	            document.body.removeChild(link);
-	            window.URL.revokeObjectURL(url);
+	            
 	          },
 	          fail: (err) => {
 	            console.error('Failed to fetch data:', err);
