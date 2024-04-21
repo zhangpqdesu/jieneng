@@ -33,7 +33,8 @@ CORS(app)
 #     'SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # db = SQLAlchemy(app)  #
-
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static/receiveImage")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app.config[
     'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://Administrator:XWClassroom20202023@www.ylxteach.net:3366/demo?charset=gbk'
@@ -65,18 +66,19 @@ def save_image_and_ocr(file):
     image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
 
     upload_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    image_filename = f"receiveImage/{upload_time}.jpg"
-    os.makedirs("receiveImage", exist_ok=True)
-    image.save(image_filename)
+    image_filename = f"{upload_time}.jpg"
+    image_path = os.path.abspath(os.path.join(UPLOAD_FOLDER, image_filename))
+    image.save(image_path)
 
-    res = OCR_MODEL.ocr(image)
+    res = OCR_MODEL.ocr(image)  # 假设这是你的 OCR 模型的调用函数
     for _one in res:
         _one['position'] = _one['position'].tolist()
         if 'cropped_img' in _one:
             _one.pop('cropped_img')
 
     text_array = [result["text"] for result in OcrResponse(results=res).dict()["results"]]
-    return text_array
+    return text_array,  'http://127.0.0.1:5000/static/receiveImage/' + image_filename  # 返回图片路径给前端
+
 
 
 def extract_motor_parameters(text_array):
@@ -433,7 +435,7 @@ def extract_fan_parameters(text_array):
             extracted_p1 = match_p1.group(1)
             print("extracted_p1",extracted_p1)
             break
-        elif 'm3/h' in text.lower():
+        elif 'm3/s' in text.lower():
             index = text_array.index(text)
             if index > 0:
                 previous_text = text_array[index - 1]
@@ -459,7 +461,7 @@ def extract_fan_parameters(text_array):
 @app.route('/ocr', methods=['POST'])
 def ocr() -> Dict[str, Any]:
     file = request.files['image']
-    text_array = save_image_and_ocr(file)
+    text_array, image_path = save_image_and_ocr(file)
     print(text_array)
 
     if any('三相异步' in text or '电动机' in text or 'motors' in text.lower() for text in text_array):
@@ -478,7 +480,8 @@ def ocr() -> Dict[str, Any]:
             "efficiency": extracted_efficiency,
             "rotated_speed": extracted_rotated_speed,
             "model": extracted_motor_type,
-            "typeIndex": typeIndex
+            "typeIndex": typeIndex,
+            "imgUrl": image_path  # 包含图片路径信息
         }
         print(response_data)
         return jsonify(response_data)
@@ -510,7 +513,8 @@ def ocr() -> Dict[str, Any]:
             "flowRate": extracted_flow_rate,  # 流量
             "pressure": extracted_pressure,  # 压力
             "power": extracted_power,  # 功率
-            "efficiency": extracted_efficiency  # 效率
+            "efficiency": extracted_efficiency,  # 效率
+            "imgUrl": image_path  # 包含图片路径信息
         }
         return jsonify(response_data)
 
@@ -540,7 +544,7 @@ def ocr() -> Dict[str, Any]:
             "stage": extracted_stage,  # 级数
             "p1": extracted_p1,  # 密度
             "efficiency": extracted_efficiency,  # 效率
-
+            "imgUrl": image_path  # 包含图片路径信息
         }
         return jsonify(response_data)
     response_data = {
